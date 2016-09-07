@@ -41,7 +41,7 @@
   Optionally takes three functions:
 
   * `:preprocess-fn`, which is passed the request
-  * `:postprocessn-fn`, which is passed the Sentry event
+  * `:postprocess-fn`, which is passed the request and the Sentry event
   * `:error-fn`, which is passed the request and the thrown exception and
     returns an appropriate Ring response
   "

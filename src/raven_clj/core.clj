@@ -93,7 +93,7 @@
 
   Supports sending throwables:
 
-    ```
+  ```
   (raven/send-event dsn {:message   \"oh no\",
                          :throwable e})
   ```
