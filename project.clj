@@ -11,7 +11,8 @@
                         ["snapshots" :clojars]]
   :profiles {:dev [:project/dev :profiles/dev]
              :test [:project/test :profiles/test]
-             :profiles/dev {:dependencies [[org.clojure/clojure "1.8.0"]
+             :profiles/dev {:dependencies [[mocko "0.2.2"]
+                                           [org.clojure/clojure "1.8.0"]
                                            [org.slf4j/slf4j-jcl "1.7.21"]]}
              :profiles/test {}
              :project/dev {:source-paths ["dev"]
