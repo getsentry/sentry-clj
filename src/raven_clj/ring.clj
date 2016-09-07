@@ -32,6 +32,7 @@
   [_ _]
   (-> (str "<html><head><title>Error</title></head>"
            "<body><p>Internal Server Error</p></body></html>")
+      (response/response)
       (response/content-type "text/html")
       (response/status 500)))
 
