@@ -1,23 +1,19 @@
 (ns raven-clj.core
   "A thin wrapper around the official Java library for Sentry."
   (:require [clj-time.coerce :as tc]
-            [clojure.string :as string])
+            [clojure.string :as string]
+            [raven-clj.internal :as internal])
   (:import (java.util UUID)
-           (com.getsentry.raven CljRavenFactory)
            (com.getsentry.raven.dsn Dsn)
            (com.getsentry.raven.event BreadcrumbBuilder
                                       Event$Level
                                       EventBuilder)
-           (com.getsentry.raven.event.interfaces CljInterface ExceptionInterface)))
-
-(def ^:private factory
-  "A copy of our hacked-up factory."
-  (CljRavenFactory.))
+           (com.getsentry.raven.event.interfaces ExceptionInterface)))
 
 (def ^:private instance
   "A function which returns a Raven instance given a DSN."
   (memoize (fn [^String dsn]
-             (.createRavenInstance factory (Dsn. dsn)))))
+             (.createRavenInstance internal/factory (Dsn. dsn)))))
 
 (defn- keyword->level
   "Converts a keyword into an event level."
@@ -81,7 +77,7 @@
     (when checksum
       (.withChecksum b checksum))
     (doseq [[name data] interfaces]
-      (.withSentryInterface b (CljInterface. name data)))
+      (.withSentryInterface b (internal/->CljInterface name data)))
     (when throwable
       (.withSentryInterface b (ExceptionInterface. throwable)))
     (when timestamp
