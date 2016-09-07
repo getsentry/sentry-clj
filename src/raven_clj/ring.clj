@@ -24,8 +24,8 @@
   "Given a request and an exception, returns the Sentry event to be sent."
   [req e]
   {:throwable  e
-   :interfaces {:http (request->http req)
-                :user (request->user req)}})
+   :interfaces {:request (request->http req)
+                :user    (request->user req)}})
 
 (defn- default-error
   "A very bare-bones error message. Ignores the request and exception."
