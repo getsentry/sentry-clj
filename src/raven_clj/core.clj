@@ -81,9 +81,9 @@
     (when checksum
       (.withChecksum b checksum))
     (doseq [[name data] interfaces]
-      (.addSentryInterface b (CljInterface. name data)))
+      (.withSentryInterface b (CljInterface. name data)))
     (when throwable
-      (.addSentryInterface b (ExceptionInterface. throwable)))
+      (.withSentryInterface b (ExceptionInterface. throwable)))
     (when timestamp
       (.withTimestamp b (tc/to-date timestamp)))
     (.build b)))
