@@ -1,0 +1,4 @@
+sudo: false
+language: clojure
+jdk:
+  - oraclejdk8
