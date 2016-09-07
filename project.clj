@@ -1,4 +1,4 @@
-(defproject com.codahale/raven-clj "0.1.5"
+(defproject com.codahale/raven-clj "0.1.6-SNAPSHOT"
   :description "A Clojure client for Sentry."
   :url "https://github.com/codahale/raven-clj"
   :license {:name "Eclipse Public License"
