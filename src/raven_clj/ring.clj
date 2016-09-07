@@ -47,7 +47,7 @@
   "
   [handler dsn {:keys [preprocess-fn postprocess-fn error-fn]
                 :or   {preprocess-fn  identity
-                       postprocess-fn identity
+                       postprocess-fn (comp second list)
                        error-fn       default-error}}]
   (fn [req]
     (try
@@ -56,6 +56,6 @@
         (-> req
             preprocess-fn
             (request->event e)
-            postprocess-fn
-            (->> (raven/send-event dsn)))
+            (->> (postprocess-fn req)
+                 (raven/send-event dsn)))
         (error-fn req e)))))
