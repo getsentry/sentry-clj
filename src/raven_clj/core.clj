@@ -64,7 +64,7 @@
     (when culprit
       (.withCulprit b culprit))
     (doseq [[k v] tags]
-      (.withTag b k v))
+      (.withTag b (name k) (str v)))
     (when (seq breadcrumbs)
       (.withBreadcrumbs b (mapv map->breadcrumb breadcrumbs)))
     (when server-name
