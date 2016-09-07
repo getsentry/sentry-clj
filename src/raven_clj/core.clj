@@ -75,7 +75,7 @@
       (.withServerName b server-name))
     (when extra
       (doseq [[k v] extra]
-        (.withExtra b k v)))
+        (.withExtra b (name k) v)))
     (when checksum-for
       (.withChecksumFor b checksum-for))
     (when checksum
