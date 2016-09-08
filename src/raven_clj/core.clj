@@ -4,8 +4,10 @@
             [clojure.string :as string]
             [raven-clj.internal :as internal])
   (:import (java.util UUID)
+           (com.getsentry.raven Raven)
            (com.getsentry.raven.dsn Dsn)
            (com.getsentry.raven.event BreadcrumbBuilder
+                                      Event
                                       Event$Level
                                       EventBuilder)
            (com.getsentry.raven.event.interfaces ExceptionInterface)))
@@ -43,7 +45,7 @@
       (.setData b data))
     (.build b)))
 
-(defn- map->event
+(defn- ^Event map->event
   "Converts a map into an event."
   [{:keys [event-id message level release environment logger platform culprit
            tags breadcrumbs server-name extra fingerprint checksum-for checksum
@@ -76,10 +78,11 @@
       (.withChecksumFor b checksum-for))
     (when checksum
       (.withChecksum b checksum))
-    (doseq [[name data] interfaces]
-      (.withSentryInterface b (internal/->CljInterface name data)))
+    (doseq [[interface-name data] interfaces]
+      (.withSentryInterface b (internal/->CljInterface (name interface-name)
+                                                       data)))
     (when throwable
-      (.withSentryInterface b (ExceptionInterface. throwable)))
+      (.withSentryInterface b (ExceptionInterface. ^Throwable throwable)))
     (when timestamp
       (.withTimestamp b (tc/to-date timestamp)))
     (.build b)))
@@ -104,5 +107,5 @@
   "
   [dsn event]
   (let [e (map->event event)]
-    (.sendEvent (instance dsn) e)
+    (.sendEvent ^Raven (instance dsn) e)
     (-> e .getId (string/replace #"-" ""))))

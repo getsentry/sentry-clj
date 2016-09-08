@@ -11,7 +11,7 @@
            (com.getsentry.raven.event EventBuilder)))
 
 (deftest interface-test
-  (let [interface (->CljInterface :woo {:blah 1})]
+  (let [interface (->CljInterface "woo" {:blah 1})]
     (is (= "woo" (.getInterfaceName interface)))))
 
 (deftest binding-test
@@ -32,7 +32,7 @@
         event      (.. (EventBuilder. id)
                        (withTimestamp (tc/to-date (t/date-time 2016 9 6)))
                        (withServerName "yay")
-                       (withSentryInterface (->CljInterface :woo {:blah 1}))
+                       (withSentryInterface (->CljInterface "woo" {:blah 1}))
                        (build))]
     (.setCompression marshaller false)
     (.marshall marshaller event output)
