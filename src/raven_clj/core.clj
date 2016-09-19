@@ -74,7 +74,7 @@
       (.withServerName b server-name))
     (when-let [data (merge extra (ex-data throwable))]
       (doseq [[k v] (walk/stringify-keys data)]
-        (.withExtra b (name k) v)))
+        (.withExtra b k v)))
     (when checksum-for
       (.withChecksumFor b checksum-for))
     (when checksum
