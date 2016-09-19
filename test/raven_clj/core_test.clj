@@ -52,28 +52,59 @@
 
 (deftest map->event-test
   (let [dsn        (Dsn. "https://111:222@sentry.io/100")
-        marshaller (.createMarshaller internal/factory dsn)
-        output     (ByteArrayOutputStream.)]
+        marshaller (.createMarshaller internal/factory dsn)]
     (.setCompression marshaller false)
-    (.marshall marshaller (#'core/map->event event) output)
-    (is (= {"release"     "v1.0.0"
-            "event_id"    "4c4fbea957a74c99808d2284306e6c98"
-            "message"     "ok"
-            "user"        {"id" 100}
-            "tags"        {"one" "2"}
-            "timestamp"   "2016-09-07T00:00:00"
-            "level"       "info"
-            "server_name" "example.com"
-            "logger"      "happy.lucky"
-            "environment" "qa"
-            "culprit"     "123"
-            "extra"       {"one" [[":two" 2]]}
-            "checksum"    "BD285A21"
-            "platform"    "clojure"
-            "breadcrumbs" {"values" [{"timestamp" 1473120000
-                                      "type"      "woo"
-                                      "level"     "ok"
-                                      "message"   "yes"
-                                      "category"  "maybe"
-                                      "data"      {"probably" "no"}}]}}
-           (-> output .toString json/parse-string)))))
+
+    (testing "a regular event"
+      (let [output     (ByteArrayOutputStream.)]
+        (.marshall marshaller (#'core/map->event event) output)
+        (is (= {"release"     "v1.0.0"
+                "event_id"    "4c4fbea957a74c99808d2284306e6c98"
+                "message"     "ok"
+                "user"        {"id" 100}
+                "tags"        {"one" "2"}
+                "timestamp"   "2016-09-07T00:00:00"
+                "level"       "info"
+                "server_name" "example.com"
+                "logger"      "happy.lucky"
+                "environment" "qa"
+                "culprit"     "123"
+                "extra"       {"one" [["two" 2]]}
+                "checksum"    "BD285A21"
+                "platform"    "clojure"
+                "breadcrumbs" {"values" [{"timestamp" 1473120000
+                                          "type"      "woo"
+                                          "level"     "ok"
+                                          "message"   "yes"
+                                          "category"  "maybe"
+                                          "data"      {"probably" "no"}}]}}
+               (-> output .toString json/parse-string)))))
+
+    (testing "an ex-info event"
+      (let [output     (ByteArrayOutputStream.)]
+        (.marshall marshaller (-> event
+                                  (assoc :throwable (ex-info "bad stuff"
+                                                             {:ex-info 2}))
+                                  (#'core/map->event)) output)
+        (is (= {"release"     "v1.0.0"
+                "event_id"    "4c4fbea957a74c99808d2284306e6c98"
+                "message"     "ok"
+                "user"        {"id" 100}
+                "tags"        {"one" "2"}
+                "timestamp"   "2016-09-07T00:00:00"
+                "level"       "info"
+                "server_name" "example.com"
+                "logger"      "happy.lucky"
+                "environment" "qa"
+                "culprit"     "123"
+                "extra"       {"one" [["two" 2]], "ex-info" 2}
+                "checksum"    "BD285A21"
+                "platform"    "clojure"
+                "breadcrumbs" {"values" [{"timestamp" 1473120000
+                                          "type"      "woo"
+                                          "level"     "ok"
+                                          "message"   "yes"
+                                          "category"  "maybe"
+                                          "data"      {"probably" "no"}}]}}
+               (-> output .toString json/parse-string
+                   (dissoc "sentry.interfaces.Exception"))))))))

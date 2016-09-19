@@ -2,6 +2,7 @@
   "A thin wrapper around the official Java library for Sentry."
   (:require [clj-time.coerce :as tc]
             [clojure.string :as string]
+            [clojure.walk :as walk]
             [raven-clj.internal :as internal])
   (:import (java.util UUID)
            (com.getsentry.raven Raven)
@@ -71,8 +72,8 @@
       (.withBreadcrumbs b (mapv map->breadcrumb breadcrumbs)))
     (when server-name
       (.withServerName b server-name))
-    (when extra
-      (doseq [[k v] extra]
+    (when-let [data (merge extra (ex-data throwable))]
+      (doseq [[k v] (walk/stringify-keys data)]
         (.withExtra b (name k) v)))
     (when checksum-for
       (.withChecksumFor b checksum-for))
