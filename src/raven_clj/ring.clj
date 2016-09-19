@@ -20,8 +20,8 @@
   [req]
   {:ip_address (:remote-addr req)})
 
-(defn- request->event
-  "Given a request and an exception, returns the Sentry event to be sent."
+(defn request->event
+  "Given a request and an exception, returns a Sentry event."
   [req e]
   {:throwable  e
    :interfaces {:request (request->http req)
