@@ -13,7 +13,7 @@
              :test [:project/test :profiles/test]
              :profiles/dev {:dependencies [[mocko "0.2.2"]
                                            [org.clojure/clojure "1.8.0"]
-                                           [org.slf4j/slf4j-jcl "1.7.21"]]}
+                                           [org.slf4j/slf4j-jcl "1.7.22"]]}
              :profiles/test {}
              :project/dev {:source-paths ["dev"]
                            :repl-options {:init-ns user}}
