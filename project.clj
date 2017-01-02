@@ -4,7 +4,7 @@
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[cheshire "5.6.3"]
-                 [clj-time "0.12.2"]
+                 [clj-time "0.13.0"]
                  [com.getsentry.raven/raven "7.8.1"]
                  [ring/ring-core "1.5.0" :scope "provided"]]
   :deploy-repositories [["releases" :clojars]
