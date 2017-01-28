@@ -3,10 +3,10 @@
   :url "https://github.com/codahale/raven-clj"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
-  :dependencies [[cheshire "5.6.3"]
+  :dependencies [[cheshire "5.7.0"]
                  [clj-time "0.13.0"]
                  [com.getsentry.raven/raven "7.8.1"]
-                 [ring/ring-core "1.5.0" :scope "provided"]]
+                 [ring/ring-core "1.5.1" :scope "provided"]]
   :deploy-repositories [["releases" :clojars]
                         ["snapshots" :clojars]]
   :profiles {:dev [:project/dev :profiles/dev]
