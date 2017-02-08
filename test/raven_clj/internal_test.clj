@@ -49,5 +49,8 @@
             "culprit"     nil
             "extra"       {}
             "checksum"    nil
-            "platform"    "java"}
-           (-> output .toString json/parse-string)))))
+            "platform"    "java"
+            "sdk"         {"name"    "raven-java"
+                           "version" "blah"}}
+           (-> output .toString json/parse-string
+               (assoc-in ["sdk" "version"] "blah"))))))
