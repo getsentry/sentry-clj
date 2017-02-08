@@ -56,7 +56,7 @@
     (.setCompression marshaller false)
 
     (testing "a regular event"
-      (let [output     (ByteArrayOutputStream.)]
+      (let [output (ByteArrayOutputStream.)]
         (.marshall marshaller (#'core/map->event event) output)
         (is (= {"release"     "v1.0.0"
                 "event_id"    "4c4fbea957a74c99808d2284306e6c98"
@@ -77,11 +77,14 @@
                                           "level"     "ok"
                                           "message"   "yes"
                                           "category"  "maybe"
-                                          "data"      {"probably" "no"}}]}}
-               (-> output .toString json/parse-string)))))
+                                          "data"      {"probably" "no"}}]}
+                "sdk"         {"name"    "raven-java"
+                               "version" "blah"}}
+               (-> output .toString json/parse-string
+                   (assoc-in ["sdk" "version"] "blah"))))))
 
     (testing "an ex-info event"
-      (let [output     (ByteArrayOutputStream.)]
+      (let [output (ByteArrayOutputStream.)]
         (.marshall marshaller (-> event
                                   (assoc :throwable (ex-info "bad stuff"
                                                              {:ex-info 2}))
@@ -105,6 +108,9 @@
                                           "level"     "ok"
                                           "message"   "yes"
                                           "category"  "maybe"
-                                          "data"      {"probably" "no"}}]}}
+                                          "data"      {"probably" "no"}}]}
+                "sdk"         {"name"    "raven-java"
+                               "version" "blah"}}
                (-> output .toString json/parse-string
-                   (dissoc "sentry.interfaces.Exception"))))))))
+                   (dissoc "sentry.interfaces.Exception")
+                   (assoc-in ["sdk" "version"] "blah"))))))))
