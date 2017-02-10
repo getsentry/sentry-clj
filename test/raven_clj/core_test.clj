@@ -48,7 +48,8 @@
                    :message   "yes"
                    :category  "maybe"
                    :data      {"probably" "no"}}]
-   :message      "ok"})
+   :message      "ok"
+   :fingerprint ["{{ default }}", "nice"]})
 
 (deftest map->event-test
   (let [dsn        (Dsn. "https://111:222@sentry.io/100")
@@ -79,7 +80,8 @@
                                           "category"  "maybe"
                                           "data"      {"probably" "no"}}]}
                 "sdk"         {"name"    "raven-java"
-                               "version" "blah"}}
+                               "version" "blah"}
+                "fingerprint" ["{{ default }}", "nice"]}
                (-> output .toString json/parse-string
                    (assoc-in ["sdk" "version"] "blah"))))))
 
@@ -110,7 +112,8 @@
                                           "category"  "maybe"
                                           "data"      {"probably" "no"}}]}
                 "sdk"         {"name"    "raven-java"
-                               "version" "blah"}}
+                               "version" "blah"}
+                "fingerprint" ["{{ default }}", "nice"]}
                (-> output .toString json/parse-string
                    (dissoc "sentry.interfaces.Exception")
                    (assoc-in ["sdk" "version"] "blah"))))))))
