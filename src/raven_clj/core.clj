@@ -86,6 +86,8 @@
       (.withSentryInterface b (ExceptionInterface. ^Throwable throwable)))
     (when timestamp
       (.withTimestamp b (tc/to-date timestamp)))
+    (when (seq fingerprint)
+      (.withFingerprint b fingerprint))
     (.build b)))
 
 (defn send-event
