@@ -70,7 +70,7 @@
                 "logger"      "happy.lucky"
                 "environment" "qa"
                 "culprit"     "123"
-                "extra"       {"one" [["two" 2]]}
+                "extra"       {"one" {"two" 2}}
                 "checksum"    "BD285A21"
                 "platform"    "clojure"
                 "breadcrumbs" {"values" [{"timestamp" 1473120000
@@ -102,7 +102,7 @@
                 "logger"      "happy.lucky"
                 "environment" "qa"
                 "culprit"     "123"
-                "extra"       {"one" [["two" 2]], "ex-info" 2}
+                "extra"       {"one" {"two" 2}, "ex-info" 2}
                 "checksum"    "BD285A21"
                 "platform"    "clojure"
                 "breadcrumbs" {"values" [{"timestamp" 1473120000
@@ -116,4 +116,41 @@
                 "fingerprint" ["{{ default }}", "nice"]}
                (-> output .toString json/parse-string
                    (dissoc "sentry.interfaces.Exception")
+                   (assoc-in ["sdk" "version"] "blah"))))))
+
+    (testing "an event with deeply-nested extra data"
+      (let [output (ByteArrayOutputStream.)
+            event' (-> event
+                       (assoc-in [:extra :one :three] {:iii [3]})
+                       (assoc-in [:extra :one :four] {:iv 4})
+                       (assoc-in [:extra :welp] {:nope "ok"}))
+            extra {"one" {"two" 2
+                          "three" {"iii" [3]}
+                          "four" {"iv" 4}}
+                   "welp" {"nope" "ok"}}]
+        (.marshall marshaller (#'core/map->event event') output)
+        (is (= {"release"     "v1.0.0"
+                "event_id"    "4c4fbea957a74c99808d2284306e6c98"
+                "message"     "ok"
+                "user"        {"id" 100}
+                "tags"        {"one" "2"}
+                "timestamp"   "2016-09-07T00:00:00"
+                "level"       "info"
+                "server_name" "example.com"
+                "logger"      "happy.lucky"
+                "environment" "qa"
+                "culprit"     "123"
+                "extra"       extra
+                "checksum"    "BD285A21"
+                "platform"    "clojure"
+                "breadcrumbs" {"values" [{"timestamp" 1473120000
+                                          "type"      "woo"
+                                          "level"     "ok"
+                                          "message"   "yes"
+                                          "category"  "maybe"
+                                          "data"      {"probably" "no"}}]}
+                "sdk"         {"name"    "raven-java"
+                               "version" "blah"}
+                "fingerprint" ["{{ default }}", "nice"]}
+               (-> output .toString json/parse-string
                    (assoc-in ["sdk" "version"] "blah"))))))))
