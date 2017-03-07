@@ -28,6 +28,22 @@
     :error   Event$Level/ERROR
     :fatal   Event$Level/FATAL))
 
+(defn- java-util-hashmappify-vals
+  "Converts an ordinary Clojure map into a Clojure map with nested map
+  values recursively translated into java.util.HashMap objects. Based
+  on walk/stringify-keys."
+  [m]
+  (let [f (fn [[k v]]
+            (if (map? v)
+              [k (java.util.HashMap. v)]
+              [k v]))]
+    (walk/postwalk
+     (fn [x]
+       (if (map? x)
+         (into {} (map f x))
+         x))
+     m)))
+
 (defn- map->breadcrumb
   "Converts a map into a breadcrumb."
   [{:keys [type timestamp level message category data]}]
@@ -73,7 +89,7 @@
     (when server-name
       (.withServerName b server-name))
     (when-let [data (merge extra (ex-data throwable))]
-      (doseq [[k v] (walk/stringify-keys data)]
+      (doseq [[k v] (java-util-hashmappify-vals (walk/stringify-keys data))]
         (.withExtra b k v)))
     (when checksum-for
       (.withChecksumFor b checksum-for))
