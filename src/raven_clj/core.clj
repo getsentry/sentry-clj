@@ -4,7 +4,7 @@
             [clojure.string :as string]
             [clojure.walk :as walk]
             [raven-clj.internal :as internal])
-  (:import (java.util UUID)
+  (:import (java.util HashMap UUID)
            (com.getsentry.raven Raven)
            (com.getsentry.raven.dsn Dsn)
            (com.getsentry.raven.event BreadcrumbBuilder
@@ -34,15 +34,9 @@
   on walk/stringify-keys."
   [m]
   (let [f (fn [[k v]]
-            (if (map? v)
-              [k (java.util.HashMap. v)]
-              [k v]))]
-    (walk/postwalk
-     (fn [x]
-       (if (map? x)
-         (into {} (map f x))
-         x))
-     m)))
+            (let [k (if (keyword? k) (name k) k)]
+              (if (map? v) [k (HashMap. v)] [k v])))]
+    (walk/postwalk (fn [x] (if (map? x) (into {} (map f x)) x)) m)))
 
 (defn- map->breadcrumb
   "Converts a map into a breadcrumb."
@@ -89,7 +83,7 @@
     (when server-name
       (.withServerName b server-name))
     (when-let [data (merge extra (ex-data throwable))]
-      (doseq [[k v] (java-util-hashmappify-vals (walk/stringify-keys data))]
+      (doseq [[k v] (java-util-hashmappify-vals data)]
         (.withExtra b k v)))
     (when checksum-for
       (.withChecksumFor b checksum-for))
