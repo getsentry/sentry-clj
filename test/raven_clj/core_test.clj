@@ -49,7 +49,7 @@
                    :category  "maybe"
                    :data      {"probably" "no"}}]
    :message      "ok"
-   :fingerprint ["{{ default }}", "nice"]})
+   :fingerprint ["{{ default }}" "nice"]})
 
 (deftest map->event-test
   (let [dsn        (Dsn. "https://111:222@sentry.io/100")
@@ -81,7 +81,7 @@
                                           "data"      {"probably" "no"}}]}
                 "sdk"         {"name"    "raven-java"
                                "version" "blah"}
-                "fingerprint" ["{{ default }}", "nice"]}
+                "fingerprint" ["{{ default }}" "nice"]}
                (-> output .toString json/parse-string
                    (assoc-in ["sdk" "version"] "blah"))))))
 
@@ -102,7 +102,8 @@
                 "logger"      "happy.lucky"
                 "environment" "qa"
                 "culprit"     "123"
-                "extra"       {"one" {"two" 2}, "ex-info" 2}
+                "extra"       {"one"     {"two" 2}
+                               "ex-info" 2}
                 "checksum"    "BD285A21"
                 "platform"    "clojure"
                 "breadcrumbs" {"values" [{"timestamp" 1473120000
@@ -113,7 +114,7 @@
                                           "data"      {"probably" "no"}}]}
                 "sdk"         {"name"    "raven-java"
                                "version" "blah"}
-                "fingerprint" ["{{ default }}", "nice"]}
+                "fingerprint" ["{{ default }}" "nice"]}
                (-> output .toString json/parse-string
                    (dissoc "sentry.interfaces.Exception")
                    (assoc-in ["sdk" "version"] "blah"))))))
@@ -124,10 +125,10 @@
                        (assoc-in [:extra :one :three] {:iii [3]})
                        (assoc-in [:extra :one :four] {:iv 4})
                        (assoc-in [:extra :welp] {:nope "ok"}))
-            extra {"one" {"two" 2
-                          "three" {"iii" [3]}
-                          "four" {"iv" 4}}
-                   "welp" {"nope" "ok"}}]
+            extra  {"one"  {"two"   2
+                            "three" {"iii" [3]}
+                            "four"  {"iv" 4}}
+                    "welp" {"nope" "ok"}}]
         (.marshall marshaller (#'core/map->event event') output)
         (is (= {"release"     "v1.0.0"
                 "event_id"    "4c4fbea957a74c99808d2284306e6c98"
@@ -151,6 +152,6 @@
                                           "data"      {"probably" "no"}}]}
                 "sdk"         {"name"    "raven-java"
                                "version" "blah"}
-                "fingerprint" ["{{ default }}", "nice"]}
+                "fingerprint" ["{{ default }}" "nice"]}
                (-> output .toString json/parse-string
                    (assoc-in ["sdk" "version"] "blah"))))))))
