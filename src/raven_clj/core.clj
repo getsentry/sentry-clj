@@ -7,7 +7,9 @@
   (:import (java.util HashMap UUID)
            (com.getsentry.raven Raven)
            (com.getsentry.raven.dsn Dsn)
-           (com.getsentry.raven.event BreadcrumbBuilder
+           (com.getsentry.raven.event Breadcrumb$Level
+                                      Breadcrumb$Type
+                                      BreadcrumbBuilder
                                       Event
                                       Event$Level
                                       EventBuilder)
@@ -43,11 +45,19 @@
   [{:keys [type timestamp level message category data]}]
   (let [b (BreadcrumbBuilder.)]
     (when type
-      (.setType b type))
+      (.setType b (case type
+                    :default    Breadcrumb$Type/DEFAULT
+                    :http       Breadcrumb$Type/HTTP
+                    :navigation Breadcrumb$Type/NAVIGATION)))
     (when timestamp
       (.setTimestamp b (tc/to-date timestamp)))
     (when level
-      (.setLevel b level))
+      (.setLevel b (case level
+                     :debug    Breadcrumb$Level/DEBUG
+                     :info     Breadcrumb$Level/INFO
+                     :warning  Breadcrumb$Level/WARNING
+                     :error    Breadcrumb$Level/ERROR
+                     :critical Breadcrumb$Level/CRITICAL)))
     (when message
       (.setMessage b message))
     (when category

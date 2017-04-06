@@ -42,9 +42,9 @@
    :checksum-for "yes this is"
    :server-name  "example.com"
    :interfaces   {:user {:id 100}}
-   :breadcrumbs  [{:type      "woo"
+   :breadcrumbs  [{:type      :http
                    :timestamp (t/date-time 2016 9 6)
-                   :level     "ok"
+                   :level     :info
                    :message   "yes"
                    :category  "maybe"
                    :data      {"probably" "no"}}]
@@ -74,8 +74,8 @@
                 "checksum"    "BD285A21"
                 "platform"    "clojure"
                 "breadcrumbs" {"values" [{"timestamp" 1473120000
-                                          "type"      "woo"
-                                          "level"     "ok"
+                                          "type"      "http"
+                                          "level"     "info"
                                           "message"   "yes"
                                           "category"  "maybe"
                                           "data"      {"probably" "no"}}]}
@@ -107,8 +107,8 @@
                 "checksum"    "BD285A21"
                 "platform"    "clojure"
                 "breadcrumbs" {"values" [{"timestamp" 1473120000
-                                          "type"      "woo"
-                                          "level"     "ok"
+                                          "type"      "http"
+                                          "level"     "info"
                                           "message"   "yes"
                                           "category"  "maybe"
                                           "data"      {"probably" "no"}}]}
@@ -145,8 +145,8 @@
                 "checksum"    "BD285A21"
                 "platform"    "clojure"
                 "breadcrumbs" {"values" [{"timestamp" 1473120000
-                                          "type"      "woo"
-                                          "level"     "ok"
+                                          "type"      "http"
+                                          "level"     "info"
                                           "message"   "yes"
                                           "category"  "maybe"
                                           "data"      {"probably" "no"}}]}
