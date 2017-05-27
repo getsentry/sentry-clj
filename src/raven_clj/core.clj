@@ -4,7 +4,7 @@
             [clojure.string :as string]
             [clojure.walk :as walk]
             [raven-clj.internal :as internal])
-  (:import (java.util HashMap UUID)
+  (:import (java.util HashMap Map UUID)
            (com.getsentry.raven Raven)
            (com.getsentry.raven.dsn Dsn)
            (com.getsentry.raven.event Breadcrumb$Level
@@ -37,7 +37,7 @@
   [m]
   (let [f (fn [[k v]]
             (let [k (if (keyword? k) (name k) k)]
-              (if (map? v) [k (HashMap. v)] [k v])))]
+              (if (map? v) [k (HashMap. ^Map v)] [k v])))]
     (walk/postwalk (fn [x] (if (map? x) (into {} (map f x)) x)) m)))
 
 (defn- map->breadcrumb
