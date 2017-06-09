@@ -1,6 +1,6 @@
-(ns raven-clj.ring
+(ns sentry-clj.ring
   "Ring utility functions."
-  (:require [raven-clj.core :as raven]
+  (:require [sentry-clj.core :as sentry]
             [ring.util.request :refer [request-url]]
             [ring.util.response :as response]))
 
@@ -58,5 +58,5 @@
             preprocess-fn
             (request->event e)
             (->> (postprocess-fn req)
-                 (raven/send-event dsn)))
+                 (sentry/send-event dsn)))
         (error-fn req e)))))

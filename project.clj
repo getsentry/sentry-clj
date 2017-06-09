@@ -1,11 +1,11 @@
-(defproject com.codahale/raven-clj "0.2.1-SNAPSHOT"
+(defproject com.codahale/sentry-clj "0.2.1-SNAPSHOT"
   :description "A Clojure client for Sentry."
-  :url "https://github.com/codahale/raven-clj"
+  :url "https://github.com/codahale/sentry-clj"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[cheshire "5.7.0"]
                  [clj-time "0.13.0"]
-                 [com.getsentry.raven/raven "8.0.0"]
+                 [io.sentry/sentry "1.0.0"]
                  [ring/ring-core "1.5.1" :scope "provided"]]
   :deploy-repositories [["releases" :clojars]
                         ["snapshots" :clojars]]

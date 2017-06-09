@@ -1,17 +1,17 @@
-(ns raven-clj.core-test
+(ns sentry-clj.core-test
   (:require [cheshire.core :as json]
             [clj-time.coerce :as tc]
             [clj-time.core :as t]
             [clojure.test :refer :all]
-            [raven-clj.core :as core :refer :all]
-            [raven-clj.internal :as internal])
+            [sentry-clj.core :as core :refer :all]
+            [sentry-clj.internal :as internal])
   (:import (java.io ByteArrayOutputStream)
            (java.util UUID)
            (com.fasterxml.jackson.core JsonFactory)
-           (com.getsentry.raven.dsn Dsn)
-           (com.getsentry.raven.event BreadcrumbBuilder
-                                      Event$Level
-                                      EventBuilder)))
+           (io.sentry.dsn Dsn)
+           (io.sentry.event BreadcrumbBuilder
+                            Event$Level
+                            EventBuilder)))
 
 (deftest keyword->level-test
   (is (= Event$Level/DEBUG
@@ -32,6 +32,7 @@
   {:event-id     id
    :level        :info
    :release      "v1.0.0"
+   :dist         nil
    :environment  "qa"
    :logger       "happy.lucky"
    :timestamp    (t/date-time 2016 9 7)
@@ -60,6 +61,7 @@
       (let [output (ByteArrayOutputStream.)]
         (.marshall marshaller (#'core/map->event event) output)
         (is (= {"release"     "v1.0.0"
+                "dist"        nil
                 "event_id"    "4c4fbea957a74c99808d2284306e6c98"
                 "message"     "ok"
                 "user"        {"id" 100}
@@ -79,7 +81,7 @@
                                           "message"   "yes"
                                           "category"  "maybe"
                                           "data"      {"probably" "no"}}]}
-                "sdk"         {"name"    "raven-java"
+                "sdk"         {"name"    "sentry-java"
                                "version" "blah"}
                 "fingerprint" ["{{ default }}" "nice"]}
                (-> output .toString json/parse-string
@@ -92,6 +94,7 @@
                                                              {:ex-info 2}))
                                   (#'core/map->event)) output)
         (is (= {"release"     "v1.0.0"
+                "dist"        nil
                 "event_id"    "4c4fbea957a74c99808d2284306e6c98"
                 "message"     "ok"
                 "user"        {"id" 100}
@@ -112,7 +115,7 @@
                                           "message"   "yes"
                                           "category"  "maybe"
                                           "data"      {"probably" "no"}}]}
-                "sdk"         {"name"    "raven-java"
+                "sdk"         {"name"    "sentry-java"
                                "version" "blah"}
                 "fingerprint" ["{{ default }}" "nice"]}
                (-> output .toString json/parse-string
@@ -131,6 +134,7 @@
                     "welp" {"nope" "ok"}}]
         (.marshall marshaller (#'core/map->event event') output)
         (is (= {"release"     "v1.0.0"
+                "dist"        nil
                 "event_id"    "4c4fbea957a74c99808d2284306e6c98"
                 "message"     "ok"
                 "user"        {"id" 100}
@@ -150,7 +154,7 @@
                                           "message"   "yes"
                                           "category"  "maybe"
                                           "data"      {"probably" "no"}}]}
-                "sdk"         {"name"    "raven-java"
+                "sdk"         {"name"    "sentry-java"
                                "version" "blah"}
                 "fingerprint" ["{{ default }}" "nice"]}
                (-> output .toString json/parse-string
