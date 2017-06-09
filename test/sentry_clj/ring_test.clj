@@ -1,8 +1,8 @@
-(ns raven-clj.ring-test
+(ns sentry-clj.ring-test
   (:require [clojure.test :refer :all]
             [mocko.core :refer :all]
-            [raven-clj.core :as raven]
-            [raven-clj.ring :refer :all]))
+            [sentry-clj.core :as sentry]
+            [sentry-clj.ring :refer :all]))
 
 (def e (Exception. "thing"))
 
@@ -54,7 +54,7 @@
                                                "REMOTE_ADDR" "127.0.0.1"}}
                       :user    {:ip_address "127.0.0.1"}}}
             handler (wrap-report-exceptions wrapped "dsn" {})]
-        (mock! #'raven/send-event {["dsn" event] nil})
+        (mock! #'sentry/send-event {["dsn" event] nil})
         (is (= {:status  500
                 :headers {"Content-Type" "text/html"}
                 :body    "<html><head><title>Error</title></head><body><p>Internal Server Error</p></body></html>"
@@ -80,6 +80,6 @@
                                             {:preprocess-fn  preprocess
                                              :postprocess-fn postprocess
                                              :error-fn       error})]
-        (mock! #'raven/send-event {["dsn" event] nil})
+        (mock! #'sentry/send-event {["dsn" event] nil})
         (is (= (assoc req :exception e)
                (handler req)))))))

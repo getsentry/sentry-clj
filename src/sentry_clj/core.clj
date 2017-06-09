@@ -1,24 +1,24 @@
-(ns raven-clj.core
+(ns sentry-clj.core
   "A thin wrapper around the official Java library for Sentry."
   (:require [clj-time.coerce :as tc]
             [clojure.string :as string]
             [clojure.walk :as walk]
-            [raven-clj.internal :as internal])
+            [sentry-clj.internal :as internal])
   (:import (java.util HashMap Map UUID)
-           (com.getsentry.raven Raven)
-           (com.getsentry.raven.dsn Dsn)
-           (com.getsentry.raven.event Breadcrumb$Level
-                                      Breadcrumb$Type
-                                      BreadcrumbBuilder
-                                      Event
-                                      Event$Level
-                                      EventBuilder)
-           (com.getsentry.raven.event.interfaces ExceptionInterface)))
+           (io.sentry Sentry)
+           (io.sentry.dsn Dsn)
+           (io.sentry.event Breadcrumb$Level
+                            Breadcrumb$Type
+                            BreadcrumbBuilder
+                            Event
+                            Event$Level
+                            EventBuilder)
+           (io.sentry.event.interfaces ExceptionInterface)))
 
 (def ^:private instance
-  "A function which returns a Raven instance given a DSN."
+  "A function which returns a Sentry instance given a DSN."
   (memoize (fn [^String dsn]
-             (.createRavenInstance internal/factory (Dsn. dsn)))))
+             (.createSentryInstance internal/factory (Dsn. dsn)))))
 
 (defn- keyword->level
   "Converts a keyword into an event level."
@@ -116,19 +116,19 @@
   Supports sending throwables:
 
   ```
-  (raven/send-event dsn {:message   \"oh no\",
+  (sentry/send-event dsn {:message   \"oh no\",
                          :throwable e})
   ```
 
   Also supports interfaces with arbitrary values, e.g.:
 
   ```
-  (raven/send-event dsn {:message    \"oh no\",
+  (sentry/send-event dsn {:message    \"oh no\",
                          :interfaces {:user {:id    100
                                              :email \"test@example.com\"}}})
   ```
   "
   [dsn event]
   (let [e (map->event event)]
-    (.sendEvent ^Raven (instance dsn) e)
+    (.sendEvent ^Sentry (instance dsn) e)
     (-> e .getId (string/replace #"-" ""))))

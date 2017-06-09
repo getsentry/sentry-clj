@@ -1,20 +1,20 @@
-# raven-clj
+# sentry-clj
 
 A thin wrapper around the
-[official Java library for Sentry](https://github.com/getsentry/raven-java/).
+[official Java library for Sentry](https://github.com/getsentry/sentry-java/).
 
 ## Usage
 
 ```clojure
-(require '[raven-clj.core :as raven])
+(require '[sentry-clj.core :as sentry])
 
 (def dsn
-  "https://blah:blee@sentry.io/bloo")
+  "https://public:private@sentry.io/1")
 
 (try
   (do-something-risky)
   (catch Exception e
-    (raven/send-event dsn {:throwable e})))
+    (sentry/send-event dsn {:throwable e})))
 ```
 
 ## Supported event keys
@@ -55,6 +55,7 @@ Supported keys of the map are:
 ## License
 
 Copyright © 2016 Coda Hale
+Copyright © 2017 Sentry
 
 Distributed under the Eclipse Public License either version 1.0 or (at
 your option) any later version.

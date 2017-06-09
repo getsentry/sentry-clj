@@ -1,14 +1,14 @@
-(ns raven-clj.internal-test
+(ns sentry-clj.internal-test
   (:require [cheshire.core :as json]
             [clj-time.coerce :as tc]
             [clj-time.core :as t]
             [clojure.test :refer :all]
-            [raven-clj.internal :refer :all])
+            [sentry-clj.internal :refer :all])
   (:import (java.io ByteArrayOutputStream)
            (java.util UUID)
            (com.fasterxml.jackson.core JsonFactory)
-           (com.getsentry.raven.dsn Dsn)
-           (com.getsentry.raven.event EventBuilder)))
+           (io.sentry.dsn Dsn)
+           (io.sentry.event EventBuilder)))
 
 (deftest interface-test
   (let [interface (->CljInterface "woo" {:blah 1})]
@@ -37,6 +37,7 @@
     (.setCompression marshaller false)
     (.marshall marshaller event output)
     (is (= {"release"     nil
+            "dist"        nil
             "event_id"    "4c4fbea957a74c99808d2284306e6c98"
             "message"     nil
             "woo"         {"blah" 1}
@@ -50,7 +51,7 @@
             "extra"       {}
             "checksum"    nil
             "platform"    "java"
-            "sdk"         {"name"    "raven-java"
+            "sdk"         {"name"    "sentry-java"
                            "version" "blah"}}
            (-> output .toString json/parse-string
                (assoc-in ["sdk" "version"] "blah"))))))
