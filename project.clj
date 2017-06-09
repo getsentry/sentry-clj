@@ -1,6 +1,6 @@
-(defproject com.codahale/sentry-clj "0.2.1-SNAPSHOT"
+(defproject io.sentry/sentry-clj "0.2.1-SNAPSHOT"
   :description "A Clojure client for Sentry."
-  :url "https://github.com/codahale/sentry-clj"
+  :url "https://github.com/getsentry/sentry-clj"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[cheshire "5.7.0"]
