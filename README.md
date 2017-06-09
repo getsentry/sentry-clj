@@ -54,8 +54,7 @@ Supported keys of the map are:
 
 ## License
 
-Copyright © 2016 Coda Hale
-Copyright © 2017 Sentry
+Copyright © 2016 Coda Hale, Sentry
 
 Distributed under the Eclipse Public License either version 1.0 or (at
 your option) any later version.
