@@ -18,7 +18,7 @@
 (def ^:private instance
   "A function which returns a Sentry instance given a DSN."
   (memoize (fn [^String dsn]
-             (.createSentryInstance internal/factory (Dsn. dsn)))))
+             (.createSentryClient internal/factory (Dsn. dsn)))))
 
 (defn- keyword->level
   "Converts a keyword into an event level."
