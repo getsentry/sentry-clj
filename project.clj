@@ -3,10 +3,10 @@
   :url "https://github.com/getsentry/sentry-clj"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
-  :dependencies [[cheshire "5.7.0"]
+  :dependencies [[cheshire "5.7.1"]
                  [clj-time "0.13.0"]
-                 [io.sentry/sentry "1.0.0"]
-                 [ring/ring-core "1.5.1" :scope "provided"]]
+                 [io.sentry/sentry "1.2.0"]
+                 [ring/ring-core "1.6.1" :scope "provided"]]
   :deploy-repositories [["releases" :clojars]
                         ["snapshots" :clojars]]
   :profiles {:dev [:project/dev :profiles/dev]
