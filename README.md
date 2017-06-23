@@ -1,7 +1,9 @@
 # sentry-clj
 
+[![Clojars Project](https://img.shields.io/clojars/v/io.sentry/sentry-clj.svg)](https://clojars.org/io.sentry/sentry-clj)
+
 A thin wrapper around the
-[official Java library for Sentry](https://github.com/getsentry/sentry-java/).
+[official Java library for Sentry](https://docs.sentry.io/clients/java/).
 
 ## Usage
 
