@@ -15,10 +15,7 @@
                             EventBuilder)
            (io.sentry.event.interfaces ExceptionInterface)))
 
-(def ^:private instance
-  "A function which returns a Sentry instance given a DSN."
-  (memoize (fn [^String dsn]
-             (.createSentryClient internal/factory (Dsn. dsn)))))
+(def ^:private initialized (volatile! false))
 
 (defn- keyword->level
   "Converts a keyword into an event level."
@@ -110,25 +107,34 @@
       (.withFingerprint b fingerprint))
     (.build b)))
 
+(defn init
+  "Initialize Sentry with the provided DSN (null implies a DSN lookup is performed)
+  and the Clojure SentryClientFactory."
+  [^String dsn]
+  (Sentry/init dsn internal/factory)
+  (vreset! initialized true))
+
 (defn send-event
   "Sends the given event to Sentry, returning the event's ID.
 
   Supports sending throwables:
 
   ```
-  (sentry/send-event dsn {:message   \"oh no\",
-                         :throwable e})
+  (sentry/send-event {:message   \"oh no\",
+                      :throwable e})
   ```
 
   Also supports interfaces with arbitrary values, e.g.:
 
   ```
-  (sentry/send-event dsn {:message    \"oh no\",
-                         :interfaces {:user {:id    100
-                                             :email \"test@example.com\"}}})
+  (sentry/send-event {:message    \"oh no\",
+                      :interfaces {:user {:id    100
+                                          :email \"test@example.com\"}}})
   ```
   "
-  [dsn event]
+  [event]
   (let [e (map->event event)]
-    (.sendEvent ^Sentry (instance dsn) e)
+    (if (not @initialized)
+      (init nil))
+    (Sentry/capture e)
     (-> e .getId (string/replace #"-" ""))))
