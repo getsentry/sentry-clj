@@ -15,7 +15,7 @@
                             EventBuilder)
            (io.sentry.event.interfaces ExceptionInterface)))
 
-(def ^:private initialized (volatile! false))
+(def ^:private initialized (atom false))
 
 (defn- keyword->level
   "Converts a keyword into an event level."
@@ -107,12 +107,16 @@
       (.withFingerprint b fingerprint))
     (.build b)))
 
-(defn init
+(defn init!
   "Initialize Sentry with the provided DSN (null implies a DSN lookup is performed)
   and the Clojure SentryClientFactory."
   [^String dsn]
-  (Sentry/init dsn internal/factory)
-  (vreset! initialized true))
+  (locking initialized
+    (if @initialized
+      (Sentry/getStoredClient)
+      (let [client (Sentry/init dsn internal/factory)]
+        (reset! initialized true)
+        client))))
 
 (defn send-event
   "Sends the given event to Sentry, returning the event's ID.
@@ -135,6 +139,6 @@
   [event]
   (let [e (map->event event)]
     (if (not @initialized)
-      (init nil))
+      (init! nil))
     (Sentry/capture e)
     (-> e .getId (string/replace #"-" ""))))

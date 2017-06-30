@@ -5,7 +5,7 @@
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[cheshire "5.7.1"]
                  [clj-time "0.13.0"]
-                 [io.sentry/sentry "1.2.0"]
+                 [io.sentry/sentry "1.2.2"]
                  [ring/ring-core "1.6.1" :scope "provided"]]
   :deploy-repositories [["releases" :clojars]
                         ["snapshots" :clojars]]
