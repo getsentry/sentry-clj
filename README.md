@@ -14,7 +14,7 @@ A thin wrapper around the
 ; or use one of the other configuration options (such as environment variables) described
 ; in the Java SDK documentation (which will automatically initialize Sentry the first
 ; time you attempt to send an event): https://docs.sentry.io/clients/java/config/
-(sentry/init "https://public:private@sentry.io/1")
+(sentry/init! "https://public:private@sentry.io/1")
 
 (try
   (do-something-risky)
