@@ -4,7 +4,7 @@
             [clojure.string :as string]
             [clojure.walk :as walk]
             [sentry-clj.internal :as internal])
-  (:import (java.util HashMap Map UUID)
+  (:import (java.util HashMap List Map UUID)
            (io.sentry Sentry)
            (io.sentry.dsn Dsn)
            (io.sentry.event Breadcrumb$Level
@@ -104,7 +104,7 @@
     (when timestamp
       (.withTimestamp b (tc/to-date timestamp)))
     (when (seq fingerprint)
-      (.withFingerprint b fingerprint))
+      (.withFingerprint b ^List fingerprint))
     (.build b)))
 
 (defn init!
