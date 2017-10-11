@@ -50,7 +50,7 @@
                    :category  "maybe"
                    :data      {"probably" "no"}}]
    :message      "ok"
-   :fingerprint ["{{ default }}" "nice"]})
+   :fingerprint  ["{{ default }}" "nice"]})
 
 (deftest map->event-test
   (let [dsn        (Dsn. "https://111:222@sentry.io/100")
@@ -129,7 +129,7 @@
                        (assoc-in [:extra :one :four] {:iv 4})
                        (assoc-in [:extra :welp] {:nope "ok"}))
             extra  {"one"  {"two"   2
-                            "three" {"iii" [3]}
+                            "three" {"iii" ["<recursion limit hit>"]}
                             "four"  {"iv" 4}}
                     "welp" {"nope" "ok"}}]
         (.marshall marshaller (#'core/map->event event') output)
