@@ -58,5 +58,5 @@
             preprocess-fn
             (request->event e)
             (->> (postprocess-fn req)
-                 (sentry/send-event dsn)))
+                 sentry/send-event))
         (error-fn req e)))))
