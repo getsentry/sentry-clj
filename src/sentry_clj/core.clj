@@ -67,7 +67,7 @@
   "Converts a map into an event."
   [{:keys [event-id message level release environment logger platform culprit
            tags breadcrumbs server-name extra fingerprint checksum-for checksum
-           interfaces throwable timestamp]}]
+           interfaces throwable timestamp transaction]}]
   (let [b (EventBuilder. (or event-id (UUID/randomUUID)))]
     (when message
       (.withMessage b message))
@@ -83,6 +83,8 @@
       (.withPlatform b platform))
     (when culprit
       (.withCulprit b culprit))
+    (when transaction
+      (.withTransaction b transaction))
     (doseq [[k v] tags]
       (.withTag b (name k) (str v)))
     (when (seq breadcrumbs)

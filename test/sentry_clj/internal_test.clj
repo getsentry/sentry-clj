@@ -48,6 +48,7 @@
             "logger"      nil
             "environment" nil
             "culprit"     nil
+            "transaction" nil
             "extra"       {}
             "checksum"    nil
             "platform"    "java"

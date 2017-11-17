@@ -39,6 +39,7 @@
    :platform     "clojure"
    :tags         {:one 2}
    :culprit      "123"
+   :transaction  "456"
    :extra        {:one {:two 2}}
    :checksum-for "yes this is"
    :server-name  "example.com"
@@ -72,6 +73,7 @@
                 "logger"      "happy.lucky"
                 "environment" "qa"
                 "culprit"     "123"
+                "transaction" "456"
                 "extra"       {"one" {"two" 2}}
                 "checksum"    "BD285A21"
                 "platform"    "clojure"
@@ -105,6 +107,7 @@
                 "logger"      "happy.lucky"
                 "environment" "qa"
                 "culprit"     "123"
+                "transaction" "456"
                 "extra"       {"one"     {"two" 2}
                                "ex-info" 2}
                 "checksum"    "BD285A21"
@@ -129,7 +132,7 @@
                        (assoc-in [:extra :one :four] {:iv 4})
                        (assoc-in [:extra :welp] {:nope "ok"}))
             extra  {"one"  {"two"   2
-                            "three" {"iii" [3]}
+                            "three" {"iii" ["<recursion limit hit>"]}
                             "four"  {"iv" 4}}
                     "welp" {"nope" "ok"}}]
         (.marshall marshaller (#'core/map->event event') output)
@@ -145,6 +148,7 @@
                 "logger"      "happy.lucky"
                 "environment" "qa"
                 "culprit"     "123"
+                "transaction" "456"
                 "extra"       extra
                 "checksum"    "BD285A21"
                 "platform"    "clojure"
