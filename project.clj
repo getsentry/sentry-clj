@@ -1,11 +1,11 @@
-(defproject io.sentry/sentry-clj "0.6.0"
+(defproject io.sentry/sentry-clj "0.6.1"
   :description "A Clojure client for Sentry."
   :url "https://github.com/getsentry/sentry-clj"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[cheshire "5.7.1"]
                  [clj-time "0.13.0"]
-                 [io.sentry/sentry "1.6.3"]
+                 [io.sentry/sentry "1.6.8"]
                  [ring/ring-core "1.6.1" :scope "provided"]]
   :deploy-repositories [["releases" :clojars]
                         ["snapshots" :clojars]]
