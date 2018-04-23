@@ -1,4 +1,4 @@
-(defproject io.sentry/sentry-clj "0.6.1"
+(defproject io.sentry/sentry-clj "0.7.0"
   :description "A Clojure client for Sentry."
   :url "https://github.com/getsentry/sentry-clj"
   :license {:name "Eclipse Public License"
