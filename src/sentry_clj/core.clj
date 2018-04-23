@@ -107,7 +107,7 @@
       (.withTimestamp b (tc/to-date timestamp)))
     (when (seq fingerprint)
       (.withFingerprint b fingerprint))
-    (.build b)))
+    b))
 
 (defn init!
   "Initialize Sentry with the provided DSN (null implies a DSN lookup is performed)

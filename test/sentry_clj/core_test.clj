@@ -60,7 +60,7 @@
 
     (testing "a regular event"
       (let [output (ByteArrayOutputStream.)]
-        (.marshall marshaller (#'core/map->event event) output)
+        (.marshall marshaller (.build (#'core/map->event event)) output)
         (is (= {"release"     "v1.0.0"
                 "dist"        nil
                 "event_id"    "4c4fbea957a74c99808d2284306e6c98"
@@ -91,10 +91,10 @@
 
     (testing "an ex-info event"
       (let [output (ByteArrayOutputStream.)]
-        (.marshall marshaller (-> event
+        (.marshall marshaller (.build (-> event
                                   (assoc :throwable (ex-info "bad stuff"
                                                              {:ex-info 2}))
-                                  (#'core/map->event)) output)
+                                  (#'core/map->event))) output)
         (is (= {"release"     "v1.0.0"
                 "dist"        nil
                 "event_id"    "4c4fbea957a74c99808d2284306e6c98"
@@ -135,7 +135,7 @@
                             "three" {"iii" ["<recursion limit hit>"]}
                             "four"  {"iv" 4}}
                     "welp" {"nope" "ok"}}]
-        (.marshall marshaller (#'core/map->event event') output)
+        (.marshall marshaller (.build (#'core/map->event event')) output)
         (is (= {"release"     "v1.0.0"
                 "dist"        nil
                 "event_id"    "4c4fbea957a74c99808d2284306e6c98"
