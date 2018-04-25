@@ -63,7 +63,7 @@
       (.setData b data))
     (.build b)))
 
-(defn- ^Event map->event
+(defn- ^EventBuilder map->event
   "Converts a map into an event."
   [{:keys [event-id message level release environment logger platform culprit
            tags breadcrumbs server-name extra fingerprint checksum-for checksum
@@ -143,4 +143,5 @@
     (if (not @initialized)
       (init! nil))
     (Sentry/capture e)
-    (-> e .getId (string/replace #"-" ""))))
+    (let [e (.getEvent e)]
+      (-> e .getId (string/replace #"-" "")))))
