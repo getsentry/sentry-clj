@@ -1,8 +1,9 @@
 (ns sentry-clj.ring
   "Ring utility functions."
-  (:require [sentry-clj.core :as sentry]
-            [ring.util.request :refer [request-url]]
-            [ring.util.response :as response]))
+  (:require
+   [ring.util.request :refer [request-url]]
+   [ring.util.response :as response]
+   [sentry-clj.core :as sentry]))
 
 (defn- request->http
   "Converts a Ring request into an HTTP interface for an event."
@@ -41,22 +42,22 @@
 
   Optionally takes three functions:
 
-  * `:preprocess-fn`, which is passed the request
-  * `:postprocess-fn`, which is passed the request and the Sentry event
-  * `:error-fn`, which is passed the request and the thrown exception and
-    returns an appropriate Ring response
-  "
-  [handler dsn {:keys [preprocess-fn postprocess-fn error-fn]
-                :or   {preprocess-fn  identity
-                       postprocess-fn (comp second list)
-                       error-fn       default-error}}]
+   * `:preprocess-fn`, which is passed the request
+   * `:postprocess-fn`, which is passed the request and the Sentry event
+   * `:error-fn`, which is passed the request and the thrown exception and
+   returns an appropriate Ring response
+   "
+  [handler {:keys [preprocess-fn postprocess-fn error-fn]
+            :or   {preprocess-fn  identity
+                   postprocess-fn (comp second list)
+                   error-fn       default-error}}]
   (fn [req]
     (try
-      (handler req)
-      (catch Throwable e
-        (-> req
-            preprocess-fn
-            (request->event e)
-            (->> (postprocess-fn req)
-                 sentry/send-event))
-        (error-fn req e)))))
+     (handler req)
+     (catch Throwable e
+       (-> req
+           preprocess-fn
+           (request->event e)
+           (->> (postprocess-fn req)
+                sentry/send-event))
+       (error-fn req e)))))

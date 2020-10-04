@@ -1,0 +1,21 @@
+{:paths ["src"]
+
+ :deps {org.clojure/clojure {:mvn/version "1.10.1"}
+        cheshire/cheshire {:mvn/version "5.10.0"}
+        clojure.java-time/clojure.java-time {:mvn/version "0.3.2"}
+        io.sentry/sentry {:mvn/version "3.0.0"}
+        ring/ring-core {:mvn/version "1.8.1"}}
+
+ :aliases {:test {:extra-paths ["test"]
+                  :extra-deps {expectations/clojure-test {:mvn/version "1.2.1"}
+                               lambdaisland/kaocha {:mvn/version "1.0.700"}
+                               lambdaisland/kaocha-cloverage {:mvn/version "1.0.63"}
+                               lambdaisland/kaocha-junit-xml {:mvn/version "0.0.76"}
+                               mocko/mocko {:mvn/version "0.2.3"}
+                               org.clojure/test.check {:mvn/version "1.1.0"}}}
+
+           :jar {:extra-deps {seancorfield/depstar {:mvn/version "1.1.117"}}
+                 :main-opts ["-m" "hf.depstar.jar" "sentry-clj.jar"]}
+
+           :deploy {:extra-deps {deps-deploy/deps-deploy {:mvn/version "0.0.9"}}
+                    :main-opts ["-m" "deps-deploy.deps-deploy" "deploy" "sentry-clj.jar"]}}}

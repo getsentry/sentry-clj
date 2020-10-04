@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+clojure -Spom
+clojure -A:jar
