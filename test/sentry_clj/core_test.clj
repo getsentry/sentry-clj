@@ -24,7 +24,7 @@
 
 (def event
   {:event-id     (UUID/fromString "4c4fbea9-57a7-4c99-808d-2284306e6c98")
-   :message      "ok"
+   :message      {:message "ok" :params ["foo" "bar"]}
    :level        :info
    :dist         "arch"
    :release      "v1.0.0"
@@ -120,7 +120,7 @@
      (expect {"release"     "v1.0.0"
               "event_id"    "4c4fbea957a74c99808d2284306e6c98"
               "dist"        "arch"
-              "message"     {"message" "ok"}
+              "message"     {"message" "ok" "params" ["foo" "bar"]}
               "tags"        {"one" "2"}
               "level"       "info"
               "server_name" "example.com"
@@ -160,7 +160,7 @@
      (expect {"release"     "v1.0.0"
               "event_id"    "4c4fbea957a74c99808d2284306e6c98"
               "dist"        "arch"
-              "message"     {"message" "ok"}
+              "message"     {"message" "ok" "params" ["foo" "bar"]}
               "tags"        {"one" "2"}
               "level"       "info"
               "server_name" "example.com"
@@ -208,7 +208,7 @@
      (expect {"release"     "v1.0.0"
               "event_id"    "4c4fbea957a74c99808d2284306e6c98"
               "dist"        "arch"
-              "message"     {"message" "ok"}
+              "message"     {"message" "ok" "params" ["foo" "bar"]}
               "tags"        {"one" "2"}
               "level"       "info"
               "server_name" "example.com"

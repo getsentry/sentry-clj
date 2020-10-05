@@ -100,8 +100,10 @@
     (when event-id
       (.setEventId sentry-event (SentryId. event-id)))
     (when message
-      (let [msg (Message.)]
+      (let [{:keys [message params]} message
+            msg (Message.)]
         (.setMessage msg message)
+        (.setParams msg params)
         (.setMessage sentry-event msg)))
     (when level
       (.setLevel sentry-event (keyword->level level)))

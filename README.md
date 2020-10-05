@@ -39,7 +39,7 @@ repository.
 - `:fingerprint` - a sequence of `String`s that Sentry should use as a [fingerprint](https://docs.sentry.io/learn/rollups/#customize-grouping-with-fingerprints).
 - `:level` - a `Keyword`. One of `:debug`, `:info`, `:warning`, `:error`, `:fatal`. Probably most useful in conjunction with `:message` if you need to report an exceptional condition that's not an exception.
 - `:logger` - a `String` which identifies the logger.
-- `:message` - a `String`. This is a different message than that of a Throwable.
+- `:message` - a map containing Message information. See below.
 - `:platform` - a `String` which identifies the platform.
 - `:release` - a `String` which identifies the release.
 - `:request` - a map containing Request information. See below.
@@ -62,9 +62,16 @@ Supported keys of the map are:
 - `:category` - a `String`
 - `:data` - a map with `String` keys and `String` values
 
+### Message
+
+When an event has a `:message` key, the following data should be contained within a map, thus:
+
+- `:message` - A `String`
+- `:params` - An optional sequence of `String`'s containing substitution parameters, e.g., `["foo" "bar"]`
+
 ### User
 
-When an event has a `:user` key, the data should be contained within a map, thus:
+When an event has a `:user` key, the data following should be contained within a map, thus:
 
 - `:email` - A `String`
 - `:id` - A `String`
