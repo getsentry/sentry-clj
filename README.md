@@ -2,7 +2,7 @@
 
 [![Clojars Project](https://img.shields.io/clojars/v/io.sentry/sentry-clj.svg)](https://clojars.org/io.sentry/sentry-clj)
 
-A very thin wrapper around the [official Java library for Sentry](https://docs.sentry.io/clients/java/).
+A very thin wrapper around the [official Java library for Sentry](https://docs.sentry.io/platforms/java/).
 
 This project follows the version scheme MAJOR.MINOR.COMMITS where MAJOR and
 MINOR provide some relative indication of the size of the change, but do not
