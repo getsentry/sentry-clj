@@ -99,12 +99,11 @@
   (let [sentry-event (SentryEvent. (DateUtils/getCurrentDateTimeOrNull))]
     (when event-id
       (.setEventId sentry-event (SentryId. event-id)))
-    (when message
-      (let [{:keys [message params]} message
-            msg (Message.)]
-        (.setMessage msg message)
-        (.setParams msg params)
-        (.setMessage sentry-event msg)))
+    (when-let [{:keys [message params]} message]
+      (.setMessage sentry-event (doto
+                                  (Message.)
+                                  (.setMessage message)
+                                  (.setParams params))))
     (when level
       (.setLevel sentry-event (keyword->level level)))
     (when dist
