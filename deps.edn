@@ -17,5 +17,5 @@
            :jar {:extra-deps {seancorfield/depstar {:mvn/version "1.1.117"}}
                  :main-opts ["-m" "hf.depstar.jar" "sentry-clj.jar"]}
 
-           :deploy {:extra-deps {deps-deploy/deps-deploy {:mvn/version "0.0.9"}}
+           :deploy {:extra-deps {slipset/deps-deploy {:mvn/version "0.1.1"}}
                     :main-opts ["-m" "deps-deploy.deps-deploy" "deploy" "sentry-clj.jar"]}}}
