@@ -99,9 +99,10 @@
   (let [sentry-event (SentryEvent. (DateUtils/getCurrentDateTimeOrNull))]
     (when event-id
       (.setEventId sentry-event (SentryId. event-id)))
-    (when-let [{:keys [message params]} message]
+    (when-let [{:keys [formatted message params]} message]
       (.setMessage sentry-event (doto
                                   (Message.)
+                                  (.setFormatted formatted)
                                   (.setMessage message)
                                   (.setParams params))))
     (when level

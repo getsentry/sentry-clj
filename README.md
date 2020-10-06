@@ -31,6 +31,8 @@ repository.
 
 ## Supported event keys
 
+[API Documentation](https://develop.sentry.dev/sdk/event-payloads/)
+
 - `:breadcrumbs` - a collection of `Breadcrumb` maps. See below.
 - `:dist` - a `String` which identifies the distribution.
 - `:environment` - a `String` which identifies the environment.
@@ -51,10 +53,9 @@ repository.
 
 ### Breadcrumbs
 
-Read more about breadcrumbs at [docs.sentry.io/learn/breadcrumbs/](https://docs.sentry.io/learn/breadcrumbs/).
+[API Documentation](https://develop.sentry.dev/sdk/event-payloads/breadcrumbs/)
 
-When an event has a `:breadcrumbs` key, each element of the value collection should be a map.
-Supported keys of the map are:
+When an event has a `:breadcrumbs` key, each element of the value collection should be a map. Each key is optional.
 
 - `:type` - A `String`
 - `:level` - a `String`
@@ -64,14 +65,20 @@ Supported keys of the map are:
 
 ### Message
 
+[API Documentation](https://develop.sentry.dev/sdk/event-payloads/message/)
+
 When an event has a `:message` key, the following data should be contained within a map, thus:
 
-- `:message` - A `String`
-- `:params` - An optional sequence of `String`'s containing substitution parameters, e.g., `["foo" "bar"]`
+- `:formatted` - A `String` containing the fully formatted message. If missing, Sentry will try to interpolate the `message`.
+- `:message` - An optional `String` containing the raw message. If there are params, it will be interpolated.
+- `:params` - An optional sequence of `String`'s containing parameters for interpolation, e.g., `["foo" "bar"]
 
 ### User
 
-When an event has a `:user` key, the data following should be contained within a map, thus:
+[API Documentation](https://develop.sentry.dev/sdk/event-payloads/user/)
+
+When an event has a `:user` key, the data following should be contained within a map. You should provide
+at either the id or the ip-address.
 
 - `:email` - A `String`
 - `:id` - A `String`
@@ -81,7 +88,9 @@ When an event has a `:user` key, the data following should be contained within a
 
 ### Request
 
-When an event has a `:request` key, the data should be contained within a map, thus:
+[API Documentation](https://develop.sentry.dev/sdk/event-payloads/request/)
+
+When an event has a `:request` key, the data should be contained within a map. Each key is optional.
 
 - `:url` - A `String`
 - `:method` - A `String`
