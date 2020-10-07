@@ -1,31 +1,31 @@
 (ns sentry-clj.core
   "A thin wrapper around the official Java library for Sentry."
-  (:require [clj-time.coerce :as tc]
-            [clojure.string :as string]
-            [clojure.walk :as walk]
-            [sentry-clj.internal :as internal])
-  (:import (java.util HashMap Map UUID)
-           (io.sentry Sentry)
-           (io.sentry.dsn Dsn)
-           (io.sentry.event Breadcrumb$Level
-                            Breadcrumb$Type
-                            BreadcrumbBuilder
-                            Event
-                            Event$Level
-                            EventBuilder)
-           (io.sentry.event.interfaces ExceptionInterface)))
-
-(def ^:private initialized (atom false))
+  (:require
+   [clojure.walk :as walk])
+  (:import
+   [java.util HashMap Map List]
+   [io.sentry Breadcrumb
+    DateUtils
+    Sentry
+    SentryEvent
+    SentryLevel
+    SentryOptions]
+   [io.sentry.protocol
+    Message
+    Request
+    SentryId
+    User]))
 
 (defn- keyword->level
   "Converts a keyword into an event level."
   [level]
   (case level
-    :debug   Event$Level/DEBUG
-    :info    Event$Level/INFO
-    :warning Event$Level/WARNING
-    :error   Event$Level/ERROR
-    :fatal   Event$Level/FATAL))
+    :debug   SentryLevel/DEBUG
+    :info    SentryLevel/INFO
+    :warning SentryLevel/WARNING
+    :error   SentryLevel/ERROR
+    :fatal   SentryLevel/FATAL
+    SentryLevel/INFO))
 
 (defn- java-util-hashmappify-vals
   "Converts an ordinary Clojure map into a Clojure map with nested map
@@ -37,111 +37,159 @@
               (if (map? v) [k (HashMap. ^Map v)] [k v])))]
     (walk/postwalk (fn [x] (if (map? x) (into {} (map f x)) x)) m)))
 
-(defn- map->breadcrumb
-  "Converts a map into a breadcrumb."
-  [{:keys [type timestamp level message category data]}]
-  (let [b (BreadcrumbBuilder.)]
+(defn- ^Breadcrumb map->breadcrumb
+  "Converts a map into a Breadcrumb."
+  [{:keys [type level message category data]}]
+  (let [breadcrumb (Breadcrumb.)]
     (when type
-      (.setType b (case type
-                    :default    Breadcrumb$Type/DEFAULT
-                    :http       Breadcrumb$Type/HTTP
-                    :navigation Breadcrumb$Type/NAVIGATION)))
-    (when timestamp
-      (.setTimestamp b (tc/to-date timestamp)))
+      (.setType breadcrumb type))
     (when level
-      (.setLevel b (case level
-                     :debug    Breadcrumb$Level/DEBUG
-                     :info     Breadcrumb$Level/INFO
-                     :warning  Breadcrumb$Level/WARNING
-                     :error    Breadcrumb$Level/ERROR
-                     :critical Breadcrumb$Level/CRITICAL)))
+      (.setLevel breadcrumb (keyword->level level)))
     (when message
-      (.setMessage b message))
+      (.setMessage breadcrumb message))
     (when category
-      (.setCategory b category))
+      (.setCategory breadcrumb category))
     (when data
-      (.setData b data))
-    (.build b)))
+      (doseq [[k v] (java-util-hashmappify-vals data)]
+        (.setData breadcrumb k v)))
+    breadcrumb))
 
-(defn- ^EventBuilder map->event
+(defn- ^User map->user
+  "Converts a map into a User."
+  [{:keys [email id username ip-address other]}]
+  (let [user (User.)]
+    (when email
+      (.setEmail user email))
+    (when id
+      (.setId user id))
+    (when username
+      (.setUsername user username))
+    (when ip-address
+      (.setIpAddress user ip-address))
+    (when other
+      (.setOthers user other))
+    user))
+
+(defn- ^Request map->request
+  "Converts a map into a Request."
+  [{:keys [url method query-string data cookies headers env other]}]
+  (let [request (Request.)]
+    (when url
+      (.setUrl request url))
+    (when method
+      (.setMethod request method))
+    (when query-string
+      (.setQueryString request query-string))
+    (when data
+      (.setData request data))
+    (when cookies
+      (.setCookies request cookies))
+    (when headers
+      (.setHeaders request headers))
+    (when env
+      (.setEnvs request env))
+    (when other
+      (.setOthers request other))
+    request))
+
+(defn- ^SentryEvent map->event
   "Converts a map into an event."
-  [{:keys [event-id message level release environment logger platform culprit
-           tags breadcrumbs server-name extra fingerprint checksum-for checksum
-           interfaces throwable timestamp transaction]}]
-  (let [b (EventBuilder. (or event-id (UUID/randomUUID)))]
-    (when message
-      (.withMessage b message))
+  [{:keys [event-id message level release environment user request logger platform dist
+           tags breadcrumbs server-name extra fingerprints throwable transaction]}]
+  (let [sentry-event (SentryEvent. (DateUtils/getCurrentDateTimeOrNull))]
+    (when event-id
+      (.setEventId sentry-event (SentryId. event-id)))
+    (when-let [{:keys [formatted message params]} message]
+      (.setMessage sentry-event (doto
+                                  (Message.)
+                                  (.setFormatted formatted)
+                                  (.setMessage message)
+                                  (.setParams params))))
     (when level
-      (.withLevel b (keyword->level level)))
+      (.setLevel sentry-event (keyword->level level)))
+    (when dist
+      (.setDist sentry-event dist))
     (when release
-      (.withRelease b release))
+      (.setRelease sentry-event release))
     (when environment
-      (.withEnvironment b environment))
+      (.setEnvironment sentry-event environment))
+    (when user
+      (.setUser sentry-event (map->user user)))
+    (when request
+      (.setRequest sentry-event (map->request request)))
     (when logger
-      (.withLogger b logger))
+      (.setLogger sentry-event logger))
     (when platform
-      (.withPlatform b platform))
-    (when culprit
-      (.withCulprit b culprit))
+      (.setPlatform sentry-event platform))
     (when transaction
-      (.withTransaction b transaction))
+      (.setTransaction sentry-event transaction))
     (doseq [[k v] tags]
-      (.withTag b (name k) (str v)))
+      (.setTag sentry-event (name k) (str v)))
     (when (seq breadcrumbs)
-      (.withBreadcrumbs b (mapv map->breadcrumb breadcrumbs)))
+      (doseq [breadcrumb (mapv map->breadcrumb breadcrumbs)]
+        (.addBreadcrumb sentry-event breadcrumb)))
     (when server-name
-      (.withServerName b server-name))
+      (.setServerName sentry-event server-name))
     (when-let [data (merge extra (ex-data throwable))]
       (doseq [[k v] (java-util-hashmappify-vals data)]
-        (.withExtra b k v)))
-    (when checksum-for
-      (.withChecksumFor b checksum-for))
-    (when checksum
-      (.withChecksum b checksum))
-    (doseq [[interface-name data] interfaces]
-      (.withSentryInterface b (internal/->CljInterface (name interface-name)
-                                                       data)))
+        (.setExtra sentry-event k v)))
     (when throwable
-      (.withSentryInterface b (ExceptionInterface. ^Throwable throwable)))
-    (when timestamp
-      (.withTimestamp b (tc/to-date timestamp)))
-    (when (seq fingerprint)
-      (.withFingerprint b fingerprint))
-    b))
+      (.setThrowable sentry-event ^Throwable throwable))
+    (when (seq fingerprints)
+      (.setFingerprints sentry-event ^List fingerprints))
+    sentry-event))
 
 (defn init!
-  "Initialize Sentry with the provided DSN (null implies a DSN lookup is performed)
-  and the Clojure SentryClientFactory."
-  [^String dsn]
-  (locking initialized
-    (if @initialized
-      (Sentry/getStoredClient)
-      (let [client (Sentry/init dsn internal/factory)]
-        (reset! initialized true)
-        client))))
+  "Initialize Sentry with the mandatory `dsn`
+
+   Other options include:
+
+   | key                   | description |
+   |-----------------------|-------------|
+   | `:debug`              | Enable SDK logging at the debug level
+   | `:release`            | All events are assigned to a particular release
+   | `:shutdown-timeout`   | Wait up to X seconds before shutdown if there are events to send
+   | `:in-app-excludes`    | a seqable collection (vector for example) containing package names to ignore when sending events
+
+   For example:
+
+   ```clojure
+   (init! \"http://08b96b9fc63d4b8c8cb991a245ac129f@localhost:19000/2\")
+   ```
+
+   ```clojure
+   (init! \"http://08b96b9fc63d4b8c8cb991a245ac129f@localhost:19000/2\" {:debug true :release \"foo.bar@1.0.0\" :shutdown-timeout 5000 :in-app-excludes [\"foo.bar\"])
+   ```
+
+   "
+  ([dsn] (init! dsn {}))
+  ([dsn {:keys [debug release shutdown-timeout in-app-excludes]}]
+   (let [sentry-options (SentryOptions.)]
+     (when debug
+       (.setDebug sentry-options debug))
+     (when release
+       (.setRelease sentry-options release))
+     (when shutdown-timeout
+       (.setShutdownTimeout sentry-options shutdown-timeout))
+     (doseq [in-app-exclude in-app-excludes]
+       (.addInAppExclude sentry-options in-app-exclude))
+     (.setDsn sentry-options dsn)
+     (Sentry/init sentry-options))))
+
+(defn close!
+  "Closes the SDK"
+  []
+  (Sentry/close))
 
 (defn send-event
-  "Sends the given event to Sentry, returning the event's ID.
+  "Sends the given event to Sentry, returning the event's id
 
   Supports sending throwables:
 
   ```
   (sentry/send-event {:message   \"oh no\",
-                      :throwable e})
-  ```
-
-  Also supports interfaces with arbitrary values, e.g.:
-
-  ```
-  (sentry/send-event {:message    \"oh no\",
-                      :interfaces {:user {:id    100
-                                          :email \"test@example.com\"}}})
+                      :throwable (RuntimeException. \"foo bar\"})
   ```
   "
   [event]
-  (let [e (map->event event)]
-    (if (not @initialized)
-      (init! nil))
-    (Sentry/capture e)
-    (let [e (.getEvent e)]
-      (-> e .getId (string/replace #"-" "")))))
+  (str (Sentry/captureEvent (map->event event))))
