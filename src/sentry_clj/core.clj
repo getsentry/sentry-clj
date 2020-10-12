@@ -144,35 +144,46 @@
 
    Other options include:
 
-   | key                   | description |
-   |-----------------------|-------------|
-   | `:debug`              | Enable SDK logging at the debug level
-   | `:release`            | All events are assigned to a particular release
-   | `:shutdown-timeout`   | Wait up to X seconds before shutdown if there are events to send
-   | `:in-app-excludes`    | a seqable collection (vector for example) containing package names to ignore when sending events
+   | key                                  | description |                                                                                    default
+   |--------------------------------------|--------------------------------------------------------------------------------------------------|--------
+   | `:environment`                       | Set the environment on which Sentry events will be logged, e.g., \"production\"                  |
+   | `:debug`                             | Enable SDK logging at the debug level                                                            | false
+   | `:release`                           | All events are assigned to a particular release                                                  |
+   | `:shutdown-timeout`                  | Wait up to X milliseconds before shutdown if there are events to send                            | 2000ms
+   | `:in-app-excludes`                   | A seqable collection (vector for example) containing package names to ignore when sending events |
+   | `:enable-uncaught-exception-handler` | Enables the uncaught exception handler                                                           | true
 
    For example:
 
    ```clojure
-   (init! \"http://08b96b9fc63d4b8c8cb991a245ac129f@localhost:19000/2\")
+   (init! \"http://abcdefg@localhost:19000/2\")
    ```
 
    ```clojure
-   (init! \"http://08b96b9fc63d4b8c8cb991a245ac129f@localhost:19000/2\" {:debug true :release \"foo.bar@1.0.0\" :shutdown-timeout 5000 :in-app-excludes [\"foo.bar\"])
+   (init! \"http://abcdefg@localhost:19000/2\" {:environment \"production\" :debug true :release \"foo.bar@1.0.0\" :in-app-excludes [\"foo.bar\"])
    ```
 
    "
   ([dsn] (init! dsn {}))
-  ([dsn {:keys [debug release shutdown-timeout in-app-excludes]}]
+  ([dsn {:keys [environment
+                debug
+                release
+                shutdown-timeout
+                in-app-excludes
+                enable-uncaught-exception-handler] :or {enable-uncaught-exception-handler true}}]
    (let [sentry-options (SentryOptions.)]
+     (when environment
+       (.setEnvironment sentry-options environment))
      (when debug
-       (.setDebug sentry-options debug))
+       (.setDebug sentry-options debug)) ;; already set to `false` in the SDK.
      (when release
        (.setRelease sentry-options release))
      (when shutdown-timeout
-       (.setShutdownTimeout sentry-options shutdown-timeout))
+       (.setShutdownTimeout sentry-options shutdown-timeout)) ;; already set to 2000ms in the SDK
      (doseq [in-app-exclude in-app-excludes]
        (.addInAppExclude sentry-options in-app-exclude))
+     (when-not enable-uncaught-exception-handler
+       (.setEnableUncaughtExceptionHandler sentry-options false)) ;; already true in the SDK
      (.setDsn sentry-options dsn)
      (Sentry/init sentry-options))))
 

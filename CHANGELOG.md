@@ -3,6 +3,16 @@
 ## Upcoming
 
 * 3.0.next in progress
+  * Added in the ability to define the Environment on configuration of Sentry
+    (and not only per-event!)
+  * Added in the ability to disable the built-in UncaughtExceptionHandler in
+    order to allow defining our own.
+  * Added in a couple of examples:
+    * A basic example showing how to register a sentry-logger and how to fire
+      an event.
+    * An example that registers it's own uncaught exception handler to not
+      only log out to sentry, but also to log out to a pre-configured logger.
+  * Bumped `ring/ring-core` to `1.8.2`
 
 ## Stable Builds
 

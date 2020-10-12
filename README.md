@@ -2,7 +2,8 @@
 
 [![Clojars Project](https://img.shields.io/clojars/v/io.sentry/sentry-clj.svg)](https://clojars.org/io.sentry/sentry-clj)
 
-A very thin wrapper around the [official Java library for Sentry](https://docs.sentry.io/platforms/java/).
+A very thin wrapper around the [official Java library for
+Sentry](https://docs.sentry.io/platforms/java/).
 
 This project follows the version scheme MAJOR.MINOR.COMMITS where MAJOR and
 MINOR provide some relative indication of the size of the change, but do not
@@ -16,7 +17,7 @@ repository.
 ```clojure
 (require '[sentry-clj.core :as sentry])
 
-; you can initialize Sentry manually by providing a DSN in the code (as shown below),
+; You can initialize Sentry manually by providing a DSN in the code (as shown below),
 ; or use one of the other configuration options (such as environment variables) described
 ; in the Java SDK documentation (which will automatically initialize Sentry the first
 ; time you attempt to send an event): https://docs.sentry.io/clients/java/config/
@@ -55,7 +56,8 @@ repository.
 
 [API Documentation](https://develop.sentry.dev/sdk/event-payloads/breadcrumbs/)
 
-When an event has a `:breadcrumbs` key, each element of the value collection should be a map. Each key is optional.
+When an event has a `:breadcrumbs` key, each element of the value collection
+should be a map. Each key is optional.
 
 - `:type` - A `String`
 - `:level` - a `String`
@@ -67,7 +69,8 @@ When an event has a `:breadcrumbs` key, each element of the value collection sho
 
 [API Documentation](https://develop.sentry.dev/sdk/event-payloads/message/)
 
-When an event has a `:message` key, the following data should be contained within a map, thus:
+When an event has a `:message` key, the following data should be contained
+within a map, thus:
 
 - `:formatted` - A `String` containing the fully formatted message. If missing, Sentry will try to interpolate the `message`.
 - `:message` - An optional `String` containing the raw message. If there are params, it will be interpolated.
@@ -77,8 +80,8 @@ When an event has a `:message` key, the following data should be contained withi
 
 [API Documentation](https://develop.sentry.dev/sdk/event-payloads/user/)
 
-When an event has a `:user` key, the data following should be contained within a map. You should provide
-at either the id or the ip-address.
+When an event has a `:user` key, the data following should be contained within
+a map. You should provide at either the id or the ip-address.
 
 - `:email` - A `String`
 - `:id` - A `String`
@@ -90,7 +93,8 @@ at either the id or the ip-address.
 
 [API Documentation](https://develop.sentry.dev/sdk/event-payloads/request/)
 
-When an event has a `:request` key, the data should be contained within a map. Each key is optional.
+When an event has a `:request` key, the data should be contained within a map.
+Each key is optional.
 
 - `:url` - A `String`
 - `:method` - A `String`
@@ -105,5 +109,5 @@ When an event has a `:request` key, the data should be contained within a map. E
 
 Copyright © 2020 Coda Hale, Sentry
 
-Distributed under the Eclipse Public License either version 1.0 or (at
-your option) any later version.
+Distributed under the Eclipse Public License either version 1.0 or (at your
+option) any later version.

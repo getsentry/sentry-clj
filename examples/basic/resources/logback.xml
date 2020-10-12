@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="10 seconds">
+
+  <statusListener class="ch.qos.logback.core.status.NopStatusListener" />
+
+  <contextName>examples.basic</contextName>
+
+  <variable name="ROOT_LOG_LEVEL" value="${ROOT_LOG_LEVEL:-info}" />
+
+  <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <Pattern>[%boldWhite(%d)] --- [%boldBlue(%-5level)][%boldGreen(%-25.25logger{25})] - %msg%n%rEx</Pattern>
+    </encoder>
+  </appender>
+
+  <root level="${ROOT_LOG_LEVEL}">
+    <appender-ref ref="CONSOLE"/>
+  </root>
+
+</configuration>

@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+# See https://clojure.org/guides/deps_and_cli#aot_compilation
+
+rm -rf classes && mkdir classes
+clj -M -e "(compile 'uncaught.main)"
+clj -M -m uncaught.main -d $@
