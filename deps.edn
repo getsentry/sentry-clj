@@ -4,7 +4,7 @@
         cheshire/cheshire {:mvn/version "5.10.0"}
         clojure.java-time/clojure.java-time {:mvn/version "0.3.2"}
         io.sentry/sentry {:mvn/version "3.0.0"}
-        ring/ring-core {:mvn/version "1.8.2"}}
+        ring/ring-core {:mvn/version "1.8.1"}}
 
  :aliases {:test {:extra-paths ["test"]
                   :extra-deps {expectations/clojure-test {:mvn/version "1.2.1"}
