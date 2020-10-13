@@ -1,0 +1,35 @@
+= Examples
+:author: David Harrigan
+:docinfo: true
+:doctype: book
+:icons: font
+:numbered:
+:sectlinks:
+:sectnums:
+:setanchors:
+:source-highlighter: highlightjs
+:toc:
+:toclevels: 5
+
+IMPORTANT: These examples all **require** a running Sentry instance as a valid
+**DSN** is needed for the examples to work correctly!
+
+== Basic
+
+A simple example that shows how to create a sentry-logger and use it to fire
+an event to Sentry. All this is done via a little commentary in a Rich Comment
+Block, thus runnable in the REPL.
+
+== Uncaught
+
+Another simple example that shows how we can switch off the built-in uncaught
+exception handler in the Sentry client, thus allowing us to define our
+handler.
+
+The handler which we define not only fires an event to Sentry, but also logs
+out to a pre-configured logger. This small example is run on the command line
+as:
+
+`bin/run -d DSN`
+
+Where `DSN` is your DSN URL.
