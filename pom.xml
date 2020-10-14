@@ -10,7 +10,7 @@
     <dependency>
       <groupId>org.clojure</groupId>
       <artifactId>clojure</artifactId>
-      <version>1.10.1</version>
+      <version>1.10.0</version>
     </dependency>
     <dependency>
       <groupId>io.sentry</groupId>
@@ -25,12 +25,12 @@
     <dependency>
       <groupId>cheshire</groupId>
       <artifactId>cheshire</artifactId>
-      <version>5.10.0</version>
+      <version>5.8.1</version>
     </dependency>
     <dependency>
       <groupId>ring</groupId>
       <artifactId>ring-core</artifactId>
-      <version>1.8.2</version>
+      <version>1.8.0</version>
     </dependency>
   </dependencies>
   <build>

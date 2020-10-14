@@ -6,3 +6,6 @@
 /.lein-*
 /.nrepl-port
 foo.clj
+.idea/
+sentry-clj.iml
+.cpcache
