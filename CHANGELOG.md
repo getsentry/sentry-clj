@@ -11,7 +11,7 @@
   * Move to the major.minor.commit model.
   * Remove unused library `clojure.java-time`.
   * Update pom.xml with some additional metadata information.
-  * Add in a simple deploy script.
+  * Added in a simple deploy script.
 
 * 3.1.0 -- 2020-10-16
   * Major release bringing compatibility with version 3.1.0 of the Java Sentry
