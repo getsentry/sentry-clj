@@ -6,3 +6,4 @@
 /.lein-*
 /.nrepl-port
 foo.clj
+.env

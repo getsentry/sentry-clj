@@ -4,7 +4,7 @@
   <packaging>jar</packaging>
   <groupId>io.sentry</groupId>
   <artifactId>sentry-clj</artifactId>
-  <version>3.1.125</version>
+  <version>3.1.126</version>
   <name>sentry-clj</name>
   <description>A very thin wrapper around the official Java library for Sentry.</description>
   <url>https://github.com/getsentry/sentry-clj</url>
