@@ -2,7 +2,7 @@
 
 ## Upcoming
 
-* 3.0.next in progress
+* 3.1.next in progress
   * Added in the ability to define the Environment on configuration of Sentry
     (and not only per-event!)
   * Added in the ability to disable the built-in UncaughtExceptionHandler in
@@ -12,12 +12,11 @@
       an event.
     * An example that registers it's own uncaught exception handler to not
       only log out to sentry, but also to log out to a pre-configured logger.
-  * Bumped `ring/ring-core` to `1.8.2`
 
 ## Stable Builds
 
-* 3.0.0 -- 2020-09-04
-  * Major release bringing compatibility with version 3.0.0 of the Java Sentry
+* 3.1.0 -- 2020-10-16
+  * Major release bringing compatibility with version 3.1.0 of the Java Sentry
     library. This is a **BREAKING** change, insofar that this has only been
     tested with the latest Sentry (20.9.0) and is **not** compatible with
     Sentry 10.0.1 and below. If you wish to use those versions, please

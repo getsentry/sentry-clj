@@ -4,7 +4,7 @@
   <packaging>jar</packaging>
   <groupId>io.sentry</groupId>
   <artifactId>sentry-clj</artifactId>
-  <version>3.0.123-SNAPSHOT</version>
+  <version>3.1.0</version>
   <name>sentry-clj</name>
   <dependencies>
     <dependency>
@@ -15,7 +15,7 @@
     <dependency>
       <groupId>io.sentry</groupId>
       <artifactId>sentry</artifactId>
-      <version>3.0.0</version>
+      <version>3.1.0</version>
     </dependency>
     <dependency>
       <groupId>clojure.java-time</groupId>
@@ -23,14 +23,9 @@
       <version>0.3.2</version>
     </dependency>
     <dependency>
-      <groupId>cheshire</groupId>
-      <artifactId>cheshire</artifactId>
-      <version>5.10.0</version>
-    </dependency>
-    <dependency>
       <groupId>ring</groupId>
       <artifactId>ring-core</artifactId>
-      <version>1.8.2</version>
+      <version>1.8.1</version>
     </dependency>
   </dependencies>
   <build>
@@ -39,11 +34,11 @@
   <repositories>
     <repository>
       <id>clojars</id>
-      <url>http://nexus/repository/clojars</url>
+      <url>https://repo.clojars.org/</url>
     </repository>
     <repository>
-      <id>nexus</id>
-      <url>http://nexus/repository/maven-public</url>
+      <id>central</id>
+      <url>https://repo1.maven.org/maven2/</url>
     </repository>
   </repositories>
 </project>
