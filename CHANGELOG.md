@@ -7,7 +7,7 @@
 
 ## Stable Builds
 
-* 3.1.124 -- 2020-10-16
+* 3.1.125 -- 2020-10-16
   * Move to the major.minor.commit model.
   * Remove unused library `clojure.java-time`.
   * Update pom.xml with some additional metadata information.
