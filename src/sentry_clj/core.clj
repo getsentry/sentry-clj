@@ -16,7 +16,7 @@
     SentryId
     User]))
 
-(defn- keyword->level
+(defn ^:private keyword->level
   "Converts a keyword into an event level."
   [level]
   (case level
@@ -27,7 +27,7 @@
     :fatal   SentryLevel/FATAL
     SentryLevel/INFO))
 
-(defn- java-util-hashmappify-vals
+(defn ^:private java-util-hashmappify-vals
   "Converts an ordinary Clojure map into a Clojure map with nested map
   values recursively translated into java.util.HashMap objects. Based
   on walk/stringify-keys."
@@ -37,7 +37,7 @@
               (if (map? v) [k (HashMap. ^Map v)] [k v])))]
     (walk/postwalk (fn [x] (if (map? x) (into {} (map f x)) x)) m)))
 
-(defn- ^Breadcrumb map->breadcrumb
+(defn ^:private ^Breadcrumb map->breadcrumb
   "Converts a map into a Breadcrumb."
   [{:keys [type level message category data]}]
   (let [breadcrumb (Breadcrumb.)]
@@ -54,7 +54,7 @@
         (.setData breadcrumb k v)))
     breadcrumb))
 
-(defn- ^User map->user
+(defn ^:private ^User map->user
   "Converts a map into a User."
   [{:keys [email id username ip-address other]}]
   (let [user (User.)]
@@ -70,7 +70,7 @@
       (.setOthers user other))
     user))
 
-(defn- ^Request map->request
+(defn ^:private ^Request map->request
   "Converts a map into a Request."
   [{:keys [url method query-string data cookies headers env other]}]
   (let [request (Request.)]
@@ -92,10 +92,10 @@
       (.setOthers request other))
     request))
 
-(defn- ^SentryEvent map->event
+(defn ^:private ^SentryEvent map->event
   "Converts a map into an event."
   [{:keys [event-id message level release environment user request logger platform dist
-           tags breadcrumbs server-name extra fingerprints throwable transaction]}]
+           tags breadcrumbs server-name extra fingerprints throwable transaction] :or {environment "production"}}]
   (let [sentry-event (SentryEvent. (DateUtils/getCurrentDateTimeOrNull))]
     (when event-id
       (.setEventId sentry-event (SentryId. event-id)))
@@ -139,6 +139,11 @@
       (.setFingerprints sentry-event ^List fingerprints))
     sentry-event))
 
+(def ^:private sentry-defaults
+  {:debug false
+   :environment "production"
+   :enable-uncaught-exception-handler true})
+
 (defn init!
   "Initialize Sentry with the mandatory `dsn`
 
@@ -146,7 +151,7 @@
 
    | key                                  | description |                                                                                    default
    |--------------------------------------|--------------------------------------------------------------------------------------------------|--------
-   | `:environment`                       | Set the environment on which Sentry events will be logged, e.g., \"production\"                  |
+   | `:environment`                       | Set the environment on which Sentry events will be logged, e.g., \"production\"                  | production
    | `:debug`                             | Enable SDK logging at the debug level                                                            | false
    | `:release`                           | All events are assigned to a particular release                                                  |
    | `:shutdown-timeout`                  | Wait up to X milliseconds before shutdown if there are events to send                            | 2000ms
@@ -165,13 +170,9 @@
 
    "
   ([dsn] (init! dsn {}))
-  ([dsn {:keys [environment
-                debug
-                release
-                shutdown-timeout
-                in-app-excludes
-                enable-uncaught-exception-handler] :or {enable-uncaught-exception-handler true}}]
-   (let [sentry-options (SentryOptions.)]
+  ([dsn config]
+   (let [{:keys [environment debug release shutdown-timeout in-app-excludes enable-uncaught-exception-handler]} (merge sentry-defaults config)
+         sentry-options (SentryOptions.)]
      (when environment
        (.setEnvironment sentry-options environment))
      (when debug
