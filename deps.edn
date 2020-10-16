@@ -1,7 +1,6 @@
 {:paths ["src"]
 
  :deps {org.clojure/clojure {:mvn/version "1.10.1"}
-        clojure.java-time/clojure.java-time {:mvn/version "0.3.2"}
         io.sentry/sentry {:mvn/version "3.1.0"}
         ring/ring-core {:mvn/version "1.8.1"}}
 

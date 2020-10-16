@@ -4,8 +4,16 @@
   <packaging>jar</packaging>
   <groupId>io.sentry</groupId>
   <artifactId>sentry-clj</artifactId>
-  <version>3.1.0</version>
+  <version>3.1.124</version>
   <name>sentry-clj</name>
+  <description>A very thin wrapper around the official Java library for Sentry.</description>
+  <url>https://github.com/getsentry/sentry-clj</url>
+  <licenses>
+    <license>
+      <name>Eclipse Public License</name>
+      <url>http://www.eclipse.org/legal/epl-v10.html</url>
+    </license>
+  </licenses>
   <dependencies>
     <dependency>
       <groupId>org.clojure</groupId>
@@ -16,11 +24,6 @@
       <groupId>io.sentry</groupId>
       <artifactId>sentry</artifactId>
       <version>3.1.0</version>
-    </dependency>
-    <dependency>
-      <groupId>clojure.java-time</groupId>
-      <artifactId>clojure.java-time</artifactId>
-      <version>0.3.2</version>
     </dependency>
     <dependency>
       <groupId>ring</groupId>
@@ -41,4 +44,11 @@
       <url>https://repo1.maven.org/maven2/</url>
     </repository>
   </repositories>
+  <distributionManagement>
+    <repository>
+      <id>clojars</id>
+      <name>Clojars repository</name>
+      <url>https://clojars.org/repo</url>
+    </repository>
+  </distributionManagement>
 </project>
