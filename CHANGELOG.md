@@ -7,11 +7,12 @@
 
 ## Stable Builds
 
-* 3.1.126 -- 2020-10-16
-  * Move to the major.minor.commit model.
-  * Remove unused library `clojure.java-time`.
-  * Update pom.xml with some additional metadata information.
+* 3.1.127 -- 2020-10-19
+  * Moved to the major.minor.commit model.
+  * Removed unused library `clojure.java-time`.
+  * Updated pom.xml with some additional metadata information.
   * Added in a simple deploy script.
+  * Bumped to Sentry Java to 3.1.1
 
 * 3.1.0 -- 2020-10-16
   * Major release bringing compatibility with version 3.1.0 of the Java Sentry
