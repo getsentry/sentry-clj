@@ -1,9 +1,9 @@
 (ns sentry-clj.ring-test
   (:require
    [expectations.clojure.test :refer [defexpect expect expecting]]
-   [mocko.core :refer :all]
+   [mocko.core :as mocko]
    [sentry-clj.core :as sentry]
-   [sentry-clj.ring :refer :all]))
+   [sentry-clj.ring :as ring]))
 
 (def e (Exception. "thing"))
 
@@ -27,7 +27,7 @@
   (update req :params assoc :two 2))
 
 (defn postprocess
-  [req e]
+  [_ e]
   (assoc e :environment "qa"))
 
 (defn error
@@ -37,13 +37,13 @@
 (defexpect wrap-report-exceptions-test
   (expecting
    "passing through"
-   (let [handler (wrap-report-exceptions wrapped {})]
+   (let [handler (ring/wrap-report-exceptions wrapped {})]
      (expect "woo" (handler (assoc req :ok true))))))
 
 (defexpect with-defaults-test
   (expecting
    "with defaults"
-   (with-mocks
+   (mocko/with-mocks
      (let [event   {:throwable e
                     :interfaces
                     {:request {:url          "https://example.com/hello-world"
@@ -53,8 +53,8 @@
                                :headers      {"ok" 2 "host" "example.com"}
                                :env          {:session "{}" "REMOTE_ADDR" "127.0.0.1"}}
                      :user    {:ip_address "127.0.0.1"}}}
-           handler (wrap-report-exceptions wrapped {})]
-       (mock! #'sentry/send-event {[event] nil})
+           handler (ring/wrap-report-exceptions wrapped {})]
+       (mocko/mock! #'sentry/send-event {[event] nil})
        (expect {:status  500
                 :headers {"Content-Type" "text/html"}
                 :body    "<html><head><title>Error</title></head><body><p>Internal Server Error</p></body></html>"}
@@ -63,7 +63,7 @@
 (defexpect with-callbacks-test
   (expecting
    "with callbacks"
-   (with-mocks
+   (mocko/with-mocks
      (let [event   {:throwable   e
                     :environment "qa"
                     :interfaces
@@ -74,8 +74,8 @@
                                :headers      {"ok" 2 "host" "example.com"}
                                :env          {:session "{}" "REMOTE_ADDR" "127.0.0.1"}}
                      :user    {:ip_address "127.0.0.1"}}}
-           handler (wrap-report-exceptions wrapped {:preprocess-fn  preprocess
-                                                    :postprocess-fn postprocess
-                                                    :error-fn       error})]
-       (mock! #'sentry/send-event {[event] nil})
+           handler (ring/wrap-report-exceptions wrapped {:preprocess-fn  preprocess
+                                                         :postprocess-fn postprocess
+                                                         :error-fn       error})]
+       (mocko/mock! #'sentry/send-event {[event] nil})
        (expect (assoc req :exception e) (handler req))))))
