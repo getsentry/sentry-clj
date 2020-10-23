@@ -9,8 +9,7 @@
     GsonSerializer
     NoOpLogger
     SentryLevel]
-   [java.io
-    StringWriter]
+   [java.io StringWriter]
    [java.util UUID]))
 
 (defexpect keyword->level-test

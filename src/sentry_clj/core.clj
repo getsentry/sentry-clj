@@ -3,18 +3,11 @@
   (:require
    [clojure.walk :as walk])
   (:import
-   [java.util HashMap Map List]
-   [io.sentry Breadcrumb
-    DateUtils
-    Sentry
-    SentryEvent
-    SentryLevel
-    SentryOptions]
-   [io.sentry.protocol
-    Message
-    Request
-    SentryId
-    User]))
+   [java.util HashMap List Map UUID]
+   [io.sentry Breadcrumb DateUtils Sentry SentryEvent SentryLevel SentryOptions]
+   [io.sentry.protocol Message Request SentryId User]))
+
+(set! *warn-on-reflection* true)
 
 (defn ^:private keyword->level
   "Converts a keyword into an event level."
@@ -98,7 +91,7 @@
            tags breadcrumbs server-name extra fingerprints throwable transaction] :or {environment "production"}}]
   (let [sentry-event (SentryEvent. (DateUtils/getCurrentDateTimeOrNull))]
     (when event-id
-      (.setEventId sentry-event (SentryId. event-id)))
+      (.setEventId sentry-event (SentryId. ^UUID event-id)))
     (when-let [{:keys [formatted message params]} message]
       (.setMessage sentry-event (doto
                                   (Message.)
@@ -127,7 +120,7 @@
       (.setTag sentry-event (name k) (str v)))
     (when (seq breadcrumbs)
       (doseq [breadcrumb (mapv map->breadcrumb breadcrumbs)]
-        (.addBreadcrumb sentry-event breadcrumb)))
+        (.addBreadcrumb sentry-event ^Breadcrumb breadcrumb)))
     (when server-name
       (.setServerName sentry-event server-name))
     (when-let [data (merge extra (ex-data throwable))]

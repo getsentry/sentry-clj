@@ -5,30 +5,32 @@
    [ring.util.response :as response]
    [sentry-clj.core :as sentry]))
 
-(defn- request->http
+(set! *warn-on-reflection* true)
+
+(defn ^:private request->http
   "Converts a Ring request into an HTTP interface for an event."
   [req]
-  {:url          (request-url req)
-   :method       (:request-method req)
-   :data         (:params req)
-   :query_string (:query-string req "")
-   :headers      (:headers req)
-   :env          {:session      (-> req :session pr-str)
-                  "REMOTE_ADDR" (:remote-addr req)}})
+  {:url (request-url req)
+   :method (:request-method req)
+   :data (:params req)
+   :query-string (:query-string req "")
+   :headers (:headers req)
+   :env {:session (-> req :session pr-str)
+         "REMOTE_ADDR" (:remote-addr req)}})
 
-(defn- request->user
+(defn ^:private request->user
   "Converts a Ring request into a User interface for an event."
   [req]
-  {:ip_address (:remote-addr req)})
+  {:ip-address (:remote-addr req)})
 
-(defn request->event
+(defn ^:private request->event
   "Given a request and an exception, returns a Sentry event."
   [req e]
-  {:throwable  e
-   :interfaces {:request (request->http req)
-                :user    (request->user req)}})
+  {:throwable e
+   :request (request->http req)
+   :user (request->user req)})
 
-(defn- default-error
+(defn ^:private default-error
   "A very bare-bones error message. Ignores the request and exception."
   [_ _]
   (-> (str "<html><head><title>Error</title></head>"
@@ -44,13 +46,12 @@
 
    * `:preprocess-fn`, which is passed the request
    * `:postprocess-fn`, which is passed the request and the Sentry event
-   * `:error-fn`, which is passed the request and the thrown exception and
-   returns an appropriate Ring response
+   * `:error-fn`, which is passed the request and the thrown exception and returns an appropriate Ring response
    "
   [handler {:keys [preprocess-fn postprocess-fn error-fn]
-            :or   {preprocess-fn  identity
+            :or   {preprocess-fn identity
                    postprocess-fn (comp second list)
-                   error-fn       default-error}}]
+                   error-fn default-error}}]
   (fn [req]
     (try
      (handler req)
