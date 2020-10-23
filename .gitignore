@@ -7,3 +7,4 @@
 /.nrepl-port
 foo.clj
 .env
+.clj-kondo/.cache

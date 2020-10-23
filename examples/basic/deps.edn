@@ -3,7 +3,7 @@
  :deps {org.clojure/clojure {:mvn/version "1.10.1"}
         ch.qos.logback/logback-classic {:mvn/version "1.2.3" :exclusions [org.slf4j/slf4j-api]}
         io.sentry/sentry {:mvn/version "3.1.1"}
-        io.sentry/sentry-clj {:mvn/version "3.1.127"}
+        io.sentry/sentry-clj {:mvn/version "3.1.130"}
         org.clojure/tools.logging {:mvn/version "1.1.0"}
         org.slf4j/jcl-over-slf4j {:mvn/version "1.7.30"}
         org.slf4j/jul-to-slf4j {:mvn/version "1.7.30"}

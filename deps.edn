@@ -10,11 +10,10 @@
                                lambdaisland/kaocha {:mvn/version "1.0.700"}
                                lambdaisland/kaocha-cloverage {:mvn/version "1.0.63"}
                                lambdaisland/kaocha-junit-xml {:mvn/version "0.0.76"}
-                               mocko/mocko {:mvn/version "0.2.3"}
                                org.clojure/test.check {:mvn/version "1.1.0"}}}
 
-           :jar {:extra-deps {seancorfield/depstar {:mvn/version "1.1.128"}}
+           :jar {:extra-deps {seancorfield/depstar {:mvn/version "1.1.132"}}
                  :main-opts ["-m" "hf.depstar.jar" "sentry-clj.jar"]}
 
-           :deploy {:extra-deps {slipset/deps-deploy {:mvn/version "0.1.1"}}
+           :deploy {:extra-deps {slipset/deps-deploy {:mvn/version "0.1.3"}}
                     :main-opts ["-m" "deps-deploy.deps-deploy" "deploy" "sentry-clj.jar"]}}}
