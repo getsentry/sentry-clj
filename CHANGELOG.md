@@ -1,6 +1,6 @@
 # Change Log
 
-* 3.1.129 -- 2020-10-23
+* 3.1.130 -- 2020-10-23
   * Fix ring handler to work with new Sentry data structure.
   * Added in missing clj-kondo config.
   * Bumped `deps-deploy`.
