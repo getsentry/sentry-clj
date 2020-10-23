@@ -4,7 +4,7 @@
   <packaging>jar</packaging>
   <groupId>io.sentry</groupId>
   <artifactId>sentry-clj</artifactId>
-  <version>3.1.127</version>
+  <version>3.1.129</version>
   <name>sentry-clj</name>
   <description>A very thin wrapper around the official Java library for Sentry.</description>
   <url>https://github.com/getsentry/sentry-clj</url>
@@ -14,6 +14,12 @@
       <url>http://www.eclipse.org/legal/epl-v10.html</url>
     </license>
   </licenses>
+  <scm>
+    <url>https://github.com/getsentry/sentry-clj</url>
+    <connection>scm:git:git://github.com/getsentry/sentry-clj.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com/getsentry/sentry-clj.git</developerConnection>
+    <tag>3.1.129</tag>
+  </scm>
   <dependencies>
     <dependency>
       <groupId>org.clojure</groupId>

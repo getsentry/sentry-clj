@@ -1,16 +1,9 @@
 # Change Log
 
-## Upcoming
-
-* 3.1.next
-  * In progress.
-
-## Stable Builds
-
-* 3.1.next --
-  * Bumped `deps-deploy`.
-  * Added in missing clj-kondo config.
+* 3.1.129 -- 2020-10-23
   * Fix ring handler to work with new Sentry data structure.
+  * Added in missing clj-kondo config.
+  * Bumped `deps-deploy`.
   * Remove unused 'mocko' library.
   * Set warn-on-reflection to be true.
 
