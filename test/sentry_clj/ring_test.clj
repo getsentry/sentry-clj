@@ -1,26 +1,42 @@
 (ns sentry-clj.ring-test
   (:require
+   [cheshire.core :as json]
    [expectations.clojure.test :refer [defexpect expect expecting]]
-   [mocko.core :as mocko]
    [sentry-clj.core :as sentry]
-   [sentry-clj.ring :as ring]))
+   [sentry-clj.ring :as ring])
+  (:import
+   [io.sentry EnvelopeReader GsonSerializer NoOpLogger]
+   [java.io StringWriter]))
+
+(defn serialize
+  [event]
+  (let [serializer (GsonSerializer. (NoOpLogger/getInstance) (EnvelopeReader.))
+        sentry-event (#'sentry/map->event event)
+        string-writer (StringWriter.)]
+    (.serialize serializer sentry-event string-writer)
+    string-writer))
+
+(defn strip-timestamp
+  [output]
+  (let [result (-> (json/parse-string (str output))
+                   (assoc-in ["sdk" "version"] "blah")
+                   (dissoc "event_id" "timestamp"))]
+    (assoc result "breadcrumbs" (map #(dissoc % "timestamp") (get result "breadcrumbs")))))
 
 (def e (Exception. "thing"))
 
 (defn wrapped
   [req]
-  (if (:ok req)
-    "woo"
-    (throw e)))
+  (if (:ok req) "woo" (throw e)))
 
 (def req
-  {:scheme      :https
-   :uri         "/hello-world"
-   :method      :get
-   :params      {:one 1}
-   :headers     {"ok" 2 "host" "example.com"}
+  {:scheme :https
+   :uri "/hello-world"
+   :method :get
+   :params {:one 1}
+   :headers {"ok" 2 "host" "example.com"}
    :remote-addr "127.0.0.1"
-   :session     {}})
+   :session {}})
 
 (defn preprocess
   [req]
@@ -43,39 +59,55 @@
 (defexpect with-defaults-test
   (expecting
    "with defaults"
-   (mocko/with-mocks
-     (let [event   {:throwable e
-                    :interfaces
-                    {:request {:url          "https://example.com/hello-world"
-                               :method       nil
-                               :data         {:one 1}
-                               :query_string ""
-                               :headers      {"ok" 2 "host" "example.com"}
-                               :env          {:session "{}" "REMOTE_ADDR" "127.0.0.1"}}
-                     :user    {:ip_address "127.0.0.1"}}}
-           handler (ring/wrap-report-exceptions wrapped {})]
-       (mocko/mock! #'sentry/send-event {[event] nil})
-       (expect {:status  500
-                :headers {"Content-Type" "text/html"}
-                :body    "<html><head><title>Error</title></head><body><p>Internal Server Error</p></body></html>"}
-               (handler req))))))
+   (let [event {:throwable e
+                :request {:url "https://example.com/hello-world"
+                          :method nil
+                          :data {:one 1}
+                          :query-string ""
+                          :headers {"ok" 2 "host" "example.com"}
+                          :env {:session "{}" "REMOTE_ADDR" "127.0.0.1"}}
+                :user {:ip_address "127.0.0.1"}}
+         sentry-event (strip-timestamp (serialize event))
+         handler (ring/wrap-report-exceptions wrapped {})]
+     (expect {:status 500
+              :headers {"Content-Type" "text/html"}
+              :body "<html><head><title>Error</title></head><body><p>Internal Server Error</p></body></html>"}
+             (handler req))
+     (expect {"breadcrumbs" (),
+              "contexts" {},
+              "environment" "production",
+              "request" {"data" {":one" 1},
+                         "env" {":session" "{}", "REMOTE_ADDR" "127.0.0.1"},
+                         "headers" {"host" "example.com", "ok" 2},
+                         "query_string" "",
+                         "url" "https://example.com/hello-world"},
+              "sdk" {"version" "blah"},
+              "user" {}} sentry-event))))
 
 (defexpect with-callbacks-test
   (expecting
    "with callbacks"
-   (mocko/with-mocks
-     (let [event   {:throwable   e
-                    :environment "qa"
-                    :interfaces
-                    {:request {:url          "https://example.com/hello-world"
-                               :method       nil
-                               :data         {:one 1 :two 2}
-                               :query_string ""
-                               :headers      {"ok" 2 "host" "example.com"}
-                               :env          {:session "{}" "REMOTE_ADDR" "127.0.0.1"}}
-                     :user    {:ip_address "127.0.0.1"}}}
-           handler (ring/wrap-report-exceptions wrapped {:preprocess-fn  preprocess
-                                                         :postprocess-fn postprocess
-                                                         :error-fn       error})]
-       (mocko/mock! #'sentry/send-event {[event] nil})
-       (expect (assoc req :exception e) (handler req))))))
+   (let [event {:throwable e
+                :environment "qa"
+                :request {:url "https://example.com/hello-world"
+                          :method nil
+                          :data {:one 1 :two 2}
+                          :query-string "?foo=bar"
+                          :headers {"ok" 2 "host" "example.com"}
+                          :env {:session "{}" "REMOTE_ADDR" "127.0.0.1"}}
+                :user {:ip_address "127.0.0.1"}}
+         sentry-event (strip-timestamp (serialize event))
+         handler (ring/wrap-report-exceptions wrapped {:preprocess-fn  preprocess
+                                                       :postprocess-fn postprocess
+                                                       :error-fn       error})]
+     (expect (assoc req :exception e) (handler req))
+     (expect {"breadcrumbs" (),
+              "contexts" {},
+              "environment" "qa",
+              "request" {"data" {":one" 1, ":two" 2},
+                         "env" {":session" "{}", "REMOTE_ADDR" "127.0.0.1"},
+                         "headers" {"host" "example.com", "ok" 2},
+                         "query_string" "?foo=bar",
+                         "url" "https://example.com/hello-world"},
+              "sdk" {"version" "blah"},
+              "user" {}} sentry-event))))

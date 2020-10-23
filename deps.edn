@@ -10,7 +10,6 @@
                                lambdaisland/kaocha {:mvn/version "1.0.700"}
                                lambdaisland/kaocha-cloverage {:mvn/version "1.0.63"}
                                lambdaisland/kaocha-junit-xml {:mvn/version "0.0.76"}
-                               mocko/mocko {:mvn/version "0.2.3"}
                                org.clojure/test.check {:mvn/version "1.1.0"}}}
 
            :jar {:extra-deps {seancorfield/depstar {:mvn/version "1.1.128"}}
