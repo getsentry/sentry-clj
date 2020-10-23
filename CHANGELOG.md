@@ -7,6 +7,13 @@
 
 ## Stable Builds
 
+* 3.1.next --
+  * Bumped `deps-deploy`.
+  * Added in missing clj-kondo config.
+  * Fix ring handler to work with new Sentry data structure.
+  * Remove unused 'mocko' library.
+  * Set warn-on-reflection to be true.
+
 * 3.1.127 -- 2020-10-19
   * Moved to the major.minor.commit model.
   * Removed unused library `clojure.java-time`.
