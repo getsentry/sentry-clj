@@ -22,6 +22,8 @@ jobs:
           java-version: ${{ matrix.java }}
       - name: Setup Clojure
         uses: DeLaGuardo/setup-clojure@2.0
+        env:
+          ACTIONS_ALLOW_UNSECURE_COMMANDS: true
         with:
           tools-deps: '1.10.1.708'
       - name: Run Tests
