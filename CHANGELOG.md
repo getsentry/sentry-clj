@@ -1,5 +1,8 @@
 # Change Log
 
+* 3.1.131 - ?
+  * Bumped Sentry Java 3.2.0.
+
 * 3.1.130 -- 2020-10-23
   * Fix ring handler to work with new Sentry data structure.
   * Added in missing clj-kondo config.
@@ -12,7 +15,7 @@
   * Removed unused library `clojure.java-time`.
   * Updated pom.xml with some additional metadata information.
   * Added in a simple deploy script.
-  * Bumped to Sentry Java to 3.1.1
+  * Bumped Sentry Java to 3.1.1.
 
 * 3.1.0 -- 2020-10-16
   * Major release bringing compatibility with version 3.1.0 of the Java Sentry
