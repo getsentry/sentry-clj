@@ -1,6 +1,7 @@
 # Change Log
 
-* 3.1.131 - ?
+* 3.1.133 - 2020-12-02
+  * Don't default the environment to "production", let the Java library do that now.
   * Bumped Sentry Java 3.2.0.
 
 * 3.1.130 -- 2020-10-23
