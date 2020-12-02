@@ -1,7 +1,8 @@
 # Change Log
 
-* 3.1.133 - 2020-12-02
-  * Don't default the environment to "production", let the Java library do that now.
+* 3.1.134 - 2020-12-02
+  * Don't default the environment to "production" if none if found on
+    the event, let the Java library do that now.
   * Bumped Sentry Java 3.2.0.
 
 * 3.1.130 -- 2020-10-23
