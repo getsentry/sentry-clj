@@ -75,7 +75,6 @@
              (handler req))
      (expect {"breadcrumbs" (),
               "contexts" {},
-              "environment" "production",
               "request" {"data" {":one" 1},
                          "env" {":session" "{}", "REMOTE_ADDR" "127.0.0.1"},
                          "headers" {"host" "example.com", "ok" 2},

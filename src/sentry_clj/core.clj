@@ -88,7 +88,7 @@
 (defn ^:private ^SentryEvent map->event
   "Converts a map into an event."
   [{:keys [event-id message level release environment user request logger platform dist
-           tags breadcrumbs server-name extra fingerprints throwable transaction] :or {environment "production"}}]
+           tags breadcrumbs server-name extra fingerprints throwable transaction]}]
   (let [sentry-event (SentryEvent. (DateUtils/getCurrentDateTimeOrNull))]
     (when event-id
       (.setEventId sentry-event (SentryId. ^UUID event-id)))
