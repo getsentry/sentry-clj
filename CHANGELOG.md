@@ -1,5 +1,11 @@
 # Change Log
 
+* 3.1.135
+  * Added in `before-send-fn` and `before-breadcrumb-fn` to the
+    initialisation map. This allows for events or breadcrumbs to be
+    mutated before sending off to Sentry (or indeed to *prevent*
+    sending to Sentry if the respective functions returns nil)
+
 * 3.1.134 - 2020-12-02
   * Don't default the environment to "production" if none if found on
     the event, let the Java library do that now.

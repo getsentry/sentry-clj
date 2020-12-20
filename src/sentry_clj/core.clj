@@ -142,16 +142,24 @@
 
    Other options include:
 
-   | key                                  | description |                                                                                    default
-   |--------------------------------------|--------------------------------------------------------------------------------------------------|--------
-   | `:environment`                       | Set the environment on which Sentry events will be logged, e.g., \"production\"                  | production
-   | `:debug`                             | Enable SDK logging at the debug level                                                            | false
-   | `:release`                           | All events are assigned to a particular release                                                  |
-   | `:shutdown-timeout`                  | Wait up to X milliseconds before shutdown if there are events to send                            | 2000ms
-   | `:in-app-excludes`                   | A seqable collection (vector for example) containing package names to ignore when sending events |
-   | `:enable-uncaught-exception-handler` | Enables the uncaught exception handler                                                           | true
+   | key                                  | description                                                                                                        | default
+   | ------------------------------------ | ------------------------------------------------------------------------------------------------------------------ | -------
+   | `:environment`                       | Set the environment on which Sentry events will be logged, e.g., \"production\"                                    | production
+   | `:debug`                             | Enable SDK logging at the debug level                                                                              | false
+   | `:release`                           | All events are assigned to a particular release                                                                    |
+   | `:shutdown-timeout`                  | Wait up to X milliseconds before shutdown if there are events to send                                              | 2000ms
+   | `:in-app-excludes`                   | A seqable collection (vector for example) containing package names to ignore when sending events                   |
+   | `:enable-uncaught-exception-handler` | Enables the uncaught exception handler                                                                             | true
+   | `:before-send-fn`                    | A function (taking an event and a hint)                                                                            |
+   |                                      | The body of the function must not be lazy (i.e., don't use filter on its own!) and must return an event or nil     |
+   |                                      | If a nil is returned, the event will not be sent to Sentry                                                         |
+   |                                      | [More Information](https://docs.sentry.io/platforms/java/data-management/sensitive-data/)                          |
+   | `:before-breadcrumb-fn`              | A function (taking a breadcrumb and a hint)                                                                        |
+   |                                      | The body of the function must not be lazy (i.e., don't use filter on its own!) and must return a breadcrumb or nil |
+   |                                      | If a nil is returned, the breadcrumb will not be sent to Sentry                                                    |
+   |                                      | [More Information](https://docs.sentry.io/platforms/java/enriching-events/breadcrumbs/)                            |
 
-   For example:
+   Some examples:
 
    ```clojure
    (init! \"http://abcdefg@localhost:19000/2\")
@@ -161,10 +169,25 @@
    (init! \"http://abcdefg@localhost:19000/2\" {:environment \"production\" :debug true :release \"foo.bar@1.0.0\" :in-app-excludes [\"foo.bar\"])
    ```
 
+   ```clojure
+   (init! \"http://abcdefg@localhost:19000/2\" {:before-send-fn (fn [event _] (when-not (= (.. event getMessage getMessage \"foo\")) event))})
+   ```
+
+   ```clojure
+   (init! \"http://abcdefg@localhost:19000/2\" {:before-send-fn (fn [event _] (.setServerName event \"fred\") event)})
+   ```
+
    "
   ([dsn] (init! dsn {}))
   ([dsn config]
-   (let [{:keys [environment debug release shutdown-timeout in-app-excludes enable-uncaught-exception-handler]} (merge sentry-defaults config)
+   (let [{:keys [environment
+                 debug
+                 release
+                 shutdown-timeout
+                 in-app-excludes
+                 enable-uncaught-exception-handler
+                 before-send-fn
+                 before-breadcrumb-fn]} (merge sentry-defaults config)
          sentry-options (SentryOptions.)]
      (when environment
        (.setEnvironment sentry-options environment))
@@ -178,6 +201,16 @@
        (.addInAppExclude sentry-options in-app-exclude))
      (when-not enable-uncaught-exception-handler
        (.setEnableUncaughtExceptionHandler sentry-options false)) ;; already true in the SDK
+     (when before-send-fn
+       (.setBeforeSend sentry-options ^SentryEvent
+                       (reify io.sentry.SentryOptions$BeforeSendCallback
+                         (execute [this event hint]
+                           (before-send-fn event hint)))))
+     (when before-breadcrumb-fn
+       (.setBeforeBreadcrumb sentry-options ^Breadcrumb
+                             (reify io.sentry.SentryOptions$BeforeBreadcrumbCallback
+                               (execute [this breadcrumb hint]
+                                 (before-breadcrumb-fn breadcrumb hint)))))
      (.setDsn sentry-options dsn)
      (Sentry/init sentry-options))))
 
