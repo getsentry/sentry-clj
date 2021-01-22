@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 
-clojure -Spom
-clojure -M:jar
+tag=$(git describe --abbrev=0 --match="*" 2>/dev/null || echo "0.0.0")
+clojure -X:jar :version "\"$tag\""

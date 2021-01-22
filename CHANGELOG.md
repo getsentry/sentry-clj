@@ -1,5 +1,9 @@
 # Change Log
 
+* 3.1.137
+  * Bump Sentry to 3.2.1
+  * Bump up ring-core to 1.8.2
+
 * 3.1.135
   * Added in `before-send-fn` and `before-breadcrumb-fn` to the
     initialisation map. This allows for events or breadcrumbs to be
