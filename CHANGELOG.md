@@ -1,5 +1,12 @@
 # Change Log
 
+* 3.1.138
+  * Added [Contexts](https://docs.sentry.io/platforms/java/enriching-events/context/)
+    to the initialisation of Sentry so that additional information can
+    be sent upon each event. Further information contained within the
+    README.md and in `sentry_clj/core.clj`. **Note:** `:extras` has
+    been deprecated by Sentry - use `:contexts` instead.
+
 * 3.1.137
   * Bump Sentry to 3.2.1
   * Bump up ring-core to 1.8.2

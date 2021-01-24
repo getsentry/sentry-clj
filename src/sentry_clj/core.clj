@@ -158,6 +158,8 @@
    |                                      | The body of the function must not be lazy (i.e., don't use filter on its own!) and must return a breadcrumb or nil |
    |                                      | If a nil is returned, the breadcrumb will not be sent to Sentry                                                    |
    |                                      | [More Information](https://docs.sentry.io/platforms/java/enriching-events/breadcrumbs/)                            |
+   | `:contexts`                          | A map of key/value pairs to attach to every Event that is sent.                                                    |
+   |                                      | [More Information)(https://docs.sentry.io/platforms/java/enriching-events/context/)                                |
 
    Some examples:
 
@@ -177,6 +179,10 @@
    (init! \"http://abcdefg@localhost:19000/2\" {:before-send-fn (fn [event _] (.setServerName event \"fred\") event)})
    ```
 
+   ```clojure
+   (init! \"http://abcdefg@localhost:19000/2\" {:contexts {:foo \"bar\" :baz \"wibble\"}})
+   ```
+
    "
   ([dsn] (init! dsn {}))
   ([dsn config]
@@ -187,7 +193,8 @@
                  in-app-excludes
                  enable-uncaught-exception-handler
                  before-send-fn
-                 before-breadcrumb-fn]} (merge sentry-defaults config)
+                 before-breadcrumb-fn
+                 contexts]} (merge sentry-defaults config)
          sentry-options (SentryOptions.)]
      (when environment
        (.setEnvironment sentry-options environment))
@@ -212,7 +219,14 @@
                                (execute [this breadcrumb hint]
                                  (before-breadcrumb-fn breadcrumb hint)))))
      (.setDsn sentry-options dsn)
-     (Sentry/init sentry-options))))
+
+     (Sentry/init sentry-options)
+
+     (when contexts
+       (Sentry/configureScope (reify io.sentry.ScopeCallback
+                                (run [this scope]
+                                  (doseq [[k v] (java-util-hashmappify-vals contexts)]
+                                   (.setContexts scope ^String k ^Object {"value" v})))))))))
 
 (defn close!
   "Closes the SDK"
