@@ -1,0 +1,7 @@
+#kaocha/v1
+{:plugins [:kaocha.plugin/junit-xml
+           :kaocha.plugin/cloverage
+           :kaocha.plugin.alpha/spec-test-check]
+ :reporter [kaocha.report/documentation]
+ :fail-fast? true
+ :kaocha.plugin.junit-xml/target-file "target/junit.xml"}

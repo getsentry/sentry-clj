@@ -4,7 +4,7 @@
   <packaging>jar</packaging>
   <groupId>io.sentry</groupId>
   <artifactId>sentry-clj</artifactId>
-  <version>3.1.138</version>
+  <version>4.2.139</version>
   <name>sentry-clj</name>
   <description>A very thin wrapper around the official Java library for Sentry.</description>
   <url>https://github.com/getsentry/sentry-clj</url>
@@ -18,23 +18,23 @@
     <url>https://github.com/getsentry/sentry-clj</url>
     <connection>scm:git:git://github.com/getsentry/sentry-clj.git</connection>
     <developerConnection>scm:git:ssh://git@github.com/getsentry/sentry-clj.git</developerConnection>
-    <tag>3.1.138</tag>
+    <tag>4.2.139</tag>
   </scm>
   <dependencies>
     <dependency>
       <groupId>org.clojure</groupId>
       <artifactId>clojure</artifactId>
-      <version>1.10.1</version>
+      <version>1.10.2</version>
     </dependency>
     <dependency>
       <groupId>io.sentry</groupId>
       <artifactId>sentry</artifactId>
-      <version>3.2.1</version>
+      <version>4.2.0</version>
     </dependency>
     <dependency>
       <groupId>ring</groupId>
       <artifactId>ring-core</artifactId>
-      <version>1.8.2</version>
+      <version>1.9.1</version>
     </dependency>
   </dependencies>
   <build>
@@ -44,10 +44,6 @@
     <repository>
       <id>clojars</id>
       <url>https://repo.clojars.org/</url>
-    </repository>
-    <repository>
-      <id>central</id>
-      <url>https://repo1.maven.org/maven2/</url>
     </repository>
   </repositories>
   <distributionManagement>

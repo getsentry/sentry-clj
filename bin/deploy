@@ -3,11 +3,11 @@
 set -o errexit ; set -o nounset
 
 usage() {
-    echo "Please ensure CLOJARS_REPO, CLOJARS_USERNAME and CLOJARS_PASSWORD are set (perhaps use direnv?)"
+    echo "Please ensure CLOJARS_URL, CLOJARS_USERNAME and CLOJARS_PASSWORD are set (perhaps use direnv?)"
     exit -1
 }
 
-REQD_VALUES=("CLOJARS_REPO" "CLOJARS_USERNAME" "CLOJARS_PASSWORD")
+REQD_VALUES=("CLOJARS_URL" "CLOJARS_USERNAME" "CLOJARS_PASSWORD")
 ( i=0; for var_name in ${REQD_VALUES[@]}; do
     VALUE=${!var_name} ;
     i=$((i+1)) ; : ${VALUE:?$var_name is missing}

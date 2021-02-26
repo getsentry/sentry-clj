@@ -1,8 +1,8 @@
 {:paths ["src"]
 
- :deps {org.clojure/clojure {:mvn/version "1.10.1"}
-        io.sentry/sentry {:mvn/version "3.2.1"}
-        ring/ring-core {:mvn/version "1.8.2"}}
+ :deps {org.clojure/clojure {:mvn/version "1.10.2"}
+        io.sentry/sentry {:mvn/version "4.2.0"}
+        ring/ring-core {:mvn/version "1.9.1"}}
 
  :aliases {:test {:extra-paths ["test"]
                   :extra-deps {cheshire/cheshire {:mvn/version "5.10.0"}
@@ -12,7 +12,7 @@
                                lambdaisland/kaocha-junit-xml {:mvn/version "0.0.76"}
                                org.clojure/test.check {:mvn/version "1.1.0"}}}
 
-           :jar {:replace-deps {seancorfield/depstar {:mvn/version "2.0.165"}}
+           :jar {:replace-deps {seancorfield/depstar {:mvn/version "2.0.188"}}
                  :exec-fn hf.depstar/jar
                  :exec-args {:jar sentry-clj.jar
                              :group-id io.sentry

@@ -74,22 +74,22 @@
     (when query-string
       (.setQueryString request query-string))
     (when data
-      (.setData request data))
+      (.setData request (java-util-hashmappify-vals data)))
     (when cookies
-      (.setCookies request cookies))
+      (.setCookies request (java-util-hashmappify-vals cookies)))
     (when headers
-      (.setHeaders request headers))
+      (.setHeaders request (java-util-hashmappify-vals headers)))
     (when env
-      (.setEnvs request env))
+      (.setEnvs request (java-util-hashmappify-vals env)))
     (when other
-      (.setOthers request other))
+      (.setOthers request (java-util-hashmappify-vals other)))
     request))
 
 (defn ^:private ^SentryEvent map->event
   "Converts a map into an event."
   [{:keys [event-id message level release environment user request logger platform dist
            tags breadcrumbs server-name extra fingerprints throwable transaction]}]
-  (let [sentry-event (SentryEvent. (DateUtils/getCurrentDateTimeOrNull))]
+  (let [sentry-event (SentryEvent. (DateUtils/getCurrentDateTime))]
     (when event-id
       (.setEventId sentry-event (SentryId. ^UUID event-id)))
     (when-let [{:keys [formatted message params]} message]
