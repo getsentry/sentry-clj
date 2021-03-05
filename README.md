@@ -1,4 +1,14 @@
-# sentry-clj
+<p align="center">
+  <a href="https://sentry.io" target="_blank" align="center">
+    <img src="https://sentry-brand.storage.googleapis.com/sentry-logo-black.png" width="280">
+  </a>
+  <br />
+</p>
+
+_Bad software is everywhere, and we're tired of it. Sentry is on a mission to help developers write better software faster, so we can get back to enjoying technology. If you want to join us [<kbd>**Check out our open positions**</kbd>](https://sentry.io/careers/)_
+
+Sentry SDK for Clojure
+===========
 
 [![Clojars Project](https://img.shields.io/clojars/v/io.sentry/sentry-clj.svg)](https://clojars.org/io.sentry/sentry-clj)
 
