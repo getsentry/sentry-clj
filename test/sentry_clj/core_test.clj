@@ -55,6 +55,9 @@
    :extra        {:one {:two 2}}
    :transaction  "456"})
 
+(def event-with-simple-message
+  (assoc event :message "Hello World"))
+
 (defn serialize
   [event]
   (let [serializer (GsonSerializer. (NoOpLogger/getInstance) (EnvelopeReader.))
@@ -120,6 +123,46 @@
               "event_id"    "4c4fbea957a74c99808d2284306e6c98"
               "dist"        "arch"
               "message"     {"message" "ok" "params" ["foo" "bar"]}
+              "tags"        {"one" "2"}
+              "level"       "info"
+              "server_name" "example.com"
+              "logger"      "happy.lucky"
+              "environment" "production"
+              "user"        {"email" "foo@bar.com"
+                             "id" "id"
+                             "ip_address" "10.0.0.0"
+                             "other" {"a" "b"}
+                             "username" "username"}
+              "request"     {"cookies" "cookie1=foo;cookie2=bar"
+                             "data" "data"
+                             "env" {"a" "b"}
+                             "headers" {"X-Clacks-Overhead" "Terry Pratchett", "X-w00t" "ftw!"}
+                             "method" "GET"
+                             "other" {"c" "d"}
+                             "query_string" "?foo=bar"
+                             "url" "http://foobar.com"}
+              "transaction" "456"
+              "extra"       {"one" {"two" 2}}
+              "platform"    "clojure"
+              "contexts"    {}
+              "breadcrumbs" [{"type"      "http"
+                              "level"     "info"
+                              "message"   "yes"
+                              "category"  "maybe"
+                              "data"      {"probably" "no"}}]
+              "sdk"         {"version" "blah"}
+              "fingerprint" ["{{ default }}" "nice"]}
+             actual))))
+
+(defexpect map->event-with-simple-message-test
+  (expecting
+   "a regular event"
+   (let [output (serialize event-with-simple-message)
+         actual (strip-timestamp output)]
+     (expect {"release"     "v1.0.0"
+              "event_id"    "4c4fbea957a74c99808d2284306e6c98"
+              "dist"        "arch"
+              "message"     {"message" "Hello World"}
               "tags"        {"one" "2"}
               "level"       "info"
               "server_name" "example.com"
