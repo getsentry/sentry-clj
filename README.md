@@ -22,10 +22,23 @@ repository.
 
 (sentry/init! "https://public:private@sentry.io/1")
 
+; Sending a simple message is easy...
+
 (try
   (do-something-risky)
   (catch Exception e
-    (sentry/send-event {:message {:message "Something has gone wrong!"}
+    (sentry/send-event {:message "Something has gone wrong!"}
+                        :throwable e})))
+```
+
+If you want an interpolated message, you need to provide the full map, i.e.,
+
+```
+(try
+  (do-something-risky)
+  (catch Exception e
+    (sentry/send-event {:message {:message "Something %s has gone %s!"
+                                  :params ["foo" "bar"]}
                         :throwable e})))
 ```
 
@@ -89,7 +102,7 @@ Initialisation with additional options:
 - `:fingerprint` - a sequence of `String`s that Sentry should use as a [fingerprint](https://docs.sentry.io/learn/rollups/#customize-grouping-with-fingerprints).
 - `:level` - a `Keyword`. One of `:debug`, `:info`, `:warning`, `:error`, `:fatal`. Probably most useful in conjunction with `:message` if you need to report an exceptional condition that's not an exception.
 - `:logger` - a `String` which identifies the logger.
-- `:message` - a map containing Message information. See below.
+- `:message` - a map or `String` containing Message information. See below.
 - `:platform` - a `String` which identifies the platform.
 - `:release` - a `String` which identifies the release.
 - `:request` - a map containing Request information. See below.
@@ -116,8 +129,9 @@ should be a map. Each key is optional.
 
 [API Documentation](https://develop.sentry.dev/sdk/event-payloads/message/)
 
-When an event has a `:message` key, the following data should be contained
-within a map, thus:
+When an event has a `:message` key, either a simple string can be
+used, or if you require a parameterised message, the following data
+should be contained within a map, thus:
 
 - `:formatted` - A `String` containing the fully formatted message. If missing, Sentry will try to interpolate the `message`.
 - `:message` - An optional `String` containing the raw message. If there are params, it will be interpolated.

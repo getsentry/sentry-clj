@@ -90,9 +90,7 @@
   [{:keys [event-id message level release environment user request logger platform dist
            tags breadcrumbs server-name extra fingerprints throwable transaction]}]
   (let [sentry-event (SentryEvent. (DateUtils/getCurrentDateTime))
-        updated-message (if (string? message)
-                          {:message message}
-                          message)]
+        updated-message (if (string? message) {:message message} message)]
     (when event-id
       (.setEventId sentry-event (SentryId. ^UUID event-id)))
     (when-let [{:keys [formatted message params]} updated-message]

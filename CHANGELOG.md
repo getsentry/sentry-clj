@@ -2,6 +2,14 @@
 
 ## [Unreleased]
 
+## [4.3.141]
+
+### Fixed
+
+- Allow simple strings (as well as maps) to be used for the message.
+  Thanks to @bago2k4 for the contribution! :-) Fixes #23
+- Bump Sentry to 4.3.0
+
 ## [4.2.139]
 
 ### Changed
@@ -94,7 +102,8 @@
   versions, please continue to use sentry-clj 1.7.30.
 
 [Unreleased]: https://github.com/getsentry/sentry-clj/compare/4.2.129...HEAD
-[4.2.129]: https://github.com/getsentry/sentry-clj/compare/3.1.138...4.2.129
+[4.3.141]: https://github.com/getsentry/sentry-clj/compare/4.2.139...4.3.141
+[4.2.139]: https://github.com/getsentry/sentry-clj/compare/3.1.138...4.2.139
 [3.1.138]: https://github.com/getsentry/sentry-clj/compare/3.1.137...3.1.138
 [3.1.137]: https://github.com/getsentry/sentry-clj/compare/3.1.135...3.1.137
 [3.1.135]: https://github.com/getsentry/sentry-clj/compare/3.1.134...3.1.135
