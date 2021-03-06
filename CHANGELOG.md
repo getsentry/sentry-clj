@@ -1,8 +1,6 @@
 # Change Log
 
-## [Unreleased]
-
-## [4.3.141]
+## [4.3.143]
 
 ### Fixed
 
@@ -101,8 +99,8 @@
   compatible with Sentry 10.0.1 and below. If you wish to use those
   versions, please continue to use sentry-clj 1.7.30.
 
-[Unreleased]: https://github.com/getsentry/sentry-clj/compare/4.2.129...HEAD
-[4.3.141]: https://github.com/getsentry/sentry-clj/compare/4.2.139...4.3.141
+[Unreleased]: https://github.com/getsentry/sentry-clj/compare/4.3.143...HEAD
+[4.3.143]: https://github.com/getsentry/sentry-clj/compare/4.2.139...4.3.143
 [4.2.139]: https://github.com/getsentry/sentry-clj/compare/3.1.138...4.2.139
 [3.1.138]: https://github.com/getsentry/sentry-clj/compare/3.1.137...3.1.138
 [3.1.137]: https://github.com/getsentry/sentry-clj/compare/3.1.135...3.1.137
