@@ -32,7 +32,7 @@
 (def req
   {:scheme :https
    :uri "/hello-world"
-   :method :get
+   :request-method :get
    :params {:one 1}
    :headers {"ok" 2 "host" "example.com"}
    :remote-addr "127.0.0.1"
