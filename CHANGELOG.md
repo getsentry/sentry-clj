@@ -1,6 +1,6 @@
 # Change Log
 
-## [4.3.145]
+## [4.3.146]
 
 - Fix request method as string. Thanks to @danieltdt!
 
@@ -103,8 +103,8 @@
   compatible with Sentry 10.0.1 and below. If you wish to use those
   versions, please continue to use sentry-clj 1.7.30.
 
-[Unreleased]: https://github.com/getsentry/sentry-clj/compare/4.3.145...HEAD
-[4.3.145]: https://github.com/getsentry/sentry-clj/compare/4.3.143...4.3.145
+[Unreleased]: https://github.com/getsentry/sentry-clj/compare/4.3.146...HEAD
+[4.3.146]: https://github.com/getsentry/sentry-clj/compare/4.3.143...4.3.146
 [4.3.143]: https://github.com/getsentry/sentry-clj/compare/4.2.139...4.3.143
 [4.2.139]: https://github.com/getsentry/sentry-clj/compare/3.1.138...4.2.139
 [3.1.138]: https://github.com/getsentry/sentry-clj/compare/3.1.137...3.1.138
