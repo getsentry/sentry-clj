@@ -11,7 +11,7 @@
   "Converts a Ring request into an HTTP interface for an event."
   [req]
   {:url (request-url req)
-   :method (:request-method req)
+   :method (-> req :request-method name)
    :data (:params req)
    :query-string (:query-string req "")
    :headers (:headers req)
