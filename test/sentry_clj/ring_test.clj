@@ -5,12 +5,14 @@
    [sentry-clj.core :as sentry]
    [sentry-clj.ring :as ring])
   (:import
-   [io.sentry EnvelopeReader GsonSerializer NoOpLogger]
+   [io.sentry
+    GsonSerializer
+    SentryOptions]
    [java.io StringWriter]))
 
 (defn serialize
   [event]
-  (let [serializer (GsonSerializer. (NoOpLogger/getInstance) (EnvelopeReader.))
+  (let [serializer (GsonSerializer. (SentryOptions.))
         sentry-event (#'sentry/map->event event)
         string-writer (StringWriter.)]
     (.serialize serializer sentry-event string-writer)

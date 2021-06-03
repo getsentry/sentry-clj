@@ -5,9 +5,8 @@
    [sentry-clj.core :as sut])
   (:import
    [io.sentry
-    EnvelopeReader
     GsonSerializer
-    NoOpLogger
+    SentryOptions
     SentryLevel]
    [java.io StringWriter]
    [java.util UUID]))
@@ -60,7 +59,7 @@
 
 (defn serialize
   [event]
-  (let [serializer (GsonSerializer. (NoOpLogger/getInstance) (EnvelopeReader.))
+  (let [serializer (GsonSerializer. (SentryOptions.))
         sentry-event (#'sut/map->event event)
         string-writer (StringWriter.)]
     (.serialize serializer sentry-event string-writer)

@@ -1,13 +1,13 @@
 {:paths ["src"]
 
  :deps {org.clojure/clojure {:mvn/version "1.10.3"}
-        io.sentry/sentry {:mvn/version "4.3.0"}
+        io.sentry/sentry {:mvn/version "5.0.0"}
         ring/ring-core {:mvn/version "1.9.3"}}
 
  :aliases {:test {:extra-paths ["test"]
                   :extra-deps {cheshire/cheshire {:mvn/version "5.10.0"}
                                expectations/clojure-test {:mvn/version "1.2.1"}
-                               lambdaisland/kaocha {:mvn/version "1.0.829"}
+                               lambdaisland/kaocha {:mvn/version "1.0.861"}
                                lambdaisland/kaocha-cloverage {:mvn/version "1.0.75"}
                                lambdaisland/kaocha-junit-xml {:mvn/version "0.0.76"}
                                org.clojure/test.check {:mvn/version "1.1.0"}}}
