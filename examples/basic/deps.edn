@@ -1,7 +1,7 @@
 {:paths ["src" "resources"]
 
  :deps {ch.qos.logback/logback-classic {:mvn/version "1.2.3"}
-        io.sentry/sentry {:mvn/version "4.3.0"}
+        io.sentry/sentry {:mvn/version "5.0.0"}
         io.sentry/sentry-clj {:mvn/version "5.0.147"}
         org.clojure/clojure {:mvn/version "1.10.3"}
         org.clojure/tools.cli {:mvn/version "1.0.206"}
