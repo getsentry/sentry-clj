@@ -4,7 +4,7 @@
   <packaging>jar</packaging>
   <groupId>io.sentry</groupId>
   <artifactId>sentry-clj</artifactId>
-  <version>5.0.147</version>
+  <version>5.0.149</version>
   <name>sentry-clj</name>
   <description>A very thin wrapper around the official Java library for Sentry.</description>
   <url>https://github.com/getsentry/sentry-clj</url>
@@ -18,7 +18,7 @@
     <url>https://github.com/getsentry/sentry-clj</url>
     <connection>scm:git:git://github.com/getsentry/sentry-clj.git</connection>
     <developerConnection>scm:git:ssh://git@github.com/getsentry/sentry-clj.git</developerConnection>
-    <tag>5.0.147</tag>
+    <tag>5.0.149</tag>
   </scm>
   <dependencies>
     <dependency>
@@ -29,7 +29,7 @@
     <dependency>
       <groupId>io.sentry</groupId>
       <artifactId>sentry</artifactId>
-      <version>5.0.0</version>
+      <version>5.0.1</version>
     </dependency>
     <dependency>
       <groupId>ring</groupId>
