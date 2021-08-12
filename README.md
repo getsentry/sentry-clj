@@ -37,7 +37,7 @@ repository.
 (try
   (do-something-risky)
   (catch Exception e
-    (sentry/send-event {:message "Something has gone wrong!"}
+    (sentry/send-event {:message "Something has gone wrong!"
                         :throwable e})))
 ```
 
