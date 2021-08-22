@@ -1,0 +1,9 @@
+---
+
+updates:
+  - directory: /
+    package-ecosystem: github-actions
+    schedule:
+      interval: monthly
+
+version: 2

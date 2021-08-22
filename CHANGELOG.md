@@ -1,5 +1,10 @@
 # Change Log
 
+## [5.0.151]
+
+- Update Sentry Java SDK to 5.1.1
+- Minor updates
+
 ## [5.0.149]
 
 - Updated Sentry Java SDK to 5.0.1
@@ -112,7 +117,8 @@
   compatible with Sentry 10.0.1 and below. If you wish to use those
   versions, please continue to use sentry-clj 1.7.30.
 
-[Unreleased]: https://github.com/getsentry/sentry-clj/compare/5.0.149...HEAD
+[Unreleased]: https://github.com/getsentry/sentry-clj/compare/5.0.151...HEAD
+[5.0.151]: https://github.com/getsentry/sentry-clj/compare/5.0.147...5.0.151
 [5.0.149]: https://github.com/getsentry/sentry-clj/compare/5.0.147...5.0.149
 [5.0.147]: https://github.com/getsentry/sentry-clj/compare/4.3.146...5.0.147
 [4.3.146]: https://github.com/getsentry/sentry-clj/compare/4.3.143...4.3.146

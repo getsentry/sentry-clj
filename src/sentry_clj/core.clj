@@ -229,6 +229,7 @@
                                   (doseq [[k v] (java-util-hashmappify-vals contexts)]
                                    (.setContexts scope ^String k ^Object {"value" v})))))))))
 
+#_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
 (defn close!
   "Closes the SDK"
   []

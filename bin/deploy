@@ -13,4 +13,4 @@ REQD_VALUES=("CLOJARS_URL" "CLOJARS_USERNAME" "CLOJARS_PASSWORD")
     i=$((i+1)) ; : ${VALUE:?$var_name is missing}
 done ) || usage
 
-clj -M:deploy
+clj -X:deploy
