@@ -1,5 +1,25 @@
 # Change Log
 
+All notable changes to this project will be documented in this file
+and is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
+
+This project follows the version scheme MAJOR.MINOR.COMMITS where
+MAJOR and MINOR provide some relative indication of the size of the
+change, but do not follow semantic versioning. In general, all changes
+endeavour to be non-breaking (by moving to new names rather than by
+breaking existing names). COMMITS is an ever-increasing counter of
+commits since the beginning of this repository.
+
+## [Unreleased]
+
+### Changed
+### Added
+### Removed
+
+## [5.0.152]
+
+- Update Sentry Java SDK to 5.1.2
+
 ## [5.0.151]
 
 - Update Sentry Java SDK to 5.1.1
@@ -117,7 +137,8 @@
   compatible with Sentry 10.0.1 and below. If you wish to use those
   versions, please continue to use sentry-clj 1.7.30.
 
-[Unreleased]: https://github.com/getsentry/sentry-clj/compare/5.0.151...HEAD
+[Unreleased]: https://github.com/getsentry/sentry-clj/compare/5.0.152...HEAD
+[5.0.152]: https://github.com/getsentry/sentry-clj/compare/5.0.151...5.0.152
 [5.0.151]: https://github.com/getsentry/sentry-clj/compare/5.0.147...5.0.151
 [5.0.149]: https://github.com/getsentry/sentry-clj/compare/5.0.147...5.0.149
 [5.0.147]: https://github.com/getsentry/sentry-clj/compare/4.3.146...5.0.147
