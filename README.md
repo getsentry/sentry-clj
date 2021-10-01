@@ -134,6 +134,7 @@ should be a map. Each key is optional.
 - `:message` - a `String`
 - `:category` - a `String`
 - `:data` - a map with `String` keys and `String` values
+- `:timestamp` - a `java.util.Date`
 
 ### Message
 
