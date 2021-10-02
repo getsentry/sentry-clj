@@ -16,25 +16,42 @@ commits since the beginning of this repository.
 ### Added
 ### Removed
 
+### [5.2.154]
+
+- Update Sentry Java SDK to 5.2.0
+- Use Clojure Tools Build for building
+- Add in Github Actions for Testing
+- If timestamps are provided for a breadcrumb, include them. Thanks @deepxg!
+
 ## [5.0.152]
+
+### Changed
 
 - Update Sentry Java SDK to 5.1.2
 
 ## [5.0.151]
+
+### Changed
 
 - Update Sentry Java SDK to 5.1.1
 - Minor updates
 
 ## [5.0.149]
 
+### Changed
+
 - Updated Sentry Java SDK to 5.0.1
 
 ## [5.0.147]
+
+### Changed
 
 - Updated Sentry Java SDK to 5.0.0
 - No other functional changes
 
 ## [4.3.146]
+
+### Changed
 
 - Fix request method as string. Thanks to @danieltdt!
 
@@ -137,7 +154,8 @@ commits since the beginning of this repository.
   compatible with Sentry 10.0.1 and below. If you wish to use those
   versions, please continue to use sentry-clj 1.7.30.
 
-[Unreleased]: https://github.com/getsentry/sentry-clj/compare/5.0.152...HEAD
+[Unreleased]: https://github.com/getsentry/sentry-clj/compare/5.2.154...HEAD
+[5.2.154]: https://github.com/getsentry/sentry-clj/compare/5.0.151...5.2.154
 [5.0.152]: https://github.com/getsentry/sentry-clj/compare/5.0.151...5.0.152
 [5.0.151]: https://github.com/getsentry/sentry-clj/compare/5.0.147...5.0.151
 [5.0.149]: https://github.com/getsentry/sentry-clj/compare/5.0.147...5.0.149

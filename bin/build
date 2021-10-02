@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-if [ -z $1 ]; then
-    clojure -X:jar
+if [ -z "$1" ]; then
+    clojure -T:build jar
 else
-    clojure -X:jar :version "\"$1\""
+    clojure -T:build jar :tag "\"$1\""
 fi

@@ -1,26 +1,38 @@
-name: Clojure CI
+---
+
+name: Test Clojure Sentry Library
 
 on:
   push:
     branches:
-      - master
-  pull_request:
-    branches:
-      - '*'
+      - '**'
+
+env:
+  APPLICATION: sentry-clj
 
 jobs:
-  build:
+  test:
+    name: Test
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        java: [ '8', '11', '16' ]
+        java: [ '8', '11', '17']
     steps:
       - uses: actions/checkout@v2
 
-      - name: Setup Java
-        uses: actions/setup-java@v2.3.0
+      - name: Setup Cache
+        uses: actions/cache@v2
         with:
-          distribution: 'adopt'
+          path: |
+            ~/.m2
+            ~/.gitlibs
+          key: ${{ env.APPLICATION }}-${{ hashFiles('deps.edn') }}
+          restore-keys: ${{ env.APPLICATION }}-${{ hashFiles('deps.edn') }}
+
+      - name: Setup Java
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'temurin'
           java-version: ${{ matrix.java }}
 
       - name: Setup Clojure
@@ -29,4 +41,4 @@ jobs:
           tools-deps: 'latest'
 
       - name: Run Tests
-        run: clojure -M:test -m kaocha.runner
+        run: clojure -T:build run-tests

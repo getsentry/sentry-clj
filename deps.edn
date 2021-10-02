@@ -1,37 +1,25 @@
 {:paths ["src"]
 
- :deps {io.sentry/sentry {:mvn/version "5.1.2"}
+ :deps {io.sentry/sentry {:mvn/version "5.2.0"}
         org.clojure/clojure {:mvn/version "1.10.3"}
         ring/ring-core {:mvn/version "1.9.4"}}
 
- :aliases {:test {:extra-paths ["test"]
+ :aliases {:build {:deps {io.github.seancorfield/build-clj {:git/tag "v0.5.0"
+                                                            :git/sha "2ceb95a"}}
+                   :ns-default scripts.build}
+
+           :test {:extra-paths ["test"]
                   :extra-deps {cheshire/cheshire {:mvn/version "5.10.1"}
                                expectations/clojure-test {:mvn/version "1.2.1"}
-                               lambdaisland/kaocha {:mvn/version "1.0.861"}
+                               lambdaisland/kaocha {:mvn/version "1.0.902"}
                                lambdaisland/kaocha-cloverage {:mvn/version "1.0.75"}
                                lambdaisland/kaocha-junit-xml {:mvn/version "0.0.76"}
+                               orchestra/orchestra {:mvn/version "2021.01.01-1"}
                                org.clojure/test.check {:mvn/version "1.1.0"}}}
 
-           :jar {:replace-deps {com.github.seancorfield/depstar {:mvn/version "2.1.278"}}
-                 :exec-fn hf.depstar/jar
-                 :exec-args {:jar target/sentry-clj.jar
-                             :group-id io.sentry
-                             :artifact-id sentry-clj
-                             :sync-pom true}}
-
            :antq {:replace-deps {org.slf4j/slf4j-nop {:mvn/version "1.7.32"}
-                                 com.github.liquidz/antq {:mvn/version "0.16.3"}}
+                                 com.github.liquidz/antq {:mvn/version "1.1.0"}}
                   :main-opts ["-m" "antq.core"
                               "--skip" "pom"
                               "--upgrade"
-                              "--force"]}
-
-           :deploy {:extra-deps {slipset/deps-deploy {:mvn/version "0.1.5"}}
-                    :exec-fn deps-deploy.deps-deploy/deploy
-                    :exec-args {:installer :remote
-                                :artifact "target/sentry-clj.jar"}}
-
-           :install {:extra-deps {slipset/deps-deploy {:mvn/version "0.1.5"}}
-                     :exec-fn deps-deploy.deps-deploy/deploy
-                     :exec-args {:installer :local
-                                 :artifact "target/sentry-clj.jar"}}}}
+                              "--force"]}}}
