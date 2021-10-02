@@ -9,7 +9,7 @@
     SentryOptions
     SentryLevel]
    [java.io StringWriter]
-   [java.util UUID]))
+   [java.util UUID Date]))
 
 (defexpect keyword->level-test
   (expecting
@@ -48,7 +48,8 @@
                    :level     :info
                    :message   "yes"
                    :category  "maybe"
-                   :data      {"probably" "no"}}]
+                   :data      {"probably" "no"}
+                   :timestamp (Date.)}]
    :server-name  "example.com"
    :fingerprints ["{{ default }}" "nice"]
    :extra        {:one {:two 2}}
@@ -68,12 +69,13 @@
 (defexpect map->breadcrumb-test
   (expecting
    "breadcrumbs"
-   (let [breadcrumb (#'sut/map->breadcrumb {:type "type" :level :info :message "message" :category "category" :data {:a "b" :c "d"}})]
+   (let [breadcrumb (#'sut/map->breadcrumb {:type "type" :level :info :message "message" :category "category" :data {:a "b" :c "d"} :timestamp (Date. 1000000000000)})]
      (expect "type" (.getType breadcrumb))
      (expect SentryLevel/INFO (.getLevel breadcrumb))
      (expect "message" (.getMessage breadcrumb))
      (expect "category" (.getCategory breadcrumb))
-     (expect {"a" "b" "c" "d"} (.getData breadcrumb)))))
+     (expect {"a" "b" "c" "d"} (.getData breadcrumb))
+     (expect (Date. 1000000000000) (.getTimestamp breadcrumb)))))
 
 (defexpect map->user-test
   (expecting

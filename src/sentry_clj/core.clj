@@ -3,7 +3,7 @@
   (:require
    [clojure.walk :as walk])
   (:import
-   [java.util HashMap List Map UUID]
+   [java.util HashMap List Map UUID Date]
    [io.sentry Breadcrumb DateUtils Sentry SentryEvent SentryLevel SentryOptions]
    [io.sentry.protocol Message Request SentryId User]))
 
@@ -32,8 +32,10 @@
 
 (defn ^:private ^Breadcrumb map->breadcrumb
   "Converts a map into a Breadcrumb."
-  [{:keys [type level message category data]}]
-  (let [breadcrumb (Breadcrumb.)]
+  [{:keys [type level message category data timestamp]}]
+  (let [breadcrumb (if timestamp
+                     (Breadcrumb. ^Date timestamp)
+                     (Breadcrumb.))]
     (when type
       (.setType breadcrumb type))
     (when level
