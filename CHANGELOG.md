@@ -16,7 +16,15 @@ commits since the beginning of this repository.
 ### Added
 ### Removed
 
-### [5.2.154]
+## [5.2.155]
+
+### Changed
+
+- Update Sentry Java SDK to 5.2.1
+
+## [5.2.154]
+
+### Changed
 
 - Update Sentry Java SDK to 5.2.0
 - Use Clojure Tools Build for building
@@ -154,10 +162,11 @@ commits since the beginning of this repository.
   compatible with Sentry 10.0.1 and below. If you wish to use those
   versions, please continue to use sentry-clj 1.7.30.
 
-[Unreleased]: https://github.com/getsentry/sentry-clj/compare/5.2.154...HEAD
-[5.2.154]: https://github.com/getsentry/sentry-clj/compare/5.0.151...5.2.154
+[Unreleased]: https://github.com/getsentry/sentry-clj/compare/5.2.155...HEAD
+[5.2.155]: https://github.com/getsentry/sentry-clj/compare/5.0.154...5.2.155
+[5.2.154]: https://github.com/getsentry/sentry-clj/compare/5.0.152...5.2.154
 [5.0.152]: https://github.com/getsentry/sentry-clj/compare/5.0.151...5.0.152
-[5.0.151]: https://github.com/getsentry/sentry-clj/compare/5.0.147...5.0.151
+[5.0.151]: https://github.com/getsentry/sentry-clj/compare/5.0.149...5.0.151
 [5.0.149]: https://github.com/getsentry/sentry-clj/compare/5.0.147...5.0.149
 [5.0.147]: https://github.com/getsentry/sentry-clj/compare/4.3.146...5.0.147
 [4.3.146]: https://github.com/getsentry/sentry-clj/compare/4.3.143...4.3.146

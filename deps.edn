@@ -1,6 +1,6 @@
 {:paths ["src"]
 
- :deps {io.sentry/sentry {:mvn/version "5.2.0"}
+ :deps {io.sentry/sentry {:mvn/version "5.2.1"}
         org.clojure/clojure {:mvn/version "1.10.3"}
         ring/ring-core {:mvn/version "1.9.4"}}
 
