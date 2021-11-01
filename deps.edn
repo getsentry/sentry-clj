@@ -1,6 +1,6 @@
 {:paths ["src"]
 
- :deps {io.sentry/sentry {:mvn/version "5.2.4"}
+ :deps {io.sentry/sentry {:mvn/version "5.3.0"}
         org.clojure/clojure {:mvn/version "1.10.3"}
         ring/ring-core {:mvn/version "1.9.4"}}
 
@@ -11,7 +11,7 @@
            :test {:extra-paths ["test"]
                   :extra-deps {cheshire/cheshire {:mvn/version "5.10.1"}
                                expectations/clojure-test {:mvn/version "1.2.1"}
-                               lambdaisland/kaocha {:mvn/version "1.0.902"}
+                               lambdaisland/kaocha {:mvn/version "1.60.945"}
                                lambdaisland/kaocha-cloverage {:mvn/version "1.0.75"}
                                lambdaisland/kaocha-junit-xml {:mvn/version "0.0.76"}
                                orchestra/orchestra {:mvn/version "2021.01.01-1"}
