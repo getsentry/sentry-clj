@@ -3,7 +3,7 @@
    [clojure.tools.build.api :as b]
    [org.corfield.build :as bb]))
 
-(def ^:private version (format "5.4.%s" (b/git-count-revs nil)))
+(def ^:private version (format "5.5.%s" (b/git-count-revs nil)))
 (def ^:private library 'io.sentry/sentry-clj)
 
 (defn run-tests

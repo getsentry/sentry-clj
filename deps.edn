@@ -2,11 +2,11 @@
 
  :deps {org.clojure/clojure {:mvn/version "1.10.3"}
 
-        io.sentry/sentry {:mvn/version "5.4.3"}
+        io.sentry/sentry {:mvn/version "5.5.0"}
         ring/ring-core {:mvn/version "1.9.4"}}
 
- :aliases {:build {:deps {io.github.seancorfield/build-clj {:git/tag "v0.6.1"
-                                                            :git/sha "6e962ef"}}
+ :aliases {:build {:deps {io.github.seancorfield/build-clj {:git/tag "v0.6.3"
+                                                            :git/sha "9b8e09b"}}
                    :ns-default scripts.build}
 
            :test {:extra-paths ["test"]
