@@ -1,8 +1,10 @@
 {:paths ["src"]
 
  :deps {org.clojure/clojure {:mvn/version "1.10.3"}
-
-        io.sentry/sentry {:mvn/version "5.5.0"}
+        ;;
+        ;;
+        ;;
+        io.sentry/sentry {:mvn/version "5.5.1"}
         ring/ring-core {:mvn/version "1.9.4"}}
 
  :aliases {:build {:deps {io.github.seancorfield/build-clj {:git/tag "v0.6.3"
