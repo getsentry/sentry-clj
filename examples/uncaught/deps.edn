@@ -1,12 +1,14 @@
 {:paths ["src" "resources"]
 
  :deps {org.clojure/clojure {:mvn/version "1.10.3"}
-
-        ch.qos.logback/logback-classic {:mvn/version "1.2.7"}
-        io.sentry/sentry {:mvn/version "5.5.1"}
-        io.sentry/sentry-clj {:mvn/version "5.5.163"}
+        ;;
+        ;;
+        ;;
+        ch.qos.logback/logback-classic {:mvn/version "1.2.9"}
+        io.sentry/sentry {:mvn/version "5.5.2"}
+        io.sentry/sentry-clj {:mvn/version "5.5.164"}
         org.clojure/tools.cli {:mvn/version "1.0.206"}
-        org.clojure/tools.logging {:mvn/version "1.2.1"}
+        org.clojure/tools.logging {:mvn/version "1.2.3"}
         org.slf4j/jcl-over-slf4j {:mvn/version "1.7.32"}
         org.slf4j/jul-to-slf4j {:mvn/version "1.7.32"}
         org.slf4j/log4j-over-slf4j {:mvn/version "1.7.32"}
