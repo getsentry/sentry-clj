@@ -1,11 +1,12 @@
 (ns sentry-clj.core
   "A thin wrapper around the official Java library for Sentry."
   (:require
+   [clojure.string :refer [blank?]]
    [clojure.walk :as walk])
   (:import
-   [java.util HashMap List Map UUID Date]
    [io.sentry Breadcrumb DateUtils Sentry SentryEvent SentryLevel SentryOptions]
-   [io.sentry.protocol Message Request SentryId User]))
+   [io.sentry.protocol Message Request SentryId User]
+   [java.util HashMap Map UUID Date]))
 
 (set! *warn-on-reflection* true)
 
@@ -13,11 +14,11 @@
   "Converts a keyword into an event level."
   [level]
   (case level
-    :debug   SentryLevel/DEBUG
-    :info    SentryLevel/INFO
+    :debug SentryLevel/DEBUG
+    :info SentryLevel/INFO
     :warning SentryLevel/WARNING
-    :error   SentryLevel/ERROR
-    :fatal   SentryLevel/FATAL
+    :error SentryLevel/ERROR
+    :fatal SentryLevel/FATAL
     SentryLevel/INFO))
 
 (defn ^:private java-util-hashmappify-vals
@@ -130,16 +131,74 @@
       (doseq [[k v] (java-util-hashmappify-vals data)]
         (.setExtra sentry-event k v)))
     (when throwable
-      (.setThrowable sentry-event ^Throwable throwable))
+      (.setThrowable sentry-event throwable))
     (when (seq fingerprints)
-      (.setFingerprints sentry-event ^List fingerprints))
+      (.setFingerprints sentry-event fingerprints))
     sentry-event))
 
 (def ^:private sentry-defaults
   {:debug false
    :environment "production"
-   :enable-uncaught-exception-handler true})
+   :enable-uncaught-exception-handler true
+   :uncaught-handler-enabled true})
 
+(defn ^:private ^SentryOptions sentry-options
+  [dsn config]
+  (let [{:keys [environment
+                debug
+                release
+                dist
+                server-name
+                shutdown-timeout
+                in-app-includes
+                in-app-excludes
+                ignored-exceptions-for-type
+                enable-uncaught-exception-handler ;; deprecated
+                uncaught-handler-enabled
+                before-send-fn
+                before-breadcrumb-fn]} (merge sentry-defaults config)
+        sentry-options (SentryOptions.)]
+
+    (.setDsn sentry-options dsn)
+
+    (when environment
+      (.setEnvironment sentry-options environment))
+    (when debug
+      (.setDebug sentry-options debug)) ;; already set to `false` in the SDK.
+    (when release
+      (.setRelease sentry-options release))
+    (when dist
+      (.setDist sentry-options dist))
+    (when server-name
+      (.setServerName sentry-options ^String server-name))
+    (when shutdown-timeout
+      (.setShutdownTimeout sentry-options shutdown-timeout)) ;; already set to 2000ms in the SDK
+    (doseq [in-app-include in-app-includes]
+      (.addInAppInclude sentry-options in-app-include))
+    (doseq [in-app-exclude in-app-excludes]
+      (.addInAppExclude sentry-options in-app-exclude))
+    (doseq [ignored-exception-for-type ignored-exceptions-for-type]
+      (try
+       (let [clazz (Class/forName ignored-exception-for-type)]
+         (when (isa? clazz Throwable)
+           (.addIgnoredExceptionForType sentry-options ^Throwable clazz)))
+       (catch Exception _))) ; just ignore it.
+    (when-not (and enable-uncaught-exception-handler uncaught-handler-enabled)
+      (.setEnableUncaughtExceptionHandler sentry-options false)) ;; already true in the SDK
+    (when before-send-fn
+      (.setBeforeSend sentry-options ^SentryEvent
+                      (reify io.sentry.SentryOptions$BeforeSendCallback
+                        (execute [_ event hint]
+                          (before-send-fn event hint)))))
+    (when before-breadcrumb-fn
+      (.setBeforeBreadcrumb sentry-options ^Breadcrumb
+                            (reify io.sentry.SentryOptions$BeforeBreadcrumbCallback
+                              (execute [_ breadcrumb hint]
+                                (before-breadcrumb-fn breadcrumb hint)))))
+
+    sentry-options))
+
+#_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
 (defn init!
   "Initialize Sentry with the mandatory `dsn`
 
@@ -150,9 +209,14 @@
    | `:environment`                       | Set the environment on which Sentry events will be logged, e.g., \"production\"                                    | production
    | `:debug`                             | Enable SDK logging at the debug level                                                                              | false
    | `:release`                           | All events are assigned to a particular release                                                                    |
+   | `:dist`                              | Set the application distribution that will be sent with each event                                                 |
+   | `:server-name`                       | Set the server name that will be sent with each event                                                              |
    | `:shutdown-timeout`                  | Wait up to X milliseconds before shutdown if there are events to send                                              | 2000ms
+   | `:in-app-includes`                   | A seqable collection (vector for example) containing package names to include when sending events                  |
    | `:in-app-excludes`                   | A seqable collection (vector for example) containing package names to ignore when sending events                   |
-   | `:enable-uncaught-exception-handler` | Enables the uncaught exception handler                                                                             | true
+   | `:ignored-exceptions-for-type        | Set exceptions that will be filtered out before sending to Sentry (a set of Classnames as Strings)                 |
+   | `:enable-uncaught-exception-handler` | (deprecated, use :uncaught-handler-enabled instead) Enables the uncaught exception handler                         | true
+   | `:uncaught-handler-enabled`          | Enables the uncaught exception handler                                                                             | true
    | `:before-send-fn`                    | A function (taking an event and a hint)                                                                            |
    |                                      | The body of the function must not be lazy (i.e., don't use filter on its own!) and must return an event or nil     |
    |                                      | If a nil is returned, the event will not be sent to Sentry                                                         |
@@ -185,51 +249,17 @@
    ```clojure
    (init! \"http://abcdefg@localhost:19000/2\" {:contexts {:foo \"bar\" :baz \"wibble\"}})
    ```
-
    "
   ([dsn] (init! dsn {}))
-  ([dsn config]
-   (let [{:keys [environment
-                 debug
-                 release
-                 shutdown-timeout
-                 in-app-excludes
-                 enable-uncaught-exception-handler
-                 before-send-fn
-                 before-breadcrumb-fn
-                 contexts]} (merge sentry-defaults config)
-         sentry-options (SentryOptions.)]
-     (when environment
-       (.setEnvironment sentry-options environment))
-     (when debug
-       (.setDebug sentry-options debug)) ;; already set to `false` in the SDK.
-     (when release
-       (.setRelease sentry-options release))
-     (when shutdown-timeout
-       (.setShutdownTimeout sentry-options shutdown-timeout)) ;; already set to 2000ms in the SDK
-     (doseq [in-app-exclude in-app-excludes]
-       (.addInAppExclude sentry-options in-app-exclude))
-     (when-not enable-uncaught-exception-handler
-       (.setEnableUncaughtExceptionHandler sentry-options false)) ;; already true in the SDK
-     (when before-send-fn
-       (.setBeforeSend sentry-options ^SentryEvent
-                       (reify io.sentry.SentryOptions$BeforeSendCallback
-                         (execute [this event hint]
-                           (before-send-fn event hint)))))
-     (when before-breadcrumb-fn
-       (.setBeforeBreadcrumb sentry-options ^Breadcrumb
-                             (reify io.sentry.SentryOptions$BeforeBreadcrumbCallback
-                               (execute [this breadcrumb hint]
-                                 (before-breadcrumb-fn breadcrumb hint)))))
-     (.setDsn sentry-options dsn)
-
-     (Sentry/init sentry-options)
-
+  ([dsn {:keys [contexts] :as config}]
+   {:pre [(not (blank? dsn))]}
+   (let [options (sentry-options dsn config)]
+     (Sentry/init options)
      (when contexts
        (Sentry/configureScope (reify io.sentry.ScopeCallback
-                                (run [this scope]
+                                (run [_ scope]
                                   (doseq [[k v] (java-util-hashmappify-vals contexts)]
-                                   (.setContexts scope ^String k ^Object {"value" v})))))))))
+                                    (.setContexts scope ^String k ^Object {"value" v})))))))))
 
 #_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
 (defn close!

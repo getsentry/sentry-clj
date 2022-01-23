@@ -56,12 +56,17 @@ If you want an interpolated message, you need to provide the full map, i.e.,
 
 | key                                  | description                                                                                                        | default
 | ------------------------------------ | ------------------------------------------------------------------------------------------------------------------ | -------
-| `:environment`                       | Set the environment on which Sentry events will be logged, e.g., "staging"                                         | production
+| `:environment`                       | Set the environment on which Sentry events will be logged, e.g., \"production\"                                    | production
 | `:debug`                             | Enable SDK logging at the debug level                                                                              | false
 | `:release`                           | All events are assigned to a particular release                                                                    |
+| `:dist`                              | Set the application distribution that will be sent with each event                                                 |
+| `:server-name`                       | Set the server name that will be sent with each event                                                              |
 | `:shutdown-timeout`                  | Wait up to X milliseconds before shutdown if there are events to send                                              | 2000ms
+| `:in-app-includes`                   | A seqable collection (vector for example) containing package names to include when sending events                  |
 | `:in-app-excludes`                   | A seqable collection (vector for example) containing package names to ignore when sending events                   |
-| `:enable-uncaught-exception-handler` | Enables the uncaught exception handler                                                                             | true
+| `:ignored-exceptions-for-type        | Set exceptions that will be filtered out before sending to Sentry (a set of Classnames as Strings)                 |
+| `:enable-uncaught-exception-handler` | (deprecated, use :uncaught-handler-enabled instead) Enables the uncaught exception handler                         | true
+| `:uncaught-handler-enabled`          | Enables the uncaught exception handler                                                                             | true
 | `:before-send-fn`                    | A function (taking an event and a hint)                                                                            |
 |                                      | The body of the function must not be lazy (i.e., don't use filter on its own!) and must return an event or nil     |
 |                                      | If a nil is returned, the event will not be sent to Sentry                                                         |
@@ -71,7 +76,7 @@ If you want an interpolated message, you need to provide the full map, i.e.,
 |                                      | If a nil is returned, the breadcrumb will not be sent to Sentry                                                    |
 |                                      | [More Information](https://docs.sentry.io/platforms/java/enriching-events/breadcrumbs/)                            |
 | `:contexts`                          | A map of key/value pairs to attach to every Event that is sent.                                                    |
-|                                      | [More Information](https://docs.sentry.io/platforms/java/enriching-events/context/)                                |
+|                                      | [More Information)(https://docs.sentry.io/platforms/java/enriching-events/context/)                                |
 
 Some examples:
 

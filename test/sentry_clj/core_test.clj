@@ -4,10 +4,8 @@
    [expectations.clojure.test :refer [defexpect expect expecting]]
    [sentry-clj.core :as sut])
   (:import
-   [io.sentry
-    GsonSerializer
-    SentryOptions
-    SentryLevel]
+   [io.sentry Breadcrumb GsonSerializer SentryOptions SentryLevel]
+   [io.sentry.protocol User Request]
    [java.io StringWriter]
    [java.util UUID Date]))
 
@@ -32,7 +30,7 @@
                   :username "username"
                   :ip-address "10.0.0.0"
                   :other {"a" "b"}}
-   :request {:url "http://foobar.com"
+   :request {:url "http://example.com"
              :method "GET"
              :query-string "?foo=bar"
              :data "data"
@@ -69,7 +67,7 @@
 (defexpect map->breadcrumb-test
   (expecting
    "breadcrumbs"
-   (let [breadcrumb (#'sut/map->breadcrumb {:type "type" :level :info :message "message" :category "category" :data {:a "b" :c "d"} :timestamp (Date. 1000000000000)})]
+   (let [breadcrumb ^Breadcrumb (#'sut/map->breadcrumb {:type "type" :level :info :message "message" :category "category" :data {:a "b" :c "d"} :timestamp (Date. 1000000000000)})]
      (expect "type" (.getType breadcrumb))
      (expect SentryLevel/INFO (.getLevel breadcrumb))
      (expect "message" (.getMessage breadcrumb))
@@ -80,7 +78,7 @@
 (defexpect map->user-test
   (expecting
    "a user"
-   (let [user (#'sut/map->user {:email "foo@bar.com" :id "id" :username "username" :ip-address "10.0.0.0" :other {"a" "b"}})]
+   (let [user ^User (#'sut/map->user {:email "foo@bar.com" :id "id" :username "username" :ip-address "10.0.0.0" :other {"a" "b"}})]
      (expect "foo@bar.com" (.getEmail user))
      (expect "id" (.getId user))
      (expect "username" (.getUsername user))
@@ -90,16 +88,16 @@
 (defexpect map->request-test
   (expecting
    "a request"
-   (let [request (#'sut/map->request {:url "http://foobar.com"
-                                      :method "GET"
-                                      :query-string "?foo=bar"
-                                      :data "data"
-                                      :cookies "cookie1=foo;cookie2=bar"
-                                      :headers {"X-Clacks-Overhead" "Terry Pratchett"
-                                                "X-w00t" "ftw!"}
-                                      :env {"a" "b"}
-                                      :other {"c" "d"}})]
-     (expect "http://foobar.com" (.getUrl request))
+   (let [request ^Request (#'sut/map->request {:url "http://example.com"
+                                               :method "GET"
+                                               :query-string "?foo=bar"
+                                               :data "data"
+                                               :cookies "cookie1=foo;cookie2=bar"
+                                               :headers {"X-Clacks-Overhead" "Terry Pratchett"
+                                                         "X-w00t" "ftw!"}
+                                               :env {"a" "b"}
+                                               :other {"c" "d"}})]
+     (expect "http://example.com" (.getUrl request))
      (expect "GET" (.getMethod request))
      (expect "?foo=bar" (.getQueryString request))
      (expect "data" (.getData request))
@@ -141,7 +139,7 @@
                              "method" "GET"
                              "other" {"c" "d"}
                              "query_string" "?foo=bar"
-                             "url" "http://foobar.com"}
+                             "url" "http://example.com"}
               "transaction" "456"
               "extra"       {"one" {"two" 2}}
               "platform"    "clojure"
@@ -181,7 +179,7 @@
                              "method" "GET"
                              "other" {"c" "d"}
                              "query_string" "?foo=bar"
-                             "url" "http://foobar.com"}
+                             "url" "http://example.com"}
               "transaction" "456"
               "extra"       {"one" {"two" 2}}
               "platform"    "clojure"
@@ -221,7 +219,7 @@
                              "method" "GET"
                              "other" {"c" "d"}
                              "query_string" "?foo=bar"
-                             "url" "http://foobar.com"}
+                             "url" "http://example.com"}
               "transaction" "456"
               "extra"       {"one" {"two" 2}
                              "ex-info" 2}
@@ -269,7 +267,7 @@
                              "method" "GET"
                              "other" {"c" "d"}
                              "query_string" "?foo=bar"
-                             "url" "http://foobar.com"}
+                             "url" "http://example.com"}
               "transaction" "456"
               "extra"       extra
               "platform"    "clojure"
@@ -282,3 +280,32 @@
               "sdk"         {"version" "blah"}
               "fingerprint" ["{{ default }}" "nice"]}
              actual))))
+
+(def ^:private sentry-options #'sut/sentry-options)
+
+(defexpect sentry-options-tests
+  (expecting
+   (let [sentry-options ^SentryOptions (sentry-options "http://www.example.com" {:environment "production"
+                                                                                 :debug true
+                                                                                 :release "1.1"
+                                                                                 :dist "x86"
+                                                                                 :server-name "host1"
+                                                                                 :shutdown-timeout 1000
+                                                                                 :in-app-includes ["com.includes" "com.includes2"]
+                                                                                 :in-app-excludes ["com.excludes" "com.excludes2"]
+                                                                                 :ignored-exceptions-for-type ["java.io.IOException" "java.lang.RuntimeException"]
+                                                                                 :uncaught-handler-enabled true})]
+    (expect "http://www.example.com" (.getDsn sentry-options))
+    (expect "production" (.getEnvironment sentry-options))
+    (expect (.isDebug sentry-options))
+    (expect "1.1" (.getRelease sentry-options))
+    (expect "x86" (.getDist sentry-options))
+    (expect "host1" (.getServerName sentry-options))
+    (expect 1000 (.getShutdownTimeout sentry-options))
+    (expect "com.includes" (first (.getInAppIncludes sentry-options)))
+    (expect "com.includes2" (second (.getInAppIncludes sentry-options)))
+    (expect "com.excludes" (first (.getInAppExcludes sentry-options)))
+    (expect "com.excludes2" (second (.getInAppExcludes sentry-options)))
+    (expect (isa? (first (.getIgnoredExceptionsForType sentry-options)) java.io.IOException))
+    (expect (isa? (second (.getIgnoredExceptionsForType sentry-options)) java.lang.RuntimeException))
+    (expect true (.isEnableUncaughtExceptionHandler sentry-options)))))

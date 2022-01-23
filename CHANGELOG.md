@@ -16,6 +16,21 @@ commits since the beginning of this repository.
 ### Added
 ### Removed
 
+## [5.5.165]
+
+### Changed
+
+- Update Sentry Java SDK to 5.5.3.
+- Deprecated `enable-uncaught-exception-handler` and added `uncaught-handler-enabled` to improve naming consistency with Java SDK.
+- A little bit of code refactoring.
+
+### Added
+
+- Added `in-app-includes` to complement `in-app-excludes`.
+- Added `ignored-exceptions-for-type` that accepts a vector of Classnames (as Strings) for Sentry to ignore.
+- Added `dist` and `server-name` to the Sentry Options configuration.
+- More tests.
+
 ## [5.5.164]
 
 ### Changed
@@ -216,8 +231,9 @@ commits since the beginning of this repository.
   compatible with Sentry 10.0.1 and below. If you wish to use those
   versions, please continue to use sentry-clj 1.7.30.
 
-[Unreleased]: https://github.com/getsentry/sentry-clj/compare/5.5.164...HEAD
-[5.5.163]: https://github.com/getsentry/sentry-clj/compare/5.5.163...5.5.164
+[Unreleased]: https://github.com/getsentry/sentry-clj/compare/5.5.165...HEAD
+[5.5.165]: https://github.com/getsentry/sentry-clj/compare/5.5.164...5.5.165
+[5.5.164]: https://github.com/getsentry/sentry-clj/compare/5.5.163...5.5.164
 [5.5.163]: https://github.com/getsentry/sentry-clj/compare/5.5.162...5.5.163
 [5.5.162]: https://github.com/getsentry/sentry-clj/compare/5.4.161...5.5.162
 [5.4.161]: https://github.com/getsentry/sentry-clj/compare/5.4.160...5.4.161
