@@ -64,7 +64,7 @@ If you want an interpolated message, you need to provide the full map, i.e.,
 | `:shutdown-timeout`                  | Wait up to X milliseconds before shutdown if there are events to send                                              | 2000ms
 | `:in-app-includes`                   | A seqable collection (vector for example) containing package names to include when sending events                  |
 | `:in-app-excludes`                   | A seqable collection (vector for example) containing package names to ignore when sending events                   |
-| `:ignored-exceptions-for-type        | Set exceptions that will be filtered out before sending to Sentry (a set of Classnames as Strings)                 |
+| `:ignored-exceptions-for-type`       | Set exceptions that will be filtered out before sending to Sentry (a set of Classnames as Strings)                 |
 | `:enable-uncaught-exception-handler` | (deprecated, use :uncaught-handler-enabled instead) Enables the uncaught exception handler                         | true
 | `:uncaught-handler-enabled`          | Enables the uncaught exception handler                                                                             | true
 | `:before-send-fn`                    | A function (taking an event and a hint)                                                                            |
