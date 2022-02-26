@@ -16,6 +16,13 @@ commits since the beginning of this repository.
 ### Added
 ### Removed
 
+## [5.6.170]
+
+### Changed
+
+- Fixed an issue where sometimes keywords where not being converted to strings #36
+- Bumped various libraries
+
 ## [5.6.169]
 
 ### Changed
@@ -243,8 +250,9 @@ commits since the beginning of this repository.
   compatible with Sentry 10.0.1 and below. If you wish to use those
   versions, please continue to use sentry-clj 1.7.30.
 
-[Unreleased]: https://github.com/getsentry/sentry-clj/compare/5.6.169...HEAD
-[5.6.169]: https://github.com/getsentry/sentry-clj/compare/5.5.166...5.6.169
+[Unreleased]: https://github.com/getsentry/sentry-clj/compare/5.6.170...HEAD
+[5.6.170]: https://github.com/getsentry/sentry-clj/compare/5.6.169...5.6.170
+[5.6.169]: https://github.com/getsentry/sentry-clj/compare/5.6.166...5.6.169
 [5.6.166]: https://github.com/getsentry/sentry-clj/compare/5.5.165...5.6.166
 [5.5.165]: https://github.com/getsentry/sentry-clj/compare/5.5.164...5.5.165
 [5.5.164]: https://github.com/getsentry/sentry-clj/compare/5.5.163...5.5.164

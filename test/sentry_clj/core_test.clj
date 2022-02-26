@@ -18,6 +18,13 @@
    (expect SentryLevel/ERROR (#'sut/keyword->level :error))
    (expect SentryLevel/FATAL (#'sut/keyword->level :fatal))))
 
+(defexpect java-util-hashmappify-vals-tests
+  (expecting
+   "everything is a string"
+   (expect {"a" "b"} (#'sut/java-util-hashmappify-vals {:a :b}))
+   (expect {"a" "b" {"c" "d"} (#'sut/java-util-hashmappify-vals {:a {:b {:c :d}}})})
+   (expect {"var1" "val1" "var2" {"a" {"b" {"c" {"d" {"e" "f"} "g" "h"}}}}} (#'sut/java-util-hashmappify-vals {:var1 "val1" :var2 {:a {:b {:c {:d {:e :f} :g :h}}}}}))))
+
 (def event
   {:event-id     (UUID/fromString "4c4fbea9-57a7-4c99-808d-2284306e6c98")
    :message      {:message "ok" :params ["foo" "bar"]}

@@ -9,7 +9,7 @@
         io.sentry/sentry-clj {:mvn/version "5.6.169"}
         org.clojure/tools.cli {:mvn/version "1.0.206"}
         org.clojure/tools.logging {:mvn/version "1.2.4"}
-        org.slf4j/jcl-over-slf4j {:mvn/version "1.7.35"}
-        org.slf4j/jul-to-slf4j {:mvn/version "1.7.35"}
-        org.slf4j/log4j-over-slf4j {:mvn/version "1.7.35"}
-        org.slf4j/slf4j-api {:mvn/version "1.7.35"}}}
+        org.slf4j/jcl-over-slf4j {:mvn/version "1.7.36"}
+        org.slf4j/jul-to-slf4j {:mvn/version "1.7.36"}
+        org.slf4j/log4j-over-slf4j {:mvn/version "1.7.36"}
+        org.slf4j/slf4j-api {:mvn/version "1.7.36"}}}
