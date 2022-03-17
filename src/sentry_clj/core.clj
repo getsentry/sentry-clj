@@ -255,7 +255,7 @@
   ([dsn {:keys [contexts] :as config}]
    {:pre [(not (blank? dsn))]}
    (let [options (sentry-options dsn config)]
-     (Sentry/init options)
+     (Sentry/init ^SentryOptions options)
      (when contexts
        (Sentry/configureScope (reify io.sentry.ScopeCallback
                                 (run [_ scope]

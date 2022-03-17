@@ -4,23 +4,23 @@
         ;;
         ;;
         ;;
-        io.sentry/sentry {:mvn/version "5.6.1"}
+        io.sentry/sentry {:mvn/version "5.7.0"}
         ring/ring-core {:mvn/version "1.9.5"}}
 
- :aliases {:build {:deps {io.github.seancorfield/build-clj {:git/tag "v0.7.0"
-                                                            :git/sha "5d2cb60"}}
+ :aliases {:build {:deps {io.github.seancorfield/build-clj {:git/tag "v0.8.0"
+                                                            :git/sha "9bd8b8a"}}
                    :ns-default scripts.build}
 
            :test {:extra-paths ["test"]
                   :extra-deps {cheshire/cheshire {:mvn/version "5.10.2"}
                                com.github.seancorfield/expectations {:mvn/version "2.0.157"}
-                               lambdaisland/kaocha {:mvn/version "1.63.998"}
+                               lambdaisland/kaocha {:mvn/version "1.64.1010"}
                                lambdaisland/kaocha-cloverage {:mvn/version "1.0.75"}
                                lambdaisland/kaocha-junit-xml {:mvn/version "0.0.76"}
                                orchestra/orchestra {:mvn/version "2021.01.01-1"}
                                org.clojure/test.check {:mvn/version "1.1.1"}}}
 
-           :antq {:replace-deps {com.github.liquidz/antq {:mvn/version "1.5.1"}
+           :antq {:replace-deps {com.github.liquidz/antq {:mvn/version "1.6.0"}
                                  org.slf4j/slf4j-nop {:mvn/version "1.7.36"}}
                   :exec-fn antq.tool/outdated
                   :exec-args {:directory ["."]
