@@ -21,7 +21,7 @@
     :fatal SentryLevel/FATAL
     SentryLevel/INFO))
 
-(defn ^:private java-util-hashmappify-vals
+(defn java-util-hashmappify-vals
   "Converts an ordinary Clojure map into a Clojure map with nested map
   values recursively translated into java.util.HashMap objects. Based
   on walk/stringify-keys."
@@ -201,13 +201,13 @@
     (when traces-sample-rate
       (.setTracesSampleRate sentry-options traces-sample-rate))
     (when traces-sample-fn
-      (.setTracesSampler sentry-options ^SentryOptions$TracesSamplerCallback (reify SentryOptions$TracesSamplerCallback
+      (.setTracesSampler sentry-options ^io.sentry.SentryOptions$TracesSamplerCallback (reify io.sentry.SentryOptions$TracesSamplerCallback
                                                                                          (sample
                                                                                              [_ ctx]
                                                                                            (traces-sample-fn {:custom-sample-context (-> ctx
                                                                                                                                          .getCustomSamplingContext
                                                                                                                                          .getData)
-                                                                                                              :transaction-context (.getTransactionContext ctx)})))))    
+                                                                                                              :transaction-context (.getTransactionContext ctx)})))))
     sentry-options))
 
 #_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
