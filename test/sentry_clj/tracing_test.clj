@@ -1,11 +1,21 @@
 (ns sentry-clj.tracing-test
   (:require
     [expectations.clojure.test :refer [defexpect expect expecting]]
-    [sentry-clj.core :as sentry]
     [sentry-clj.tracing :as sut])
   (:import
-    (io.sentry CustomSamplingContext Hub Scope Sentry SentryEvent SentryTracer TransactionContext SentryOptions SpanStatus Span)
-    (io.sentry.protocol Request SentryId)))
+    (io.sentry
+      CustomSamplingContext
+      Hub
+      Scope
+      Sentry
+      SentryOptions
+      SentryTracer
+      Span
+      SpanStatus
+      TransactionContext)
+    (io.sentry.protocol
+      Request
+      SentryId)))
 
 (defn- get-test-options
   ([] (get-test-options {}))
@@ -18,7 +28,7 @@
        (.setTracesSampleRate sentry-option traces-sample-rate))
      sentry-option)))
 
-(defn- get-test-sentry-tracer
+(defn- ^SentryTracer get-test-sentry-tracer
   []
   (let [sentry-option (get-test-options)
         hub (Hub. sentry-option)
@@ -59,21 +69,21 @@
                               "X-w00t" "ftw!"}
                    "data" "data"}
           csc (sut/compute-custom-sampling-context "request" request)]
-      (expect (.get ^CustomSamplingContext csc "request") request))))
+      (expect (.get csc "request") request))))
 
 (defexpect swap-transaction-status-test
   (expecting
     "change transaction status"
     (let [tr (get-test-sentry-tracer)]
       (sut/swap-transaction-status! tr (:ok sut/span-status))
-      (expect (.getStatus ^SentryTracer tr) (:ok sut/span-status)))))
+      (expect (.getStatus tr) (:ok sut/span-status)))))
 
 (defexpect finish-transaction!-test
   (expecting
     "transaction is finished"
     (let [tr (get-test-sentry-tracer)]
       (sut/finish-transaction! tr)
-      (expect (.isFinished ^SentryTracer tr) true))))
+      (expect (.isFinished tr) true))))
 
 (defexpect swap-scope-request!
   (expecting
@@ -101,16 +111,16 @@
     "when a child span is started and works correctly, span status is OK"
     (let [tr (get-test-sentry-tracer)]
       (sut/with-start-child-span "op" "desc" (println "hi"))
-      (expect (.getStatus ^Span (nth (.getChildren ^SentryTracer tr) 0)) (:ok sut/span-status))
+      (expect (.getStatus ^Span (nth (.getChildren tr) 0)) (:ok sut/span-status))
       (sut/finish-transaction! tr)))
   (expecting
     "when a child span is started and throw exceptions, span status is INTERNAL_ERROR"
     (let [tr (get-test-sentry-tracer)]
       (try
         (sut/with-start-child-span "op" "desc" (throw (ex-info "something-error" {})))
-        (catch Throwable e)
+        (catch Throwable _)
         (finally
-          (expect (.getStatus ^Span (nth (.getChildren ^SentryTracer tr) 0)) (:internal-error sut/span-status))
+          (expect (.getStatus ^Span (nth (.getChildren tr) 0)) (:internal-error sut/span-status))
           (sut/finish-transaction! tr))))))
 
 (defexpect start-transaction-test
@@ -128,10 +138,10 @@
           operation "opration"
           description "http.server"]
       (Sentry/setCurrentHub hub)
-      (let [tr (sut/start-transaction operation description (CustomSamplingContext.) nil)]
-        (expect (.getName ^SentryTracer tr) operation)
-        (expect (.getOperation ^SentryTracer tr) description)
-        (expect (complement nil?) (.getTraceId (.toSentryTrace ^SentryTracer tr)))
+      (let [^SentryTracer tr (sut/start-transaction operation description (CustomSamplingContext.) nil)]
+        (expect (.getName  tr) operation)
+        (expect (.getOperation  tr) description)
+        (expect (complement nil?) (.getTraceId (.toSentryTrace  tr)))
         (sut/finish-transaction! tr))))
   (expecting
     "when there is a sentry-trace-header, exist trace transaction is gotten"
@@ -141,10 +151,9 @@
           operation "opration"
           description "http.server"]
       (Sentry/setCurrentHub hub)
-      (let [tr (sut/start-transaction operation description (CustomSamplingContext.) (str sentry-trace-header "-" "c1"))]
-        (expect (.getName ^SentryTracer tr) operation)
-        (expect (.getOperation ^SentryTracer tr) description)
-        (expect (SentryId. sentry-trace-header) (.getTraceId (.toSentryTrace ^SentryTracer tr)))
+      (let [^SentryTracer tr (sut/start-transaction operation description (CustomSamplingContext.) (str sentry-trace-header "-" "c1"))]
+        (expect (.getName  tr) operation)
+        (expect (.getOperation  tr) description)
+        (expect (SentryId. sentry-trace-header) (.getTraceId (.toSentryTrace  tr)))
         (sut/finish-transaction! tr)))))
-
 

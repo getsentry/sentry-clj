@@ -201,13 +201,13 @@
     (when traces-sample-rate
       (.setTracesSampleRate sentry-options traces-sample-rate))
     (when traces-sample-fn
-      (.setTracesSampler sentry-options ^io.sentry.SentryOptions$TracesSamplerCallback (reify io.sentry.SentryOptions$TracesSamplerCallback
-                                                                                         (sample
-                                                                                             [_ ctx]
-                                                                                           (traces-sample-fn {:custom-sample-context (-> ctx
-                                                                                                                                         .getCustomSamplingContext
-                                                                                                                                         .getData)
-                                                                                                              :transaction-context (.getTransactionContext ctx)})))))
+      (.setTracesSampler sentry-options ^io.sentry.SentryOptions$TracesSamplerCallback
+                         (reify io.sentry.SentryOptions$TracesSamplerCallback
+                           (sample [_ ctx]
+                             (traces-sample-fn {:custom-sample-context (-> ctx
+                                                                           .getCustomSamplingContext
+                                                                           .getData)
+                                                :transaction-context (.getTransactionContext ctx)})))))
     sentry-options))
 
 #_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}

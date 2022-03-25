@@ -1,8 +1,7 @@
 (ns sentry-clj.ring
   "Ring utility functions."
   (:require
-   [clojure.string :refer [blank? upper-case]]
-   [clojure.walk :as walk]
+   [clojure.string :refer [upper-case]]
    [ring.util.request :refer [request-url]]
    [ring.util.response :as response]
    [sentry-clj.core :as sentry]
@@ -71,7 +70,7 @@
 
 (defn- map->request
   "Converts a map into a Request."
-  [{:keys [uri request-method query-string params cookies headers env other host scheme] :as req}]
+  [{:keys [uri request-method query-string params headers] :as req}]
   (let [request (Request.)]
     (when uri
       (.setUrl request (request-url req)))
@@ -90,12 +89,12 @@
   []
   (reify EventProcessor
     (^SentryEvent process
-     [this ^SentryEvent event hint]
+     [_ ^SentryEvent event _]
      (.setRuntime (.getContexts event) (compute-sentry-runtime))
      event)
 
     (^SentryTransaction process
-     [this ^SentryTransaction tran hint]
+     [_ ^SentryTransaction tran _]
      (.setRuntime (.getContexts tran) (compute-sentry-runtime))
      tran)))
 
@@ -126,7 +125,7 @@
 (defn wrap-sentry-tracing
   "Wraps the given handler in tracing"
   [handler]
-  (fn [{:keys [uri request-method query-string params cookies headers env other] :as req}]
+  (fn [req]
     (let [sentry-trace-header (get (:headers req) st/sentry-trace-header)
           name (extract-transaction-name req)
           custom-sampling-context (->> req
@@ -146,6 +145,7 @@
           (st/swap-transaction-status! transaction (:ok st/span-status))
           res)
         (catch Throwable e
-          (st/swap-transaction-status! transaction (:internal-error st/span-status)))
+          (st/swap-transaction-status! transaction (:internal-error st/span-status))
+          (throw e))
         (finally
           (st/finish-transaction! transaction))))))

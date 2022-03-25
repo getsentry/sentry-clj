@@ -1,11 +1,15 @@
 (ns sentry-clj.tracing
-  (:require
-    [clojure.string :refer [blank? upper-case]]
-    [clojure.walk :as walk]
-    [ring.util.request :refer [request-url]]
-    [sentry-clj.core :as sentry])
   (:import
-   (io.sentry Sentry SentryEvent SentryLevel SentryOptions TransactionContext CustomSamplingContext SpanStatus Scope SentryTraceHeader EventProcessor SentryTracer Hub)))
+    (io.sentry
+      CustomSamplingContext
+      EventProcessor
+      Hub
+      Scope
+      Sentry
+      SentryTraceHeader
+      SentryTracer
+      SpanStatus
+      TransactionContext)))
 
 (def span-status
   {:ok SpanStatus/OK
@@ -30,7 +34,7 @@
 (def sentry-trace-header
   SentryTraceHeader/SENTRY_TRACE_HEADER)
 
-(defn compute-custom-sampling-context
+(defn ^CustomSamplingContext compute-custom-sampling-context
   "Compute a custom sampling context has key and info."
   [key info]
   (let [csc (CustomSamplingContext.)]
@@ -45,8 +49,8 @@
     (let [contexts (TransactionContext/fromSentryTrace name operation (io.sentry.SentryTraceHeader. sentry-trace-header))]
       (-> (Sentry/getCurrentHub)
           (.startTransaction contexts ^CustomSamplingContext custom-sampling-context true)))
-      (-> (Sentry/getCurrentHub)
-          (.startTransaction ^String name "http.server" ^CustomSamplingContext custom-sampling-context true))))
+    (-> (Sentry/getCurrentHub)
+        (.startTransaction ^String name "http.server" ^CustomSamplingContext custom-sampling-context true))))
 
 (defn get-current-hub
   "Get current Hub."
@@ -66,7 +70,6 @@
   "Set request info to the scope."
   [^Scope scope req]
   (.setRequest scope req))
-
 
 (defn add-event-processor
   "Add Event Processor to the scope.
