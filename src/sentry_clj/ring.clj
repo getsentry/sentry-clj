@@ -7,10 +7,13 @@
    [sentry-clj.core :as sentry]
    [sentry-clj.tracing :as st])
   (:import
-   (io.sentry SentryEvent EventProcessor)
-   (io.sentry.protocol SentryTransaction Request)))
+   [io.sentry EventProcessor Hub Sentry SentryEvent SentryTraceHeader]
+   [io.sentry.protocol SentryTransaction Request]))
 
 (set! *warn-on-reflection* true)
+
+(def ^:private sentry-trace-header
+  SentryTraceHeader/SENTRY_TRACE_HEADER)
 
 (defn ^:private request->http
   "Converts a Ring request into an HTTP interface for an event."
@@ -22,6 +25,20 @@
    :headers (:headers req)
    :env {:session (-> req :session pr-str)
          "REMOTE_ADDR" (:remote-addr req)}})
+
+(defn ^:private get-current-hub
+  "Get current Hub."
+  []
+  (Sentry/getCurrentHub))
+
+(defn ^:private configure-scope!
+  "Set scope a callback function which is called
+  before a transaction finish or an event is send to Sentry."
+  [^Hub hub scope-cb]
+  (.configureScope hub (reify io.sentry.ScopeCallback
+                         (run
+                           [_ scope]
+                           (scope-cb scope)))))
 
 (defn ^:private request->user
   "Converts a Ring request into a User interface for an event."
@@ -44,14 +61,14 @@
       (response/content-type "text/html")
       (response/status 500)))
 
-(defn- extract-transaction-name
+(defn ^:private extract-transaction-name
   "Extract transactin name from request.
    ex) GET /api/status"
   [{:keys [request-method uri]}]
   (str (-> request-method name upper-case) " " uri))
 
 
-(defn- request->context-request
+(defn ^:private request->context-request
   "Converts a request into custom-sampling-context's request."
   [req]
   {:uri (request-url req)
@@ -60,7 +77,7 @@
    :headers (:headers req)
    :data (-> req :params)})
 
-(defn- compute-sentry-runtime
+(defn ^:private compute-sentry-runtime
   "Compute Clojure runtime information."
   []
   (let [runtime (io.sentry.protocol.SentryRuntime.)]
@@ -68,7 +85,7 @@
     (.setVersion runtime (clojure-version))
     runtime))
 
-(defn- map->request
+(defn ^:private map->request
   "Converts a map into a Request."
   [{:keys [uri request-method query-string params headers] :as req}]
   (let [request (Request.)]
@@ -84,7 +101,7 @@
       (.setHeaders request (sentry/java-util-hashmappify-vals headers)))
     request))
 
-(defn- event-processor
+(defn ^:private event-processor
   "This process is executed before a transaction finish or an event is sent."
   []
   (reify EventProcessor
@@ -126,7 +143,7 @@
   "Wraps the given handler in tracing"
   [handler]
   (fn [req]
-    (let [sentry-trace-header (get (:headers req) st/sentry-trace-header)
+    (let [trace-id (get (:headers req) sentry-trace-header)
           name (extract-transaction-name req)
           custom-sampling-context (->> req
                                        request->context-request
@@ -134,9 +151,9 @@
           transaction (st/start-transaction name
                                             "http.server"
                                             custom-sampling-context
-                                            sentry-trace-header)]
-      (-> (st/get-current-hub)
-          (st/configure-scope! (fn [scope]
+                                            trace-id)]
+      (-> (get-current-hub)
+          (configure-scope! (fn [scope]
                                  (st/swap-scope-request! scope (map->request req))
                                  (st/add-event-processor scope (event-processor)))))
 

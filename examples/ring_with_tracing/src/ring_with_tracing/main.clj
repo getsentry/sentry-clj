@@ -1,7 +1,7 @@
 (ns ring-with-tracing.main
   (:require
     [integrant.core :as ig]
-    [ring.adapter.jetty :refer :all]
+    [ring.adapter.jetty :refer [run-jetty]]
     [ring.middleware.json :refer [wrap-json-params wrap-json-response]]
     [ring.middleware.keyword-params :refer [wrap-keyword-params]]
     [sentry-clj.core :as sentry]

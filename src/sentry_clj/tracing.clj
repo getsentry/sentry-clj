@@ -1,15 +1,13 @@
 (ns sentry-clj.tracing
   (:import
-    (io.sentry
-      CustomSamplingContext
-      EventProcessor
-      Hub
-      Scope
-      Sentry
-      SentryTraceHeader
-      SentryTracer
-      SpanStatus
-      TransactionContext)))
+   [io.sentry
+    CustomSamplingContext
+    EventProcessor
+    Scope
+    Sentry
+    SentryTracer
+    SpanStatus
+    TransactionContext]))
 
 (def span-status
   {:ok SpanStatus/OK
@@ -31,9 +29,6 @@
    :data-loss SpanStatus/DATA_LOSS
    :unauthenticated SpanStatus/UNAUTHENTICATED})
 
-(def sentry-trace-header
-  SentryTraceHeader/SENTRY_TRACE_HEADER)
-
 (defn ^CustomSamplingContext compute-custom-sampling-context
   "Compute a custom sampling context has key and info."
   [key info]
@@ -51,20 +46,6 @@
           (.startTransaction contexts ^CustomSamplingContext custom-sampling-context true)))
     (-> (Sentry/getCurrentHub)
         (.startTransaction ^String name "http.server" ^CustomSamplingContext custom-sampling-context true))))
-
-(defn get-current-hub
-  "Get current Hub."
-  []
-  (Sentry/getCurrentHub))
-
-(defn configure-scope!
-  "Set scope a callback function which is called
-  before a transaction finish or an event is send to Sentry."
-  [^Hub hub scope-cb]
-  (.configureScope hub (reify io.sentry.ScopeCallback
-                         (run
-                           [_ scope]
-                           (scope-cb scope)))))
 
 (defn swap-scope-request!
   "Set request info to the scope."

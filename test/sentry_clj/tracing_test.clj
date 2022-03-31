@@ -3,19 +3,19 @@
     [expectations.clojure.test :refer [defexpect expect expecting]]
     [sentry-clj.tracing :as sut])
   (:import
-    (io.sentry
-      CustomSamplingContext
-      Hub
-      Scope
-      Sentry
-      SentryOptions
-      SentryTracer
-      Span
-      SpanStatus
-      TransactionContext)
-    (io.sentry.protocol
-      Request
-      SentryId)))
+   [io.sentry
+    CustomSamplingContext
+    Hub
+    Scope
+    Sentry
+    SentryOptions
+    SentryTracer
+    Span
+    SpanStatus
+    TransactionContext]
+   [io.sentry.protocol
+    Request
+    SentryId]))
 
 (defn- get-test-options
   ([] (get-test-options {}))
@@ -156,4 +156,3 @@
         (expect (.getOperation  tr) description)
         (expect (SentryId. sentry-trace-header) (.getTraceId (.toSentryTrace  tr)))
         (sut/finish-transaction! tr)))))
-

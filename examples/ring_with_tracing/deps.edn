@@ -1,22 +1,21 @@
 {:paths ["src" "resources"]
 
  :deps {org.clojure/clojure {:mvn/version "1.10.3"}
-        ring/ring-core {:mvn/version "1.9.5"}
-        ring/ring-jetty-adapter {:mvn/version "1.9.5"}
-        ring/ring-json {:mvn/version "0.5.1"}
+        ;;
+        ;;
+        ;;
+        ch.qos.logback/logback-classic {:mvn/version "1.2.10"}
         integrant/integrant {:mvn/version "0.8.0"}
         integrant/repl {:mvn/version "0.3.2"}
-        ;;
-        ;;
-        ;;
         io.sentry/sentry {:mvn/version "5.7.0"}
         io.sentry/sentry-clj {:local/root "../../../sentry-clj"}
-        ch.qos.logback/logback-classic {:mvn/version "1.2.10"}
-
         org.clojure/tools.cli {:mvn/version "1.0.206"}
         org.clojure/tools.logging {:mvn/version "1.2.4"}
         org.slf4j/jcl-over-slf4j {:mvn/version "1.7.36"}
         org.slf4j/jul-to-slf4j {:mvn/version "1.7.36"}
         org.slf4j/log4j-over-slf4j {:mvn/version "1.7.36"}
-        org.slf4j/slf4j-api {:mvn/version "1.7.36"}}}
+        org.slf4j/slf4j-api {:mvn/version "1.7.36"}
+        ring/ring-core {:mvn/version "1.9.5"}
+        ring/ring-jetty-adapter {:mvn/version "1.9.5"}
+        ring/ring-json {:mvn/version "0.5.1"}}}
 
