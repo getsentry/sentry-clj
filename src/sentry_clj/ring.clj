@@ -67,7 +67,6 @@
   [{:keys [request-method uri]}]
   (str (-> request-method name upper-case) " " uri))
 
-
 (defn ^:private request->context-request
   "Converts a request into custom-sampling-context's request."
   [req]
@@ -106,14 +105,14 @@
   []
   (reify EventProcessor
     (^SentryEvent process
-     [_ ^SentryEvent event _]
-     (.setRuntime (.getContexts event) (compute-sentry-runtime))
-     event)
+      [_ ^SentryEvent event _]
+      (.setRuntime (.getContexts event) (compute-sentry-runtime))
+      event)
 
     (^SentryTransaction process
-     [_ ^SentryTransaction tran _]
-     (.setRuntime (.getContexts tran) (compute-sentry-runtime))
-     tran)))
+      [_ ^SentryTransaction tran _]
+      (.setRuntime (.getContexts tran) (compute-sentry-runtime))
+      tran)))
 
 (defn wrap-report-exceptions
   "Wraps the given handler in error reporting.
@@ -130,14 +129,14 @@
                    error-fn default-error}}]
   (fn [req]
     (try
-     (handler req)
-     (catch Throwable e
-       (-> req
-           preprocess-fn
-           (request->event e)
-           (->> (postprocess-fn req)
-                sentry/send-event))
-       (error-fn req e)))))
+      (handler req)
+      (catch Throwable e
+        (-> req
+            preprocess-fn
+            (request->event e)
+            (->> (postprocess-fn req)
+                 sentry/send-event))
+        (error-fn req e)))))
 
 (defn wrap-sentry-tracing
   "Wraps the given handler in tracing"
@@ -154,8 +153,8 @@
                                             trace-id)]
       (-> (get-current-hub)
           (configure-scope! (fn [scope]
-                                 (st/swap-scope-request! scope (map->request req))
-                                 (st/add-event-processor scope (event-processor)))))
+                              (st/swap-scope-request! scope (map->request req))
+                              (st/add-event-processor scope (event-processor)))))
 
       (try
         (let [res (handler req)]
