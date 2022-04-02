@@ -33,3 +33,7 @@ as:
 `bin/run -d DSN`
 
 Where `DSN` is your DSN URL.
+
+== Tracing
+
+This example shows how to perform tracing with Ring.

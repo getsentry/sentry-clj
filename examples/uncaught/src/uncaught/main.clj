@@ -1,9 +1,9 @@
 (ns uncaught.main
- (:require
-  [clojure.tools.cli :refer [parse-opts]]
-  [clojure.tools.logging :as log]
-  [sentry-clj.core :as sentry])
- (:gen-class))
+  (:require
+   [clojure.tools.cli :refer [parse-opts]]
+   [clojure.tools.logging :as log]
+   [sentry-clj.core :as sentry])
+  (:gen-class))
 
 (defn ^:private set-default-exception-handler
   "Register our own Uncaught Exception Handler using the provided `sentry-client`."

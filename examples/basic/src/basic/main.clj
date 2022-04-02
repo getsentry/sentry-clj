@@ -1,11 +1,10 @@
 (ns basic.main
- (:require
-  [clojure.tools.logging :as log]
-  [sentry-clj.core :as sentry]))
+  (:require
+   [clojure.tools.logging :as log]
+   [sentry-clj.core :as sentry]))
 
 (defn ^:private create-sentry-logger
   "Create a Sentry Logger using the supplied `dsn`.
-
    If no `dsn` is supplied, simply log the `event` to a `logger`."
   [{:keys [dsn] :as config}]
   (if dsn

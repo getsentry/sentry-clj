@@ -77,6 +77,8 @@ If you want an interpolated message, you need to provide the full map, i.e.,
 |                                      | [More Information](https://docs.sentry.io/platforms/java/enriching-events/breadcrumbs/)                            |
 | `:contexts`                          | A map of key/value pairs to attach to every Event that is sent.                                                    |
 |                                      | [More Information)(https://docs.sentry.io/platforms/java/enriching-events/context/)                                |
+| `:traces-sample-rate`                | Set a uniform sample rate(a number of between 0.0 and 1.0) for all transactions for tracing                        |
+| `:traces-sample-fn`                  | A function (taking a custom sample context and a transaction context) enables you to control trace transactions    | 
 
 Some examples:
 

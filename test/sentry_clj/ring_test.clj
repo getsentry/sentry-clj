@@ -7,7 +7,9 @@
   (:import
    [io.sentry
     GsonSerializer
-    SentryOptions]
+    SentryOptions
+    Hub
+    Sentry]
    [java.io StringWriter]))
 
 (defn serialize
@@ -112,3 +114,23 @@
                          "url" "https://example.com/hello-world"},
               "sdk" {"version" "blah"},
               "user" {}} sentry-event))))
+
+(defn- get-test-options
+  ([] (get-test-options {}))
+  ([{:keys [traces-sample-rate]}]
+   (let [sentry-option (SentryOptions.)]
+     (.setDsn sentry-option "https://key@sentry.io/proj")
+     (.setEnvironment sentry-option "development")
+     (.setRelease sentry-option "release@1.0.0")
+     (when traces-sample-rate
+       (.setTracesSampleRate sentry-option traces-sample-rate))
+     sentry-option)))
+
+(defexpect wrap-sentry-tracing-test
+  (expecting
+   "passing through"
+   (let [sentry-option (get-test-options {:traces-sample-rate 1.0 :debug true})
+         hub (Hub. sentry-option)
+         handler (ring/wrap-sentry-tracing wrapped)]
+     (Sentry/setCurrentHub hub)
+     (expect "woo" (handler (assoc req :ok true))))))

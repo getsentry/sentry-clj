@@ -21,10 +21,10 @@
     :fatal SentryLevel/FATAL
     SentryLevel/INFO))
 
-(defn ^:private java-util-hashmappify-vals
+(defn java-util-hashmappify-vals
   "Converts an ordinary Clojure map into a Clojure map with nested map
-  values recursively translated into java.util.HashMap objects. Based
-  on walk/stringify-keys."
+   values recursively translated into java.util.HashMap objects. Based
+   on walk/stringify-keys."
   [m]
   (let [f (fn [[k v]]
             (let [k (if (keyword? k) (name k) k)
@@ -157,7 +157,9 @@
                 enable-uncaught-exception-handler ;; deprecated
                 uncaught-handler-enabled
                 before-send-fn
-                before-breadcrumb-fn]} (merge sentry-defaults config)
+                before-breadcrumb-fn
+                traces-sample-rate
+                traces-sample-fn]} (merge sentry-defaults config)
         sentry-options (SentryOptions.)]
 
     (.setDsn sentry-options dsn)
@@ -196,7 +198,16 @@
                             (reify io.sentry.SentryOptions$BeforeBreadcrumbCallback
                               (execute [_ breadcrumb hint]
                                 (before-breadcrumb-fn breadcrumb hint)))))
-
+    (when traces-sample-rate
+      (.setTracesSampleRate sentry-options traces-sample-rate))
+    (when traces-sample-fn
+      (.setTracesSampler sentry-options ^io.sentry.SentryOptions$TracesSamplerCallback
+                         (reify io.sentry.SentryOptions$TracesSamplerCallback
+                           (sample [_ ctx]
+                             (traces-sample-fn {:custom-sample-context (-> ctx
+                                                                           .getCustomSamplingContext
+                                                                           .getData)
+                                                :transaction-context (.getTransactionContext ctx)})))))
     sentry-options))
 
 #_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
@@ -228,6 +239,8 @@
    |                                      | [More Information](https://docs.sentry.io/platforms/java/enriching-events/breadcrumbs/)                            |
    | `:contexts`                          | A map of key/value pairs to attach to every Event that is sent.                                                    |
    |                                      | [More Information)(https://docs.sentry.io/platforms/java/enriching-events/context/)                                |
+   | `:traces-sample-rate`                | Set a uniform sample rate(a number of between 0.0 and 1.0) for all transactions for tracing                        |
+   | `:traces-sample-fn`                  | A function (taking a custom sample context and a transaction context) enables you to control trace transactions    |
 
    Some examples:
 
@@ -271,12 +284,12 @@
 (defn send-event
   "Sends the given event to Sentry, returning the event's id
 
-  Supports sending throwables:
+   Supports sending throwables:
 
-  ```
-  (sentry/send-event {:message   \"oh no\",
-                      :throwable (RuntimeException. \"foo bar\"})
-  ```
-  "
+   ```
+   (sentry/send-event {:message   \"oh no\",
+   :throwable (RuntimeException. \"foo bar\"})
+   ```
+   "
   [event]
   (str (Sentry/captureEvent (map->event event))))
