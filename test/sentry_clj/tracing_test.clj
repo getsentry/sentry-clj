@@ -108,11 +108,17 @@
 
 (defexpect with-start-child-span-test
   (expecting
-   "when a child span is started and works correctly, span status is OK"
+   "when a child span is started and works correctly, the evaluation result is given and span status is OK"
    (let [tr (get-test-sentry-tracer)]
-     (sut/with-start-child-span "op" "desc" (println "hi"))
+     (expect 1 (sut/with-start-child-span "op" "desc" (+ 1 1) (* 1 1)))
      (expect (.getStatus ^Span (nth (.getChildren tr) 0)) (:ok sut/span-status))
      (sut/finish-transaction! tr)))
+  (expecting
+   "when a child span is started with no tracing config, the evaluation result is only given."
+   (let [sentry-option (get-test-options)
+         hub (Hub. sentry-option)]
+     (Sentry/setCurrentHub hub)
+     (expect 1 (sut/with-start-child-span "op" "desc" (+ 1 1) (* 1 1)))))
   (expecting
    "when a child span is started and throw exceptions, span status is INTERNAL_ERROR"
    (let [tr (get-test-sentry-tracer)]
