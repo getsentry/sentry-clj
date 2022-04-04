@@ -7,7 +7,7 @@
    [sentry-clj.core :as sentry]
    [sentry-clj.tracing :as st])
   (:import
-   [io.sentry EventProcessor Hub Sentry SentryEvent SentryTraceHeader]
+   [io.sentry EventProcessor IHub Sentry SentryEvent SentryTraceHeader]
    [io.sentry.protocol SentryTransaction Request]))
 
 (set! *warn-on-reflection* true)
@@ -34,7 +34,7 @@
 (defn ^:private configure-scope!
   "Set scope a callback function which is called
    before a transaction finish or an event is send to Sentry."
-  [^Hub hub scope-cb]
+  [^IHub hub scope-cb]
   (.configureScope hub (reify io.sentry.ScopeCallback
                          (run
                            [_ scope]
