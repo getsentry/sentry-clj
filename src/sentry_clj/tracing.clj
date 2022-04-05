@@ -72,14 +72,16 @@
   "Start a child span which has the operation or description
    and finish after evaluating forms."
   [operation description & forms]
-  `(when-let [sp# (Sentry/getSpan)]
+  `(if-let [sp# (Sentry/getSpan)]
      (let [inner-sp# (.startChild sp# ~operation ~description)]
        (try
-        ~@forms
-        (.setStatus inner-sp# SpanStatus/OK)
+         (let [result# (do ~@forms)]
+           (.setStatus inner-sp# SpanStatus/OK)
+           result#)
         (catch Throwable e#
           (.setThrowable inner-sp# e#)
           (.setStatus inner-sp# SpanStatus/INTERNAL_ERROR)
           (throw e#))
         (finally
-         (.finish inner-sp#))))))
+          (.finish inner-sp#))))
+     (do ~@forms)))
