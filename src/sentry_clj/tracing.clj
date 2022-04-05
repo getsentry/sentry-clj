@@ -5,7 +5,7 @@
     EventProcessor
     Scope
     Sentry
-    SentryTracer
+    ITransaction
     SpanStatus
     TransactionContext]))
 
@@ -60,12 +60,12 @@
 
 (defn swap-transaction-status!
   "Set trace transaction status."
-  [^SentryTracer transaction status]
+  [^ITransaction transaction status]
   (.setStatus transaction status))
 
 (defn finish-transaction!
   "Finish trace transaction and send event to Sentry."
-  [^SentryTracer transaction]
+  [^ITransaction transaction]
   (.finish transaction))
 
 (defmacro with-start-child-span

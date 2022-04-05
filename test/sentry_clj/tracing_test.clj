@@ -136,7 +136,8 @@
          hub (Hub. sentry-option)]
      (Sentry/setCurrentHub hub)
      (let [tr (sut/start-transaction "op" "http.server" (CustomSamplingContext.) nil)]
-       (expect io.sentry.NoOpTransaction tr))))
+       (expect io.sentry.NoOpTransaction tr)
+       (expect nil (sut/finish-transaction! tr)))))
   (expecting
    "when there is not a sentry-trace-header, new trace transaction is created"
    (let [sentry-option (get-test-options {:traces-sample-rate 1.0})
@@ -148,7 +149,7 @@
        (expect (.getName  tr) operation)
        (expect (.getOperation  tr) description)
        (expect (complement nil?) (.getTraceId (.toSentryTrace  tr)))
-       (sut/finish-transaction! tr))))
+       (expect nil (sut/finish-transaction! tr)))))
   (expecting
    "when there is a sentry-trace-header, exist trace transaction is gotten"
    (let [sentry-option (get-test-options {:traces-sample-rate 1.0})
@@ -161,4 +162,4 @@
        (expect (.getName  tr) operation)
        (expect (.getOperation  tr) description)
        (expect (SentryId. sentry-trace-header) (.getTraceId (.toSentryTrace  tr)))
-       (sut/finish-transaction! tr)))))
+       (expect nil (sut/finish-transaction! tr))))))
