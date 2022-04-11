@@ -16,6 +16,10 @@ commits since the beginning of this repository.
 ### Added
 ### Removed
 
+## [5.7.177]
+
+- Update Sentry Java SDK to 5.7.2.
+
 ## [5.7.176]
 
 ### Added
@@ -275,7 +279,8 @@ commits since the beginning of this repository.
   compatible with Sentry 10.0.1 and below. If you wish to use those
   versions, please continue to use sentry-clj 1.7.30.
 
-[Unreleased]: https://github.com/getsentry/sentry-clj/compare/5.7.176...HEAD
+[Unreleased]: https://github.com/getsentry/sentry-clj/compare/5.7.177...HEAD
+[5.7.177]: https://github.com/getsentry/sentry-clj/compare/5.7.176...5.7.177
 [5.7.176]: https://github.com/getsentry/sentry-clj/compare/5.7.172...5.7.176
 [5.7.172]: https://github.com/getsentry/sentry-clj/compare/5.7.171...5.7.172
 [5.7.171]: https://github.com/getsentry/sentry-clj/compare/5.6.170...5.7.171
