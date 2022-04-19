@@ -38,7 +38,7 @@ jobs:
       - name: Setup Clojure
         uses: DeLaGuardo/setup-clojure@master
         with:
-          tools-deps: 'latest'
+          cli: 'latest'
 
       - name: Run Tests
         run: clojure -T:build run-tests

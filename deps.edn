@@ -4,7 +4,7 @@
         ;;
         ;;
         ;;
-        io.sentry/sentry {:mvn/version "5.7.2"}
+        io.sentry/sentry {:mvn/version "5.7.3"}
         ring/ring-core {:mvn/version "1.9.5"}}
 
  :aliases {:build {:deps {io.github.seancorfield/build-clj {:git/tag "v0.8.0"
@@ -14,7 +14,7 @@
            :test {:extra-paths ["test"]
                   :extra-deps {cheshire/cheshire {:mvn/version "5.10.2"}
                                com.github.seancorfield/expectations {:mvn/version "2.0.160"}
-                               lambdaisland/kaocha {:mvn/version "1.64.1010"}
+                               lambdaisland/kaocha {:mvn/version "1.65.1029"}
                                lambdaisland/kaocha-cloverage {:mvn/version "1.0.75"}
                                lambdaisland/kaocha-junit-xml {:mvn/version "0.0.76"}
                                orchestra/orchestra {:mvn/version "2021.01.01-1"}
