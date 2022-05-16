@@ -16,6 +16,11 @@ commits since the beginning of this repository.
 ### Added
 ### Removed
 
+## [5.7.179]
+
+- Update Sentry Java SDK to 5.7.4.
+- Update Clojure to 1.11.1
+
 ## [5.7.178]
 
 - Update Sentry Java SDK to 5.7.3.
@@ -283,7 +288,8 @@ commits since the beginning of this repository.
   compatible with Sentry 10.0.1 and below. If you wish to use those
   versions, please continue to use sentry-clj 1.7.30.
 
-[Unreleased]: https://github.com/getsentry/sentry-clj/compare/5.7.178...HEAD
+[Unreleased]: https://github.com/getsentry/sentry-clj/compare/5.7.179...HEAD
+[5.7.179]: https://github.com/getsentry/sentry-clj/compare/5.7.178...5.7.179
 [5.7.178]: https://github.com/getsentry/sentry-clj/compare/5.7.177...5.7.178
 [5.7.177]: https://github.com/getsentry/sentry-clj/compare/5.7.176...5.7.177
 [5.7.176]: https://github.com/getsentry/sentry-clj/compare/5.7.172...5.7.176
