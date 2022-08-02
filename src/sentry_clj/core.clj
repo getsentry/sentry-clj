@@ -6,7 +6,7 @@
   (:import
    [io.sentry Breadcrumb DateUtils Sentry SentryEvent SentryLevel SentryOptions]
    [io.sentry.protocol Message Request SentryId User]
-   [java.util HashMap Map UUID Date]))
+   [java.util Date HashMap Map UUID]))
 
 (set! *warn-on-reflection* true)
 
@@ -32,12 +32,11 @@
               (if (map? v) [k (HashMap. ^Map v)] [k v])))]
     (walk/postwalk (fn [x] (if (map? x) (into {} (map f x)) x)) m)))
 
-(defn ^:private ^Breadcrumb map->breadcrumb
+(defn ^:private map->breadcrumb
   "Converts a map into a Breadcrumb."
+  ^Breadcrumb
   [{:keys [type level message category data timestamp]}]
-  (let [breadcrumb (if timestamp
-                     (Breadcrumb. ^Date timestamp)
-                     (Breadcrumb.))]
+  (let [breadcrumb (if timestamp (Breadcrumb. ^Date timestamp) (Breadcrumb.))]
     (when type
       (.setType breadcrumb type))
     (when level
@@ -51,8 +50,9 @@
         (.setData breadcrumb k v)))
     breadcrumb))
 
-(defn ^:private ^User map->user
+(defn ^:private map->user
   "Converts a map into a User."
+  ^User
   [{:keys [email id username ip-address other]}]
   (let [user (User.)]
     (when email
@@ -67,8 +67,9 @@
       (.setOthers user other))
     user))
 
-(defn ^:private ^Request map->request
+(defn ^:private map->request
   "Converts a map into a Request."
+  ^Request
   [{:keys [url method query-string data cookies headers env other]}]
   (let [request (Request.)]
     (when url
@@ -89,8 +90,9 @@
       (.setOthers request (java-util-hashmappify-vals other)))
     request))
 
-(defn ^:private ^SentryEvent map->event
+(defn ^:private map->event
   "Converts a map into an event."
+  ^SentryEvent
   [{:keys [event-id message level release environment user request logger platform dist
            tags breadcrumbs server-name extra fingerprints throwable transaction]}]
   (let [sentry-event (SentryEvent. (DateUtils/getCurrentDateTime))
@@ -141,16 +143,18 @@
   {:debug false
    :environment "production"
    :enable-uncaught-exception-handler true
-   :uncaught-handler-enabled true})
+   :uncaught-handler-enabled true
+   :serialization-max-depth 5}) ;; default to 5, adjust lower if a circular reference loop occurs.
 
-(defn ^:private ^SentryOptions sentry-options
+(defn ^:private sentry-options
+  ^SentryOptions
   [dsn config]
   (let [{:keys [environment
                 debug
                 release
                 dist
                 server-name
-                shutdown-timeout
+                shutdown-timeout-millis
                 in-app-includes
                 in-app-excludes
                 ignored-exceptions-for-type
@@ -158,6 +162,7 @@
                 uncaught-handler-enabled
                 before-send-fn
                 before-breadcrumb-fn
+                serialization-max-depth
                 traces-sample-rate
                 traces-sample-fn]} (merge sentry-defaults config)
         sentry-options (SentryOptions.)]
@@ -166,6 +171,17 @@
 
     (when environment
       (.setEnvironment sentry-options environment))
+    ;;
+    ;; When serializing out an object, say a Throwable, sometimes it happens
+    ;; that the serialization goes into a circular reference loop and just locks up
+    ;;
+    ;; Turning on `{:debug true}` when initializing Sentry should expose the issue on your logs
+    ;;
+    ;; If you experience this issue, try adjusting the maximum depth to a low
+    ;; number, such as 2 and see if that works for you.
+    ;;
+    (when serialization-max-depth
+      (.setMaxDepth sentry-options serialization-max-depth)) ;; defaults to 100 in the SDK, but we default it to 5.
     (when debug
       (.setDebug sentry-options debug)) ;; already set to `false` in the SDK.
     (when release
@@ -174,8 +190,8 @@
       (.setDist sentry-options dist))
     (when server-name
       (.setServerName sentry-options ^String server-name))
-    (when shutdown-timeout
-      (.setShutdownTimeout sentry-options shutdown-timeout)) ;; already set to 2000ms in the SDK
+    (when shutdown-timeout-millis
+      (.setShutdownTimeoutMillis sentry-options shutdown-timeout-millis)) ;; already set to 2000ms in the SDK
     (doseq [in-app-include in-app-includes]
       (.addInAppInclude sentry-options in-app-include))
     (doseq [in-app-exclude in-app-excludes]
@@ -223,7 +239,7 @@
    | `:release`                           | All events are assigned to a particular release                                                                    |
    | `:dist`                              | Set the application distribution that will be sent with each event                                                 |
    | `:server-name`                       | Set the server name that will be sent with each event                                                              |
-   | `:shutdown-timeout`                  | Wait up to X milliseconds before shutdown if there are events to send                                              | 2000ms
+   | `:shutdown-timeout-millis`           | Wait up to X milliseconds before shutdown if there are events to send                                              | 2000ms
    | `:in-app-includes`                   | A seqable collection (vector for example) containing package names to include when sending events                  |
    | `:in-app-excludes`                   | A seqable collection (vector for example) containing package names to ignore when sending events                   |
    | `:ignored-exceptions-for-type        | Set exceptions that will be filtered out before sending to Sentry (a set of Classnames as Strings)                 |
@@ -241,6 +257,7 @@
    |                                      | [More Information)(https://docs.sentry.io/platforms/java/enriching-events/context/)                                |
    | `:traces-sample-rate`                | Set a uniform sample rate(a number of between 0.0 and 1.0) for all transactions for tracing                        |
    | `:traces-sample-fn`                  | A function (taking a custom sample context and a transaction context) enables you to control trace transactions    |
+   | `:serialization-max-depth`           | Set to a lower number, i.e., 2, if you experience circular reference errors when sending events                    | 5
 
    Some examples:
 

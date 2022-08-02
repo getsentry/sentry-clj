@@ -1,0 +1,6 @@
+{:clean {:ns-inner-blocks-indentation :next-line
+         :sort {:import-classes {:classes-per-line -1}
+                :refer {:max-line-length 256}}}
+ :hover {:arity-on-same-line? true
+         :hide-file-location? true}
+ :use-metadata-for-privacy? true}

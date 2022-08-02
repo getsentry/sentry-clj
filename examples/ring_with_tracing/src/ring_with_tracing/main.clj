@@ -17,7 +17,7 @@
   (run-jetty handler (-> opts (dissoc :handler) (assoc :join? false))))
 
 (defmethod ig/init-key :handler/hello [_ {:keys [name]}]
-  (fn [request]
+  (fn [_request]
 
     (with-start-child-span "task" "my-child-operation"
       (Thread/sleep 1000))

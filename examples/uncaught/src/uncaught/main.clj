@@ -10,7 +10,7 @@
   [sentry-logger]
   (Thread/setDefaultUncaughtExceptionHandler
    (reify Thread$UncaughtExceptionHandler
-     (uncaughtException [_ thread ex]
+     (uncaughtException [_ _thread ex]
        (log/warn ex "Uncaught Exception!")
        (sentry-logger {:throwable ex})))))
 

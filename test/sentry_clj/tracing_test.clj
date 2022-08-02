@@ -3,21 +3,10 @@
    [expectations.clojure.test :refer [defexpect expect expecting]]
    [sentry-clj.tracing :as sut])
   (:import
-   [io.sentry
-    CustomSamplingContext
-    Hub
-    Scope
-    Sentry
-    SentryOptions
-    SentryTracer
-    Span
-    SpanStatus
-    TransactionContext]
-   [io.sentry.protocol
-    Request
-    SentryId]))
+   [io.sentry CustomSamplingContext Hub Scope Sentry SentryOptions SentryTracer Span SpanStatus TracesSamplingDecision TransactionContext]
+   [io.sentry.protocol Request SentryId]))
 
-(defn- get-test-options
+(defn ^:private get-test-options
   ([] (get-test-options {}))
   ([{:keys [traces-sample-rate]}]
    (let [sentry-option (SentryOptions.)]
@@ -28,11 +17,13 @@
        (.setTracesSampleRate sentry-option traces-sample-rate))
      sentry-option)))
 
-(defn- ^SentryTracer get-test-sentry-tracer
+(defn ^:private get-test-sentry-tracer
+  ^SentryTracer
   []
   (let [sentry-option (get-test-options)
         hub (Hub. sentry-option)
-        tr (SentryTracer. (TransactionContext. "name" "op" true) hub)]
+        traces-sampling-decision (TracesSamplingDecision. true 1.0)
+        tr (SentryTracer. (TransactionContext. "name" "op" traces-sampling-decision) hub)]
     (Sentry/setCurrentHub hub)
     (.configureScope hub (reify io.sentry.ScopeCallback
                            (run
@@ -146,9 +137,9 @@
          description "http.server"]
      (Sentry/setCurrentHub hub)
      (let [^SentryTracer tr (sut/start-transaction operation description (CustomSamplingContext.) nil)]
-       (expect (.getName  tr) operation)
-       (expect (.getOperation  tr) description)
-       (expect (complement nil?) (.getTraceId (.toSentryTrace  tr)))
+       (expect (.getName tr) operation)
+       (expect (.getOperation tr) description)
+       (expect (complement nil?) (.getTraceId (.toSentryTrace tr)))
        (expect nil (sut/finish-transaction! tr)))))
   (expecting
    "when there is a sentry-trace-header, exist trace transaction is gotten"
@@ -159,7 +150,7 @@
          description "http.server"]
      (Sentry/setCurrentHub hub)
      (let [^SentryTracer tr (sut/start-transaction operation description (CustomSamplingContext.) (str sentry-trace-header "-" "c1"))]
-       (expect (.getName  tr) operation)
-       (expect (.getOperation  tr) description)
-       (expect (SentryId. sentry-trace-header) (.getTraceId (.toSentryTrace  tr)))
+       (expect (.getName tr) operation)
+       (expect (.getOperation tr) description)
+       (expect (SentryId. sentry-trace-header) (.getTraceId (.toSentryTrace tr)))
        (expect nil (sut/finish-transaction! tr))))))

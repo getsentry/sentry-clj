@@ -4,29 +4,27 @@
         ;;
         ;;
         ;;
-        io.sentry/sentry {:mvn/version "5.7.4"}
+        io.sentry/sentry {:mvn/version "6.3.1"}
         ring/ring-core {:mvn/version "1.9.5"}}
 
- :aliases {:build {:deps {io.github.seancorfield/build-clj {:git/tag "v0.8.0"
-                                                            :git/sha "9bd8b8a"}}
+ :aliases {:build {:deps {io.github.seancorfield/build-clj {:git/tag "v0.8.3"
+                                                            :git/sha "7ac1f8d"}}
                    :ns-default scripts.build}
 
            :test {:extra-paths ["test"]
-                  :extra-deps {cheshire/cheshire {:mvn/version "5.10.2"}
+                  :extra-deps {cheshire/cheshire {:mvn/version "5.11.0"}
                                com.github.seancorfield/expectations {:mvn/version "2.0.160"}
-                               lambdaisland/kaocha {:mvn/version "1.66.1034"}
-                               lambdaisland/kaocha-cloverage {:mvn/version "1.0.75"}
-                               lambdaisland/kaocha-junit-xml {:mvn/version "0.0.76"}
+                               lambdaisland/kaocha {:mvn/version "1.69.1069"}
+                               lambdaisland/kaocha-junit-xml {:mvn/version "1.16.98"}
                                orchestra/orchestra {:mvn/version "2021.01.01-1"}
                                org.clojure/test.check {:mvn/version "1.1.1"}}}
 
-           :antq {:replace-deps {com.github.liquidz/antq {:mvn/version "1.6.2"}
+           :antq {:replace-deps {com.github.liquidz/antq {:mvn/version "1.9.874"}
                                  org.slf4j/slf4j-nop {:mvn/version "1.7.36"}}
                   :exec-fn antq.tool/outdated
-                  :exec-args {:directory ["."]
-                              :exclude [org.clojure/clojure]
-                              :skip ["pom"]
+                  :exec-args {:skip ["pom"]
                               :verbose true
                               :upgrade true
                               :download true
+                              :no-diff true
                               :force true}}}}

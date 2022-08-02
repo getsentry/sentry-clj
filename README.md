@@ -64,7 +64,7 @@ If you want an interpolated message, you need to provide the full map, i.e.,
 | `:release`                           | All events are assigned to a particular release                                                                    |
 | `:dist`                              | Set the application distribution that will be sent with each event                                                 |
 | `:server-name`                       | Set the server name that will be sent with each event                                                              |
-| `:shutdown-timeout`                  | Wait up to X milliseconds before shutdown if there are events to send                                              | 2000ms
+| `:shutdown-timeout-millis`           | Wait up to X milliseconds before shutdown if there are events to send                                              | 2000ms
 | `:in-app-includes`                   | A seqable collection (vector for example) containing package names to include when sending events                  |
 | `:in-app-excludes`                   | A seqable collection (vector for example) containing package names to ignore when sending events                   |
 | `:ignored-exceptions-for-type`       | Set exceptions that will be filtered out before sending to Sentry (a set of Classnames as Strings)                 |
@@ -81,7 +81,8 @@ If you want an interpolated message, you need to provide the full map, i.e.,
 | `:contexts`                          | A map of key/value pairs to attach to every Event that is sent.                                                    |
 |                                      | [More Information](https://docs.sentry.io/platforms/java/enriching-events/context/)                                |
 | `:traces-sample-rate`                | Set a uniform sample rate(a number of between 0.0 and 1.0) for all transactions for tracing                        |
-| `:traces-sample-fn`                  | A function (taking a custom sample context and a transaction context) enables you to control trace transactions    | 
+| `:traces-sample-fn`                  | A function (taking a custom sample context and a transaction context) enables you to control trace transactions    |
+| `:serialization-max-depth`           | Set to a lower number, i.e., 2, if you experience circular reference errors when sending events                    | 5
 
 Some examples:
 
@@ -189,6 +190,6 @@ Each key is optional.
 
 ## License
 
-Copyright © 2021 Coda Hale, Sentry
+Copyright © 2022 Coda Hale, Sentry
 
 Distributed under the Eclipse Public License either version 1.0 or (at your option) any later version.

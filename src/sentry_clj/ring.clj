@@ -7,8 +7,8 @@
    [sentry-clj.core :as sentry]
    [sentry-clj.tracing :as st])
   (:import
-   [io.sentry EventProcessor IHub Sentry SentryEvent SentryTraceHeader]
-   [io.sentry.protocol SentryTransaction Request]))
+   [io.sentry EventProcessor Hint IHub Sentry SentryEvent SentryTraceHeader]
+   [io.sentry.protocol Request SentryTransaction]))
 
 (set! *warn-on-reflection* true)
 
@@ -105,12 +105,12 @@
   []
   (reify EventProcessor
     (^SentryEvent process
-      [_ ^SentryEvent event _]
+      [_ ^SentryEvent event ^Hint _hint]
       (.setRuntime (.getContexts event) (compute-sentry-runtime))
       event)
 
     (^SentryTransaction process
-      [_ ^SentryTransaction tran _]
+      [_ ^SentryTransaction tran ^Hint _hint]
       (.setRuntime (.getContexts tran) (compute-sentry-runtime))
       tran)))
 

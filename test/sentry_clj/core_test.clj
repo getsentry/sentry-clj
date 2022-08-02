@@ -4,10 +4,10 @@
    [expectations.clojure.test :refer [defexpect expect expecting]]
    [sentry-clj.core :as sut])
   (:import
-   [io.sentry Breadcrumb GsonSerializer SentryOptions SentryLevel]
-   [io.sentry.protocol User Request]
+   [io.sentry Breadcrumb JsonSerializer SentryLevel SentryOptions]
+   [io.sentry.protocol Request User]
    [java.io StringWriter]
-   [java.util UUID Date]))
+   [java.util Date UUID]))
 
 (defexpect keyword->level-test
   (expecting
@@ -65,7 +65,7 @@
 
 (defn serialize
   [event]
-  (let [serializer (GsonSerializer. (SentryOptions.))
+  (let [serializer (JsonSerializer. (SentryOptions.))
         sentry-event (#'sut/map->event event)
         string-writer (StringWriter.)]
     (.serialize serializer sentry-event string-writer)
@@ -297,7 +297,7 @@
                                                                                  :release "1.1"
                                                                                  :dist "x86"
                                                                                  :server-name "host1"
-                                                                                 :shutdown-timeout 1000
+                                                                                 :shutdown-timeout-millis 1000
                                                                                  :in-app-includes ["com.includes" "com.includes2"]
                                                                                  :in-app-excludes ["com.excludes" "com.excludes2"]
                                                                                  :ignored-exceptions-for-type ["java.io.IOException" "java.lang.RuntimeException"]
@@ -308,7 +308,7 @@
      (expect "1.1" (.getRelease sentry-options))
      (expect "x86" (.getDist sentry-options))
      (expect "host1" (.getServerName sentry-options))
-     (expect 1000 (.getShutdownTimeout sentry-options))
+     (expect 1000 (.getShutdownTimeoutMillis sentry-options))
      (expect "com.includes" (first (.getInAppIncludes sentry-options)))
      (expect "com.includes2" (second (.getInAppIncludes sentry-options)))
      (expect "com.excludes" (first (.getInAppExcludes sentry-options)))

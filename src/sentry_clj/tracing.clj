@@ -1,13 +1,6 @@
 (ns sentry-clj.tracing
   (:import
-   [io.sentry
-    CustomSamplingContext
-    EventProcessor
-    Scope
-    Sentry
-    ITransaction
-    SpanStatus
-    TransactionContext]))
+   [io.sentry CustomSamplingContext EventProcessor ITransaction Scope Sentry SpanStatus TransactionContext]))
 
 (def span-status
   {:ok SpanStatus/OK
@@ -29,8 +22,9 @@
    :data-loss SpanStatus/DATA_LOSS
    :unauthenticated SpanStatus/UNAUTHENTICATED})
 
-(defn ^CustomSamplingContext compute-custom-sampling-context
+(defn compute-custom-sampling-context
   "Compute a custom sampling context has key and info."
+  ^CustomSamplingContext
   [key info]
   (let [csc (CustomSamplingContext.)]
     (.set csc key info)

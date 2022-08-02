@@ -5,16 +5,12 @@
    [sentry-clj.core :as sentry]
    [sentry-clj.ring :as ring])
   (:import
-   [io.sentry
-    GsonSerializer
-    SentryOptions
-    Hub
-    Sentry]
+   [io.sentry Hub JsonSerializer Sentry SentryOptions]
    [java.io StringWriter]))
 
 (defn serialize
   [event]
-  (let [serializer (GsonSerializer. (SentryOptions.))
+  (let [serializer (JsonSerializer. (SentryOptions.))
         sentry-event (#'sentry/map->event event)
         string-writer (StringWriter.)]
     (.serialize serializer sentry-event string-writer)
