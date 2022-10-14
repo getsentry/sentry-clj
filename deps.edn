@@ -4,7 +4,7 @@
         ;;
         ;;
         ;;
-        io.sentry/sentry {:mvn/version "6.4.2"}
+        io.sentry/sentry {:mvn/version "6.4.4"}
         ring/ring-core {:mvn/version "1.9.6"}}
 
  :aliases {:build {:deps {io.github.seancorfield/build-clj {:git/tag "v0.8.3"
