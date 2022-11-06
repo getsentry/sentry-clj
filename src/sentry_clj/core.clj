@@ -53,7 +53,7 @@
 (defn ^:private map->user
   "Converts a map into a User."
   ^User
-  [{:keys [email id username ip-address other]}]
+  [{:keys [email id username ip-address data]}]
   (let [user (User.)]
     (when email
       (.setEmail user email))
@@ -63,8 +63,8 @@
       (.setUsername user username))
     (when ip-address
       (.setIpAddress user ip-address))
-    (when other
-      (.setOthers user other))
+    (when data
+      (.setData user data))
     user))
 
 (defn ^:private map->request

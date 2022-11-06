@@ -36,16 +36,16 @@
                   :id "id"
                   :username "username"
                   :ip-address "10.0.0.0"
-                  :other {"a" "b"}}
+                  :data {"a" "b"}}
    :request {:url "http://example.com"
              :method "GET"
              :query-string "?foo=bar"
-             :data "data"
              :cookies "cookie1=foo;cookie2=bar"
              :headers {"X-Clacks-Overhead" "Terry Pratchett"
                        "X-w00t" "ftw!"}
              :env {"a" "b"}
-             :other {"c" "d"}}
+             :data {"c" "d"}
+             :other {"x" "y"}}
    :logger       "happy.lucky"
    :platform     "clojure"
    :tags         {:one 2}
@@ -85,12 +85,12 @@
 (defexpect map->user-test
   (expecting
    "a user"
-   (let [user ^User (#'sut/map->user {:email "foo@bar.com" :id "id" :username "username" :ip-address "10.0.0.0" :other {"a" "b"}})]
+   (let [user ^User (#'sut/map->user {:email "foo@bar.com" :id "id" :username "username" :ip-address "10.0.0.0" :data {"a" "b"}})]
      (expect "foo@bar.com" (.getEmail user))
      (expect "id" (.getId user))
      (expect "username" (.getUsername user))
      (expect "10.0.0.0" (.getIpAddress user))
-     (expect {"a" "b"} (.getOthers user)))))
+     (expect {"a" "b"} (.getData user)))))
 
 (defexpect map->request-test
   (expecting
@@ -98,20 +98,20 @@
    (let [request ^Request (#'sut/map->request {:url "http://example.com"
                                                :method "GET"
                                                :query-string "?foo=bar"
-                                               :data "data"
                                                :cookies "cookie1=foo;cookie2=bar"
                                                :headers {"X-Clacks-Overhead" "Terry Pratchett"
                                                          "X-w00t" "ftw!"}
                                                :env {"a" "b"}
-                                               :other {"c" "d"}})]
+                                               :data {"c" "d"}
+                                               :other {"x" "y"}})]
      (expect "http://example.com" (.getUrl request))
      (expect "GET" (.getMethod request))
      (expect "?foo=bar" (.getQueryString request))
-     (expect "data" (.getData request))
      (expect "cookie1=foo;cookie2=bar" (.getCookies request))
      (expect {"X-Clacks-Overhead" "Terry Pratchett" "X-w00t" "ftw!"} (.getHeaders request))
      (expect {"a" "b"} (.getEnvs request))
-     (expect {"c" "d"} (.getOthers request)))))
+     (expect {"c" "d"} (.getData request))
+     (expect {"x" "y"} (.getOthers request)))))
 
 (defn strip-timestamp
   [output]
@@ -137,14 +137,14 @@
               "user"        {"email" "foo@bar.com"
                              "id" "id"
                              "ip_address" "10.0.0.0"
-                             "other" {"a" "b"}
+                             "data" {"a" "b"}
                              "username" "username"}
               "request"     {"cookies" "cookie1=foo;cookie2=bar"
-                             "data" "data"
                              "env" {"a" "b"}
                              "headers" {"X-Clacks-Overhead" "Terry Pratchett", "X-w00t" "ftw!"}
                              "method" "GET"
-                             "other" {"c" "d"}
+                             "data" {"c" "d"}
+                             "other" {"x" "y"}
                              "query_string" "?foo=bar"
                              "url" "http://example.com"}
               "transaction" "456"
@@ -177,14 +177,14 @@
               "user"        {"email" "foo@bar.com"
                              "id" "id"
                              "ip_address" "10.0.0.0"
-                             "other" {"a" "b"}
+                             "data" {"a" "b"}
                              "username" "username"}
               "request"     {"cookies" "cookie1=foo;cookie2=bar"
-                             "data" "data"
                              "env" {"a" "b"}
                              "headers" {"X-Clacks-Overhead" "Terry Pratchett", "X-w00t" "ftw!"}
                              "method" "GET"
-                             "other" {"c" "d"}
+                             "data" {"c" "d"}
+                             "other" {"x" "y"}
                              "query_string" "?foo=bar"
                              "url" "http://example.com"}
               "transaction" "456"
@@ -217,14 +217,14 @@
               "user"        {"email" "foo@bar.com"
                              "id" "id"
                              "ip_address" "10.0.0.0"
-                             "other" {"a" "b"}
+                             "data" {"a" "b"}
                              "username" "username"}
               "request"     {"cookies" "cookie1=foo;cookie2=bar"
-                             "data" "data"
                              "env" {"a" "b"}
                              "headers" {"X-Clacks-Overhead" "Terry Pratchett", "X-w00t" "ftw!"}
                              "method" "GET"
-                             "other" {"c" "d"}
+                             "data" {"c" "d"}
+                             "other" {"x" "y"}
                              "query_string" "?foo=bar"
                              "url" "http://example.com"}
               "transaction" "456"
@@ -265,14 +265,14 @@
               "user"        {"email" "foo@bar.com"
                              "id" "id"
                              "ip_address" "10.0.0.0"
-                             "other" {"a" "b"}
+                             "data" {"a" "b"}
                              "username" "username"}
               "request"     {"cookies" "cookie1=foo;cookie2=bar"
-                             "data" "data"
                              "env" {"a" "b"}
                              "headers" {"X-Clacks-Overhead" "Terry Pratchett", "X-w00t" "ftw!"}
                              "method" "GET"
-                             "other" {"c" "d"}
+                             "data" {"c" "d"}
+                             "other" {"x" "y"}
                              "query_string" "?foo=bar"
                              "url" "http://example.com"}
               "transaction" "456"
