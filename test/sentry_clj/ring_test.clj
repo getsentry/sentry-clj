@@ -1,11 +1,12 @@
 (ns sentry-clj.ring-test
   (:require
    [cheshire.core :as json]
-   [expectations.clojure.test :refer [defexpect expect expecting]]
+   [expectations.clojure.test :refer [defexpect expect expecting side-effects]]
    [sentry-clj.core :as sentry]
-   [sentry-clj.ring :as ring])
+   [sentry-clj.ring :as ring]
+   [sentry-clj.tracing :as st])
   (:import
-   [io.sentry Hub JsonSerializer Sentry SentryOptions]
+   [io.sentry Hub JsonSerializer ScopeCallback Sentry SentryOptions]
    [java.io StringWriter]))
 
 (defn serialize
@@ -123,10 +124,23 @@
      sentry-option)))
 
 (defexpect wrap-sentry-tracing-test
-  (expecting
-   "passing through"
-   (let [sentry-option (get-test-options {:traces-sample-rate 1.0 :debug true})
-         hub (Hub. sentry-option)
-         handler (ring/wrap-sentry-tracing wrapped)]
-     (Sentry/setCurrentHub hub)
-     (expect "woo" (handler (assoc req :ok true))))))
+  (let [sentry-option (get-test-options {:traces-sample-rate 1.0 :debug true})
+        hub (Hub. sentry-option)
+        ok-req (assoc req :ok true)]
+    (Sentry/setCurrentHub hub)
+    (expecting
+      "passing through"
+      (let [handler (ring/wrap-sentry-tracing wrapped)]
+        (expect "woo" (handler ok-req))))
+    (expecting
+      "preprocess fn called"
+      (let [handler (ring/wrap-sentry-tracing wrapped {:preprocess-fn preprocess})]
+        (expect (fn [_transaction]
+                  (= {"one" 1 "two" 2}
+                     (let [p (promise)]
+                       (.withScope hub (reify ScopeCallback
+                                         (run [_ scope]
+                                           (deliver p (.getData (.getRequest scope))))))
+                       @p)))
+          (side-effects [st/finish-transaction!]
+            (expect "woo" (handler ok-req))))))))
