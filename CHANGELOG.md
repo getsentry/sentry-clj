@@ -10,6 +10,11 @@ endeavour to be non-breaking (by moving to new names rather than by
 breaking existing names). COMMITS is an ever-increasing counter of
 commits since the beginning of this repository.
 
+## [6.8.188]
+
+- Add optional `preprocess-fn` to `wrap-sentry-tracing` that allows modifying requests before they are converted to
+  `io.sentry.protocol.Request`. It can be used for example to remove sensitive information from the request.
+
 ## [6.8.187]
 
 - Update Sentry Java SDK to 6.8.0.

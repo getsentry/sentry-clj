@@ -139,29 +139,36 @@
        (error-fn req e)))))
 
 (defn wrap-sentry-tracing
-  "Wraps the given handler in tracing"
-  [handler]
-  (fn [req]
-    (let [trace-id (get (:headers req) sentry-trace-header)
-          name (extract-transaction-name req)
-          custom-sampling-context (->> req
-                                       request->context-request
-                                       (st/compute-custom-sampling-context "request"))
-          transaction (st/start-transaction name
-                                            "http.server"
-                                            custom-sampling-context
-                                            trace-id)]
-      (-> (get-current-hub)
-          (configure-scope! (fn [scope]
-                              (st/swap-scope-request! scope (map->request req))
-                              (st/add-event-processor scope (event-processor)))))
+  "Wraps the given handler in tracing.
 
-      (try
-       (let [res (handler req)]
-         (st/swap-transaction-status! transaction (:ok st/span-status))
-         res)
-       (catch Throwable e
-         (st/swap-transaction-status! transaction (:internal-error st/span-status))
-         (throw e))
-       (finally
-        (st/finish-transaction! transaction))))))
+  Optionally takes one function:
+
+  * `:preprocess-fn`, which is passed the request"
+  ([handler]
+   (wrap-sentry-tracing handler {}))
+  ([handler {:keys [preprocess-fn]
+             :or   {preprocess-fn identity}}]
+   (fn [req]
+     (let [trace-id (get (:headers req) sentry-trace-header)
+           name (extract-transaction-name req)
+           custom-sampling-context (->> req
+                                        request->context-request
+                                        (st/compute-custom-sampling-context "request"))
+           transaction (st/start-transaction name
+                                             "http.server"
+                                             custom-sampling-context
+                                             trace-id)]
+       (-> (get-current-hub)
+           (configure-scope! (fn [scope]
+                               (st/swap-scope-request! scope (map->request (preprocess-fn req)))
+                               (st/add-event-processor scope (event-processor)))))
+
+       (try
+         (let [res (handler req)]
+           (st/swap-transaction-status! transaction (:ok st/span-status))
+           res)
+         (catch Throwable e
+           (st/swap-transaction-status! transaction (:internal-error st/span-status))
+           (throw e))
+         (finally
+           (st/finish-transaction! transaction)))))))
