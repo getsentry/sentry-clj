@@ -4,11 +4,11 @@
         ;;
         ;;
         ;;
-        io.sentry/sentry {:mvn/version "6.8.0"}
+        io.sentry/sentry {:mvn/version "6.9.2"}
         ring/ring-core {:mvn/version "1.9.6"}}
 
- :aliases {:build {:deps {io.github.seancorfield/build-clj {:git/tag "v0.8.3"
-                                                            :git/sha "7ac1f8d"}}
+ :aliases {:build {:deps {io.github.seancorfield/build-clj {:git/tag "v0.8.5"
+                                                            :git/sha "de693d0"}}
                    :ns-default scripts.build}
 
            :test {:extra-paths ["test"]
@@ -19,8 +19,8 @@
                                orchestra/orchestra {:mvn/version "2021.01.01-1"}
                                org.clojure/test.check {:mvn/version "1.1.1"}}}
 
-           :antq {:replace-deps {com.github.liquidz/antq {:mvn/version "2.1.946"}
-                                 org.slf4j/slf4j-nop {:mvn/version "2.0.4"}}
+           :antq {:replace-deps {com.github.liquidz/antq {:mvn/version "2.2.962"}
+                                 org.slf4j/slf4j-nop {:mvn/version "2.0.5"}}
                   :exec-fn antq.tool/outdated
                   :exec-args {:skip ["pom"]
                               :verbose true

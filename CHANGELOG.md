@@ -10,6 +10,10 @@ endeavour to be non-breaking (by moving to new names rather than by
 breaking existing names). COMMITS is an ever-increasing counter of
 commits since the beginning of this repository.
 
+## [6.9.189]
+
+- Update Sentry Java SDK to 6.9.2.
+
 ## [6.8.188]
 
 - Add optional `preprocess-fn` to `wrap-sentry-tracing` that allows modifying requests before they are converted to
@@ -319,7 +323,9 @@ commits since the beginning of this repository.
   compatible with Sentry 10.0.1 and below. If you wish to use those
   versions, please continue to use sentry-clj 1.7.30.
 
-[Unreleased]: https://github.com/getsentry/sentry-clj/compare/6.8.187...HEAD
+[Unreleased]: https://github.com/getsentry/sentry-clj/compare/6.9.189...HEAD
+[6.9.189]: https://github.com/getsentry/sentry-clj/compare/6.8.188...6.9.189
+[6.8.188]: https://github.com/getsentry/sentry-clj/compare/6.8.187...6.8.188
 [6.8.187]: https://github.com/getsentry/sentry-clj/compare/6.7.186...6.8.187
 [6.7.186]: https://github.com/getsentry/sentry-clj/compare/6.4.185...6.7.186
 [6.4.185]: https://github.com/getsentry/sentry-clj/compare/6.4.184...6.4.185
