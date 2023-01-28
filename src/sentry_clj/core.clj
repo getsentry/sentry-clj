@@ -140,10 +140,10 @@
     sentry-event))
 
 (def ^:private sentry-defaults
-  {:debug false
-   :environment "production"
-   :enable-uncaught-exception-handler true
-   :uncaught-handler-enabled true
+  {:environment "production"
+   :debug false ;; Java SDK default
+   :enable-uncaught-exception-handler true ;; Java SDK default
+   :trace-options-requests true ;; Java SDK default
    :serialization-max-depth 5}) ;; default to 5, adjust lower if a circular reference loop occurs.
 
 (defn ^:private sentry-options
@@ -158,13 +158,13 @@
                 in-app-includes
                 in-app-excludes
                 ignored-exceptions-for-type
-                enable-uncaught-exception-handler ;; deprecated
-                uncaught-handler-enabled
+                enable-uncaught-exception-handler
                 before-send-fn
                 before-breadcrumb-fn
                 serialization-max-depth
                 traces-sample-rate
-                traces-sample-fn]} (merge sentry-defaults config)
+                traces-sample-fn
+                trace-options-requests]} (merge sentry-defaults config)
         sentry-options (SentryOptions.)]
 
     (.setDsn sentry-options dsn)
@@ -182,8 +182,6 @@
     ;;
     (when serialization-max-depth
       (.setMaxDepth sentry-options serialization-max-depth)) ;; defaults to 100 in the SDK, but we default it to 5.
-    (when debug
-      (.setDebug sentry-options debug)) ;; already set to `false` in the SDK.
     (when release
       (.setRelease sentry-options release))
     (when dist
@@ -202,8 +200,6 @@
          (when (isa? clazz Throwable)
            (.addIgnoredExceptionForType sentry-options ^Throwable clazz)))
        (catch Exception _))) ; just ignore it.
-    (when-not (and enable-uncaught-exception-handler uncaught-handler-enabled)
-      (.setEnableUncaughtExceptionHandler sentry-options false)) ;; already true in the SDK
     (when before-send-fn
       (.setBeforeSend sentry-options ^SentryEvent
                       (reify io.sentry.SentryOptions$BeforeSendCallback
@@ -224,6 +220,11 @@
                                                                            .getCustomSamplingContext
                                                                            .getData)
                                                 :transaction-context (.getTransactionContext ctx)})))))
+
+    (.setDebug sentry-options debug)
+    (.setTraceOptionsRequests sentry-options trace-options-requests)
+    (.setEnableUncaughtExceptionHandler sentry-options enable-uncaught-exception-handler)
+
     sentry-options))
 
 #_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
@@ -243,8 +244,7 @@
    | `:in-app-includes`                   | A seqable collection (vector for example) containing package names to include when sending events                  |
    | `:in-app-excludes`                   | A seqable collection (vector for example) containing package names to ignore when sending events                   |
    | `:ignored-exceptions-for-type        | Set exceptions that will be filtered out before sending to Sentry (a set of Classnames as Strings)                 |
-   | `:enable-uncaught-exception-handler` | (deprecated, use :uncaught-handler-enabled instead) Enables the uncaught exception handler                         | true
-   | `:uncaught-handler-enabled`          | Enables the uncaught exception handler                                                                             | true
+   | `:enable-uncaught-exception-handler` | Enables the uncaught exception handler                                                                             | true
    | `:before-send-fn`                    | A function (taking an event and a hint)                                                                            |
    |                                      | The body of the function must not be lazy (i.e., don't use filter on its own!) and must return an event or nil     |
    |                                      | If a nil is returned, the event will not be sent to Sentry                                                         |
@@ -258,6 +258,7 @@
    | `:traces-sample-rate`                | Set a uniform sample rate(a number of between 0.0 and 1.0) for all transactions for tracing                        |
    | `:traces-sample-fn`                  | A function (taking a custom sample context and a transaction context) enables you to control trace transactions    |
    | `:serialization-max-depth`           | Set to a lower number, i.e., 2, if you experience circular reference errors when sending events                    | 5
+   | `:trace-options-request`             | Set to enable or disable tracing of options requests                                                               | true
 
    Some examples:
 

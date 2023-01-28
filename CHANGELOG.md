@@ -10,6 +10,14 @@ endeavour to be non-breaking (by moving to new names rather than by
 breaking existing names). COMMITS is an ever-increasing counter of
 commits since the beginning of this repository.
 
+## [6.13.191]
+
+- Update Sentry Java SDK to 6.13.0.
+- Add `trace-options-requests` to Sentry Options (defaults to true in the Java SDK)
+- Remove `uncaught-handler-enabled` as it's been removed from the Java SDK
+  - Use `enable-uncaught-exception-handler` instead
+- Fix typo. Thanks @rdarcy1
+
 ## [6.11.190]
 
 - Update Sentry Java SDK to 6.11.0.
@@ -327,7 +335,8 @@ commits since the beginning of this repository.
   compatible with Sentry 10.0.1 and below. If you wish to use those
   versions, please continue to use sentry-clj 1.7.30.
 
-[Unreleased]: https://github.com/getsentry/sentry-clj/compare/6.11.190...HEAD
+[Unreleased]: https://github.com/getsentry/sentry-clj/compare/6.13.191...HEAD
+[6.13.191]: https://github.com/getsentry/sentry-clj/compare/6.11.190...6.13.191
 [6.11.190]: https://github.com/getsentry/sentry-clj/compare/6.9.189...6.11.190
 [6.9.189]: https://github.com/getsentry/sentry-clj/compare/6.8.188...6.9.189
 [6.8.188]: https://github.com/getsentry/sentry-clj/compare/6.8.187...6.8.188

@@ -83,6 +83,7 @@ If you want an interpolated message, you need to provide the full map, i.e.,
 | `:traces-sample-rate`                | Set a uniform sample rate(a number of between 0.0 and 1.0) for all transactions for tracing                        |
 | `:traces-sample-fn`                  | A function (taking a custom sample context and a transaction context) enables you to control trace transactions    |
 | `:serialization-max-depth`           | Set to a lower number, i.e., 2, if you experience circular reference errors when sending events                    | 5
+| `:trace-options-requests`            | Set to enable or disable tracing of options requests.                                                              | true
 
 Some examples:
 
@@ -120,7 +121,7 @@ Initialisation with additional options:
 - `:event-id` - a `String` id to use for the event. If not provided, one will be automatically generated.
 - `:extra` - a map with `Keyword` or `String` keys (or anything for which `clojure.core/name` can be invoked) and values which can be JSON-ified. If `:throwable` is given, this will automatically include its `ex-data`.
   - **note**: `:extra` has been deprecated in favour of `:contexts` upon initialisation
-- `:fingerprint` - a sequence of `String`s that Sentry should use as a [fingerprint](https://docs.sentry.io/learn/rollups/#customize-grouping-with-fingerprints).
+- `:fingerprints` - a sequence of `String`s that Sentry should use as a [fingerprint](https://docs.sentry.io/learn/rollups/#customize-grouping-with-fingerprints).
 - `:level` - a `Keyword`. One of `:debug`, `:info`, `:warning`, `:error`, `:fatal`. Probably most useful in conjunction with `:message` if you need to report an exceptional condition that's not an exception.
 - `:logger` - a `String` which identifies the logger.
 - `:message` - a map or `String` containing Message information. See below.

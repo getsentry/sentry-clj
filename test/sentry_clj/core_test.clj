@@ -293,7 +293,6 @@
 (defexpect sentry-options-tests
   (expecting
    (let [sentry-options ^SentryOptions (sentry-options "http://www.example.com" {:environment "production"
-                                                                                 :debug true
                                                                                  :release "1.1"
                                                                                  :dist "x86"
                                                                                  :server-name "host1"
@@ -301,10 +300,11 @@
                                                                                  :in-app-includes ["com.includes" "com.includes2"]
                                                                                  :in-app-excludes ["com.excludes" "com.excludes2"]
                                                                                  :ignored-exceptions-for-type ["java.io.IOException" "java.lang.RuntimeException"]
-                                                                                 :uncaught-handler-enabled true})]
+                                                                                 :debug true
+                                                                                 :enable-uncaught-exception-handler false
+                                                                                 :trace-options-requests false})]
      (expect "http://www.example.com" (.getDsn sentry-options))
      (expect "production" (.getEnvironment sentry-options))
-     (expect (.isDebug sentry-options))
      (expect "1.1" (.getRelease sentry-options))
      (expect "x86" (.getDist sentry-options))
      (expect "host1" (.getServerName sentry-options))
@@ -315,4 +315,6 @@
      (expect "com.excludes2" (second (.getInAppExcludes sentry-options)))
      (expect (isa? (first (.getIgnoredExceptionsForType sentry-options)) java.io.IOException))
      (expect (isa? (second (.getIgnoredExceptionsForType sentry-options)) java.lang.RuntimeException))
-     (expect true (.isEnableUncaughtExceptionHandler sentry-options)))))
+     (expect (.isDebug sentry-options))
+     (expect false (.isEnableUncaughtExceptionHandler sentry-options))
+     (expect false (.isTraceOptionsRequests sentry-options)))))
