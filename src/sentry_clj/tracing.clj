@@ -32,7 +32,7 @@
 
 (defn start-transaction
   "Start tracing transactions.
-   If a sentry-trace-header is given, connect the exsiting transaction."
+   If a sentry-trace-header is given, connect the existing transaction."
   [name operation custom-sampling-context sentry-trace-header]
   (if sentry-trace-header
     (let [contexts (TransactionContext/fromSentryTrace name operation (io.sentry.SentryTraceHeader. sentry-trace-header))]
