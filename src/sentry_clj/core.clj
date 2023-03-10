@@ -4,7 +4,7 @@
    [clojure.string :refer [blank?]]
    [clojure.walk :as walk])
   (:import
-   [io.sentry Breadcrumb DateUtils Sentry SentryEvent SentryLevel SentryOptions]
+   [io.sentry Breadcrumb DateUtils EventProcessor Sentry SentryEvent SentryLevel SentryOptions Instrumenter]
    [io.sentry.protocol Message Request SentryId User]
    [java.util Date HashMap Map UUID]))
 
@@ -164,7 +164,9 @@
                 serialization-max-depth
                 traces-sample-rate
                 traces-sample-fn
-                trace-options-requests]} (merge sentry-defaults config)
+                trace-options-requests
+                instrumenter
+                event-processors]} (merge sentry-defaults config)
         sentry-options (SentryOptions.)]
 
     (.setDsn sentry-options dsn)
@@ -220,7 +222,13 @@
                                                                            .getCustomSamplingContext
                                                                            .getData)
                                                 :transaction-context (.getTransactionContext ctx)})))))
-
+    (when-let [instrumenter (case instrumenter
+                              :sentry Instrumenter/SENTRY
+                              :otel Instrumenter/OTEL
+                              nil)]
+      (.setInstrumenter sentry-options ^Instrumenter instrumenter))
+    (doseq [event-processor event-processors]
+      (.addEventProcessor sentry-options ^EventProcessor event-processor))
     (.setDebug sentry-options debug)
     (.setTraceOptionsRequests sentry-options trace-options-requests)
     (.setEnableUncaughtExceptionHandler sentry-options enable-uncaught-exception-handler)

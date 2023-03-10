@@ -4,7 +4,7 @@
    [expectations.clojure.test :refer [defexpect expect expecting]]
    [sentry-clj.core :as sut])
   (:import
-   [io.sentry Breadcrumb JsonSerializer SentryLevel SentryOptions]
+    [io.sentry Breadcrumb EventProcessor Instrumenter JsonSerializer SentryLevel SentryOptions]
    [io.sentry.protocol Request User]
    [java.io StringWriter]
    [java.util Date UUID]))
@@ -290,6 +290,9 @@
 
 (def ^:private sentry-options #'sut/sentry-options)
 
+(defrecord SomeEventProcessor []
+  EventProcessor)
+
 (defexpect sentry-options-tests
   (expecting
    (let [sentry-options ^SentryOptions (sentry-options "http://www.example.com" {:environment "production"
@@ -302,7 +305,10 @@
                                                                                  :ignored-exceptions-for-type ["java.io.IOException" "java.lang.RuntimeException"]
                                                                                  :debug true
                                                                                  :enable-uncaught-exception-handler false
-                                                                                 :trace-options-requests false})]
+                                                                                 :trace-options-requests false
+                                                                                 :instrumenter :otel
+                                                                                 :event-processors [(SomeEventProcessor.)]})]
+     (println (.getEventProcessors sentry-options))
      (expect "http://www.example.com" (.getDsn sentry-options))
      (expect "production" (.getEnvironment sentry-options))
      (expect "1.1" (.getRelease sentry-options))
@@ -317,4 +323,6 @@
      (expect (isa? (second (.getIgnoredExceptionsForType sentry-options)) java.lang.RuntimeException))
      (expect (.isDebug sentry-options))
      (expect false (.isEnableUncaughtExceptionHandler sentry-options))
-     (expect false (.isTraceOptionsRequests sentry-options)))))
+     (expect false (.isTraceOptionsRequests sentry-options))
+     (expect Instrumenter/OTEL (.getInstrumenter sentry-options))
+     (expect (instance? SomeEventProcessor (last (.getEventProcessors sentry-options)))))))
