@@ -10,6 +10,11 @@ endeavour to be non-breaking (by moving to new names rather than by
 breaking existing names). COMMITS is an ever-increasing counter of
 commits since the beginning of this repository.
 
+## [6.17.193]
+
+- Add instrumenter and event-processors config options (thanks @dmednis)
+- Update Sentry Java SDK to 6.17.0
+
 ## [6.13.191]
 
 - Update Sentry Java SDK to 6.13.0.
@@ -335,7 +340,8 @@ commits since the beginning of this repository.
   compatible with Sentry 10.0.1 and below. If you wish to use those
   versions, please continue to use sentry-clj 1.7.30.
 
-[Unreleased]: https://github.com/getsentry/sentry-clj/compare/6.13.191...HEAD
+[Unreleased]: https://github.com/getsentry/sentry-clj/compare/6.17.193...HEAD
+[6.17.193]: https://github.com/getsentry/sentry-clj/compare/6.13.191...6.17.193
 [6.13.191]: https://github.com/getsentry/sentry-clj/compare/6.11.190...6.13.191
 [6.11.190]: https://github.com/getsentry/sentry-clj/compare/6.9.189...6.11.190
 [6.9.189]: https://github.com/getsentry/sentry-clj/compare/6.8.188...6.9.189
