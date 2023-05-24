@@ -5,9 +5,9 @@
         ;;
         ;;
         ch.qos.logback/logback-classic {:mvn/version "1.4.7"}
-        io.sentry/sentry {:mvn/version "6.18.1"}
+        io.sentry/sentry {:mvn/version "6.19.1"}
         io.sentry/sentry-clj {:local/root "../../../sentry-clj"}
-        org.clojure/tools.cli {:mvn/version "1.0.214"}
+        org.clojure/tools.cli {:mvn/version "1.0.219"}
         org.clojure/tools.logging {:mvn/version "1.2.4"}
         org.slf4j/jcl-over-slf4j {:mvn/version "2.0.7"}
         org.slf4j/jul-to-slf4j {:mvn/version "2.0.7"}
