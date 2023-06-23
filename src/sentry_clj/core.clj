@@ -151,6 +151,8 @@
   [dsn config]
   (let [{:keys [environment
                 debug
+                logger
+                diagnostic-level
                 release
                 dist
                 server-name
@@ -230,6 +232,8 @@
     (doseq [event-processor event-processors]
       (.addEventProcessor sentry-options ^EventProcessor event-processor))
     (.setDebug sentry-options debug)
+    (.setLogger sentry-options logger)
+    (.setDiagnosticLevel sentry-options (keyword->level diagnostic-level))
     (.setTraceOptionsRequests sentry-options trace-options-requests)
     (.setEnableUncaughtExceptionHandler sentry-options enable-uncaught-exception-handler)
 
@@ -245,6 +249,8 @@
    | ------------------------------------ | ------------------------------------------------------------------------------------------------------------------ | -------
    | `:environment`                       | Set the environment on which Sentry events will be logged, e.g., \"production\"                                    | production
    | `:debug`                             | Enable SDK logging at the debug level                                                                              | false
+   | `:logger`                            | Instance of `io.sentry.ILogger` (only applies when `:debug` is on)                                                 | `io.sentry.SystemOutLogger`
+   | `:diagnostic-level`                  | Log messages at or above this level (only applies when `:debug` is on)                                             | `:debug`
    | `:release`                           | All events are assigned to a particular release                                                                    |
    | `:dist`                              | Set the application distribution that will be sent with each event                                                 |
    | `:server-name`                       | Set the server name that will be sent with each event                                                              |
