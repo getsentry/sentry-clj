@@ -10,6 +10,10 @@ endeavour to be non-breaking (by moving to new names rather than by
 breaking existing names). COMMITS is an ever-increasing counter of
 commits since the beginning of this repository.
 
+## [6.26.199]
+
+- Update Sentry Java SDK to 6.24.0
+
 ## [6.24.198]
 
 - Update Sentry Java SDK to 6.24.0
@@ -357,7 +361,8 @@ commits since the beginning of this repository.
   compatible with Sentry 10.0.1 and below. If you wish to use those
   versions, please continue to use sentry-clj 1.7.30.
 
-[Unreleased]: https://github.com/getsentry/sentry-clj/compare/6.24.198...HEAD
+[Unreleased]: https://github.com/getsentry/sentry-clj/compare/6.26.199...HEAD
+[6.26.199]: https://github.com/getsentry/sentry-clj/compare/6.24.198...6.26.199
 [6.24.198]: https://github.com/getsentry/sentry-clj/compare/6.21.196...6.24.198
 [6.21.196]: https://github.com/getsentry/sentry-clj/compare/6.19.195...6.21.196
 [6.19.195]: https://github.com/getsentry/sentry-clj/compare/6.18.194...6.19.195
