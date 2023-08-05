@@ -144,100 +144,106 @@
    :debug false ;; Java SDK default
    :enable-uncaught-exception-handler true ;; Java SDK default
    :trace-options-requests true ;; Java SDK default
-   :serialization-max-depth 5}) ;; default to 5, adjust lower if a circular reference loop occurs.
+   :serialization-max-depth 5 ;; default to 5, adjust lower if a circular reference loop occurs.
+   :enabled true})
 
 (defn ^:private sentry-options
   ^SentryOptions
-  [dsn config]
-  (let [{:keys [environment
-                debug
-                logger
-                diagnostic-level
-                release
-                dist
-                server-name
-                shutdown-timeout-millis
-                in-app-includes
-                in-app-excludes
-                ignored-exceptions-for-type
-                enable-uncaught-exception-handler
-                before-send-fn
-                before-breadcrumb-fn
-                serialization-max-depth
-                traces-sample-rate
-                traces-sample-fn
-                trace-options-requests
-                instrumenter
-                event-processors]} (merge sentry-defaults config)
-        sentry-options (SentryOptions.)]
+  ([dsn] (sentry-options dsn {}))
+  ([dsn config]
+   (let [{:keys [environment
+                 debug
+                 logger
+                 diagnostic-level
+                 release
+                 dist
+                 server-name
+                 shutdown-timeout-millis
+                 in-app-includes
+                 in-app-excludes
+                 ignored-exceptions-for-type
+                 enable-uncaught-exception-handler
+                 before-send-fn
+                 before-breadcrumb-fn
+                 serialization-max-depth
+                 traces-sample-rate
+                 traces-sample-fn
+                 trace-options-requests
+                 instrumenter
+                 event-processors
+                 enabled]} (merge sentry-defaults config)
+         sentry-options (SentryOptions.)]
 
-    (.setDsn sentry-options dsn)
+     (.setDsn sentry-options dsn)
 
-    (when environment
-      (.setEnvironment sentry-options environment))
-    ;;
-    ;; When serializing out an object, say a Throwable, sometimes it happens
-    ;; that the serialization goes into a circular reference loop and just locks up
-    ;;
-    ;; Turning on `{:debug true}` when initializing Sentry should expose the issue on your logs
-    ;;
-    ;; If you experience this issue, try adjusting the maximum depth to a low
-    ;; number, such as 2 and see if that works for you.
-    ;;
-    (when serialization-max-depth
-      (.setMaxDepth sentry-options serialization-max-depth)) ;; defaults to 100 in the SDK, but we default it to 5.
-    (when release
-      (.setRelease sentry-options release))
-    (when dist
-      (.setDist sentry-options dist))
-    (when server-name
-      (.setServerName sentry-options ^String server-name))
-    (when shutdown-timeout-millis
-      (.setShutdownTimeoutMillis sentry-options shutdown-timeout-millis)) ;; already set to 2000ms in the SDK
-    (doseq [in-app-include in-app-includes]
-      (.addInAppInclude sentry-options in-app-include))
-    (doseq [in-app-exclude in-app-excludes]
-      (.addInAppExclude sentry-options in-app-exclude))
-    (doseq [ignored-exception-for-type ignored-exceptions-for-type]
-      (try
-       (let [clazz (Class/forName ignored-exception-for-type)]
-         (when (isa? clazz Throwable)
-           (.addIgnoredExceptionForType sentry-options ^Throwable clazz)))
-       (catch Exception _))) ; just ignore it.
-    (when before-send-fn
-      (.setBeforeSend sentry-options ^SentryEvent
-                      (reify io.sentry.SentryOptions$BeforeSendCallback
-                        (execute [_ event hint]
-                          (before-send-fn event hint)))))
-    (when before-breadcrumb-fn
-      (.setBeforeBreadcrumb sentry-options ^Breadcrumb
-                            (reify io.sentry.SentryOptions$BeforeBreadcrumbCallback
-                              (execute [_ breadcrumb hint]
-                                (before-breadcrumb-fn breadcrumb hint)))))
-    (when traces-sample-rate
-      (.setTracesSampleRate sentry-options traces-sample-rate))
-    (when traces-sample-fn
-      (.setTracesSampler sentry-options ^io.sentry.SentryOptions$TracesSamplerCallback
-                         (reify io.sentry.SentryOptions$TracesSamplerCallback
-                           (sample [_ ctx]
-                             (traces-sample-fn {:custom-sample-context (-> ctx
-                                                                           .getCustomSamplingContext
-                                                                           .getData)
-                                                :transaction-context (.getTransactionContext ctx)})))))
-    (when-let [instrumenter (case instrumenter
-                              :sentry Instrumenter/SENTRY
-                              :otel Instrumenter/OTEL
-                              nil)]
-      (.setInstrumenter sentry-options ^Instrumenter instrumenter))
-    (doseq [event-processor event-processors]
-      (.addEventProcessor sentry-options ^EventProcessor event-processor))
-    (.setDebug sentry-options debug)
-    (.setLogger sentry-options logger)
-    (.setDiagnosticLevel sentry-options (keyword->level diagnostic-level))
-    (.setTraceOptionsRequests sentry-options trace-options-requests)
-    (.setEnableUncaughtExceptionHandler sentry-options enable-uncaught-exception-handler)
+     (when environment
+       (.setEnvironment sentry-options environment))
+     ;;
+     ;; When serializing out an object, say a Throwable, sometimes it happens
+     ;; that the serialization goes into a circular reference loop and just locks up
+     ;;
+     ;; Turning on `{:debug true}` when initializing Sentry should expose the issue on your logs
+     ;;
+     ;; If you experience this issue, try adjusting the maximum depth to a low
+     ;; number, such as 2 and see if that works for you.
+     ;;
+     (when serialization-max-depth
+       (.setMaxDepth sentry-options serialization-max-depth)) ;; defaults to 100 in the SDK, but we default it to 5.
+     (when release
+       (.setRelease sentry-options release))
+     (when dist
+       (.setDist sentry-options dist))
+     (when server-name
+       (.setServerName sentry-options ^String server-name))
+     (when shutdown-timeout-millis
+       (.setShutdownTimeoutMillis sentry-options shutdown-timeout-millis)) ;; already set to 2000ms in the SDK
+     (doseq [in-app-include in-app-includes]
+       (.addInAppInclude sentry-options in-app-include))
+     (doseq [in-app-exclude in-app-excludes]
+       (.addInAppExclude sentry-options in-app-exclude))
+     (doseq [ignored-exception-for-type ignored-exceptions-for-type]
+       (try
+        (let [clazz (Class/forName ignored-exception-for-type)]
+          (when (isa? clazz Throwable)
+            (.addIgnoredExceptionForType sentry-options ^Throwable clazz)))
+        (catch Exception _))) ; just ignore it.
+     (when before-send-fn
+       (.setBeforeSend sentry-options ^SentryEvent
+                       (reify io.sentry.SentryOptions$BeforeSendCallback
+                         (execute [_ event hint]
+                           (before-send-fn event hint)))))
+     (when before-breadcrumb-fn
+       (.setBeforeBreadcrumb sentry-options ^Breadcrumb
+                             (reify io.sentry.SentryOptions$BeforeBreadcrumbCallback
+                               (execute [_ breadcrumb hint]
+                                 (before-breadcrumb-fn breadcrumb hint)))))
+     (when traces-sample-rate
+       (.setTracesSampleRate sentry-options traces-sample-rate))
+     (when traces-sample-fn
+       (.setTracesSampler sentry-options ^io.sentry.SentryOptions$TracesSamplerCallback
+                          (reify io.sentry.SentryOptions$TracesSamplerCallback
+                            (sample [_ ctx]
+                              (traces-sample-fn {:custom-sample-context (-> ctx
+                                                                            .getCustomSamplingContext
+                                                                            .getData)
+                                                 :transaction-context (.getTransactionContext ctx)})))))
+     (when-let [instrumenter (case instrumenter
+                               :sentry Instrumenter/SENTRY
+                               :otel Instrumenter/OTEL
+                               nil)]
+       (.setInstrumenter sentry-options ^Instrumenter instrumenter))
 
-    sentry-options))
+     (doseq [event-processor event-processors]
+       (.addEventProcessor sentry-options ^EventProcessor event-processor))
+
+     (.setDebug sentry-options debug)
+     (.setLogger sentry-options logger)
+     (.setDiagnosticLevel sentry-options (keyword->level diagnostic-level))
+     (.setTraceOptionsRequests sentry-options trace-options-requests)
+     (.setEnableUncaughtExceptionHandler sentry-options enable-uncaught-exception-handler)
+     (.setEnabled sentry-options enabled)
+
+     sentry-options)))
 
 #_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
 (defn init!
@@ -248,6 +254,7 @@
    | key                                  | description                                                                                                        | default
    | ------------------------------------ | ------------------------------------------------------------------------------------------------------------------ | -------
    | `:environment`                       | Set the environment on which Sentry events will be logged, e.g., \"production\"                                    | production
+   | `:enabled`                           | Enable or disable sentry.                                                                                          | true
    | `:debug`                             | Enable SDK logging at the debug level                                                                              | false
    | `:logger`                            | Instance of `io.sentry.ILogger` (only applies when `:debug` is on)                                                 | `io.sentry.SystemOutLogger`
    | `:diagnostic-level`                  | Log messages at or above this level (only applies when `:debug` is on)                                             | `:debug`

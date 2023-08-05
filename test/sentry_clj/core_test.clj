@@ -307,8 +307,8 @@
                                                                                  :enable-uncaught-exception-handler false
                                                                                  :trace-options-requests false
                                                                                  :instrumenter :otel
-                                                                                 :event-processors [(SomeEventProcessor.)]})]
-     (println (.getEventProcessors sentry-options))
+                                                                                 :event-processors [(SomeEventProcessor.)]
+                                                                                 :enabled false})]
      (expect "http://www.example.com" (.getDsn sentry-options))
      (expect "production" (.getEnvironment sentry-options))
      (expect "1.1" (.getRelease sentry-options))
@@ -325,4 +325,19 @@
      (expect false (.isEnableUncaughtExceptionHandler sentry-options))
      (expect false (.isTraceOptionsRequests sentry-options))
      (expect Instrumenter/OTEL (.getInstrumenter sentry-options))
-     (expect (instance? SomeEventProcessor (last (.getEventProcessors sentry-options)))))))
+     (expect (instance? SomeEventProcessor (last (.getEventProcessors sentry-options))))
+     (expect false (.isEnabled sentry-options)))))
+
+(defexpect sentry-enabled-tests
+  (expecting
+   "sentry is enabled by default"
+   (let [sentry-options ^SentryOptions (sentry-options "http://www.example.com")]
+     (expect true (.isEnabled sentry-options))))
+  (expecting
+   "sentry is enabled"
+   (let [sentry-options ^SentryOptions (sentry-options "http://www.example.com" {:enabled true})]
+     (expect true (.isEnabled sentry-options))))
+  (expecting
+   "sentry is disabled"
+   (let [sentry-options ^SentryOptions (sentry-options "http://www.example.com" {:enabled false})]
+     (expect false (.isEnabled sentry-options)))))
