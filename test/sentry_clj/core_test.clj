@@ -23,7 +23,10 @@
    "everything is a string"
    (expect {"a" "b"} (#'sut/java-util-hashmappify-vals {:a :b}))
    (expect {"a" "b" {"c" "d"} (#'sut/java-util-hashmappify-vals {:a {:b {:c :d}}})})
-   (expect {"var1" "val1" "var2" {"a" {"b" {"c" {"d" {"e" "f"} "g" "h"}}}}} (#'sut/java-util-hashmappify-vals {:var1 "val1" :var2 {:a {:b {:c {:d {:e :f} :g :h}}}}}))))
+   (expect {"var1" "val1" "var2" {"a" {"b" {"c" {"d" {"e" "f"} "g" "h"}}}}} (#'sut/java-util-hashmappify-vals {:var1 "val1" :var2 {:a {:b {:c {:d {:e :f} :g :h}}}}})))
+  (expecting
+   "keyword namespaces are preserved"
+   (expect {"foo/qux" "some/value" "bar/qux" "another/value"} (#'sut/java-util-hashmappify-vals {:foo/qux :some/value :bar/qux :another/value}))))
 
 (def event
   {:event-id     (UUID/fromString "4c4fbea9-57a7-4c99-808d-2284306e6c98")
