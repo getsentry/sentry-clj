@@ -1,55 +1,70 @@
 (ns scripts.build
   (:require
    [clojure.tools.build.api :as b]
-   [org.corfield.build :as bb]))
+   [deps-deploy.deps-deploy :as dd]))
 
-(def ^:private version (format "6.29.%s" (b/git-count-revs nil)))
 (def ^:private library 'io.sentry/sentry-clj)
 
-(defn run-tests
-  "Tests the application.
+(defn ^:private the-version
+  [patch]
+  (format "6.33.%s" patch))
 
-   This task will compile and test the application.
-   "
-  [opts]
-  (-> (merge {:main-args ["-m" "kaocha.runner"]} opts)
-      (bb/run-tests)))
+(defn ^:private pom-template
+  [tag]
+  [[:description "A very thin wrapper around the official Java library for Sentry."]
+   [:url "https://github.com/getsentry/sentry-clj"]
+   [:licenses
+    [:license
+     [:name "Eclipse Public License"]
+     [:url "http://www.eclipse.org/legal/epl-v10.html"]]]
+   [:scm
+    [:url "https://github.com/getsentry/sentry-clj"]
+    [:connection "scm:git:git://github.com/getsentry/sentry-clj.git"]
+    [:developerConnection "scm:git:ssh://git@github.com/getsentry/sentry-clj.git"]
+    [:tag tag]]])
+
+(def ^:private revs (Integer/parseInt (b/git-count-revs nil)))
+(def ^:private snapshot (the-version (format "%s-SNAPSHOT" (inc revs))))
+(def ^:private class-dir "target/classes")
+(def ^:private target "target")
+
+(defn ^:private jar-opts
+  [{:keys [version] :as opts}]
+  (assoc opts
+         :lib library
+         :version version
+         :jar-file (format "target/%s-%s.jar" library version)
+         :basis (b/create-basis)
+         :class-dir class-dir
+         :target target
+         :src-dirs ["src"]
+         :pom-data (pom-template version)))
 
 (defn jar
-  "JAR the artifact.
-
-   This task will create the JAR in the `target` directory.
-   "
-  [{:keys [tag] :or {tag version} :as opts}]
-  (-> opts
-      (assoc :lib library :version tag :tag tag)
-      (bb/clean)
-      (bb/jar)))
-
-(defn deploy
-  "Deploy the JAR to your local repository (proxy).
-
-   This task will build and deploy the JAR to your
-   local repository using `deps-deploy`. This requires
-   the following environment variables being set beforehand:
-
-   CLOJARS_URL, CLOJARS_USERNAME, CLOJARS_PASSWORD
-
-   Even although they are CLOJARS environment variables, they
-   can actually point to anywhere, like your own Nexus OSS repository
-   or an Artifactory repository for example.
-
-   You may want to consider something like `direnv` to manage your
-   per-directory loading of environment variables.
-   "
-  [{:keys [tag] :or {tag version} :as opts}]
-  (-> opts
-      (assoc :lib library :version tag :tag tag)
-      (bb/deploy)))
+  "This task will create the JAR in the `target` directory."
+  [{:keys [tag] :or {tag snapshot} :as opts}]
+  (let [{:keys [jar-file] :as opts'} (jar-opts (assoc opts :version tag))]
+    (println (format "Cleaning '%s'..." target))
+    (b/delete {:path "target"})
+    (println (format "Writing 'pom.xml'..."))
+    (b/write-pom opts')
+    (println (format "Copying source files to '%s'..." class-dir))
+    (b/copy-dir {:src-dirs ["src" "resources"] :target-dir class-dir})
+    (println (format "Building JAR to '%s'..." jar-file))
+    (b/jar opts')
+    (println "Finished."))
+  opts)
 
 (defn install
-  "Deploy the JAR to your local .m2 directory"
-  [{:keys [tag] :or {tag version} :as opts}]
-  (-> opts
-      (assoc :lib library :version tag :tag tag)
-      (bb/install)))
+  [{:keys [tag] :or {tag snapshot} :as opts}]
+  (let [{:keys [jar-file] :as opts'} (jar-opts (assoc opts :version tag))]
+    (dd/deploy {:installer :local
+                :artifact (b/resolve-path jar-file)
+                :pom-file (b/pom-path (select-keys opts' [:lib :class-dir]))})))
+
+(defn publish
+  [{:keys [tag] :or {tag snapshot} :as opts}]
+  (let [{:keys [jar-file] :as opts'} (jar-opts (assoc opts :version tag))]
+    (dd/deploy {:installer :remote
+                :artifact (b/resolve-path jar-file)
+                :pom-file (b/pom-path (select-keys opts' [:lib :class-dir]))})))

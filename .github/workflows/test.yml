@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        java: ['8', '17']
+        java: ['8', '17', '21']
     steps:
       - uses: actions/checkout@v4
 
@@ -41,4 +41,4 @@ jobs:
           cli: 'latest'
 
       - name: Run Tests
-        run: clojure -T:build run-tests
+        run: bin/test

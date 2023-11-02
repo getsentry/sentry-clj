@@ -8,3 +8,4 @@
 foo.clj
 .env
 .clj-kondo/.cache
+tags.lock

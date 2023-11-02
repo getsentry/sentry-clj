@@ -10,6 +10,13 @@ endeavour to be non-breaking (by moving to new names rather than by
 breaking existing names). COMMITS is an ever-increasing counter of
 commits since the beginning of this repository.
 
+## [6.33.204]
+
+- Update Sentry Java SDK to 6.33.0
+- Replace deprecated Sean Corfield build library with official Clojure tools.build
+- Add Java 21 as a testing target on GitHub Actions
+- Preserve keyword namespaces in java-util-hashmappify. Thanks @DerGuteMoritz!
+
 ## [6.29.202]
 
 - Update Sentry Java SDK to 6.29.0
@@ -371,7 +378,8 @@ commits since the beginning of this repository.
   compatible with Sentry 10.0.1 and below. If you wish to use those
   versions, please continue to use sentry-clj 1.7.30.
 
-[Unreleased]: https://github.com/getsentry/sentry-clj/compare/6.29.202...HEAD
+[Unreleased]: https://github.com/getsentry/sentry-clj/compare/6.33.204...HEAD
+[6.33.204]: https://github.com/getsentry/sentry-clj/compare/6.29.202...6.33.204
 [6.29.202]: https://github.com/getsentry/sentry-clj/compare/6.28.200...6.29.202
 [6.28.200]: https://github.com/getsentry/sentry-clj/compare/6.26.199...6.28.200
 [6.26.199]: https://github.com/getsentry/sentry-clj/compare/6.24.198...6.26.199
