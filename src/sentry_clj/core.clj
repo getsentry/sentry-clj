@@ -27,8 +27,8 @@
    on walk/stringify-keys."
   [m]
   (let [f (fn [[k v]]
-            (let [k (if (keyword? k) (name k) k)
-                  v (if (keyword? v) (name v) v)]
+            (let [k (if (keyword? k) (str (symbol k)) k)
+                  v (if (keyword? v) (str (symbol v)) v)]
               (if (map? v) [k (HashMap. ^Map v)] [k v])))]
     (walk/postwalk (fn [x] (if (map? x) (into {} (map f x)) x)) m)))
 
