@@ -90,6 +90,25 @@
       (.setOthers request (java-util-hashmappify-vals other)))
     request))
 
+(defn ^:private merge-all-ex-data
+  "Merges ex-data of all ex-info exceptions in the cause chain of exn into extra.
+  Each ex-data is added under a separate key so that they don't clobber each other."
+  [extra exn]
+  (loop [exn exn
+         num 0
+         extra extra]
+    (if exn
+      (let [data (ex-data exn)]
+        (recur (ex-cause exn)
+               (inc num)
+               (cond-> extra
+                 data
+                 (assoc (if (zero? num)
+                          "ex-data"
+                          (str "ex-data, cause " num ": " (ex-message exn)))
+                        data))))
+      extra)))
+
 (defn ^:private map->event
   "Converts a map into an event."
   ^SentryEvent
@@ -130,7 +149,7 @@
         (.addBreadcrumb sentry-event ^Breadcrumb breadcrumb)))
     (when server-name
       (.setServerName sentry-event server-name))
-    (when-let [data (merge extra (ex-data throwable))]
+    (when-let [data (merge-all-ex-data extra throwable)]
       (doseq [[k v] (java-util-hashmappify-vals data)]
         (.setExtra sentry-event k v)))
     (when throwable

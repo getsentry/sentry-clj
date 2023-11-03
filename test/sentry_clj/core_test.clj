@@ -206,7 +206,14 @@
 (defexpect map->event-test-with-ex-info
   (expecting
    "an ex-info event"
-   (let [output (serialize (assoc event :throwable (ex-info "bad stuff" {:ex-info 2})))
+   (let [output (serialize (assoc event :throwable (ex-info "bad stuff"
+                                                            {:data 1}
+                                                            (ex-info "this is a transitive cause"
+                                                                     {:data 2}
+                                                                     (RuntimeException.
+                                                                      "this is a non-info transitive cause"
+                                                                      (ex-info "this is the root cause"
+                                                                               {:data 3}))))))
          actual (strip-timestamp output)]
      (expect {"release"     "v1.0.0"
               "event_id"    "4c4fbea957a74c99808d2284306e6c98"
@@ -232,7 +239,9 @@
                              "url" "http://example.com"}
               "transaction" "456"
               "extra"       {"one" {"two" 2}
-                             "ex-info" 2}
+                             "ex-data" {"data" 1}
+                             "ex-data, cause 1: this is a transitive cause" {"data" 2}
+                             "ex-data, cause 3: this is the root cause" {"data" 3}}
               "platform"    "clojure"
               "contexts"    {}
               "breadcrumbs" [{"type"      "http"
