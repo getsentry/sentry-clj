@@ -13,4 +13,8 @@ REQD_VALUES=("CLOJARS_URL" "CLOJARS_USERNAME" "CLOJARS_PASSWORD")
     i=$((i+1)) ; : ${VALUE:?$var_name is missing}
 done ) || usage
 
-clojure -T:build publish
+if [ -z "$1" ]; then
+    clojure -T:build publish
+else
+    clojure -T:build publish :tag "\"$1\""
+fi
