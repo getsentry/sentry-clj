@@ -4,7 +4,7 @@
         ;;
         ;;
         ;;
-        io.sentry/sentry {:mvn/version "6.33.0"}
+        io.sentry/sentry {:mvn/version "6.33.1"}
         ring/ring-core {:mvn/version "1.10.0"}}
 
  :aliases {:build {:extra-deps {io.github.clojure/tools.build {:mvn/version "0.9.6"}
