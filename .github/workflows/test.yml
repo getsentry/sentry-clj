@@ -30,7 +30,7 @@ jobs:
           restore-keys: ${{ env.APPLICATION }}-${{ hashFiles('deps.edn') }}
 
       - name: Setup Java
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: ${{ matrix.java }}
