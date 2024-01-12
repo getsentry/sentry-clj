@@ -68,8 +68,7 @@ If you want an interpolated message, you need to provide the full map, i.e.,
 | `:in-app-includes`                   | A seqable collection (vector for example) containing package names to include when sending events                             |
 | `:in-app-excludes`                   | A seqable collection (vector for example) containing package names to ignore when sending events                              |
 | `:ignored-exceptions-for-type`       | Set exceptions that will be filtered out before sending to Sentry (a set of Classnames as Strings)                            |
-| `:enable-uncaught-exception-handler` | (deprecated, use :uncaught-handler-enabled instead) Enables the uncaught exception handler                                    | true
-| `:uncaught-handler-enabled`          | Enables the uncaught exception handler                                                                                        | true
+| `:enable-uncaught-exception-handler` | Enables the uncaught exception handler                                                                                        | true
 | `:before-send-fn`                    | A function (taking an event and a hint)                                                                                       |
 |                                      | The body of the function must not be lazy (i.e., don't use filter on its own!) and must return an event or nil                |
 |                                      | If a nil is returned, the event will not be sent to Sentry                                                                    |
@@ -83,9 +82,9 @@ If you want an interpolated message, you need to provide the full map, i.e.,
 | `:traces-sample-rate`                | Set a uniform sample rate(a number of between 0.0 and 1.0) for all transactions for tracing                                   |
 | `:traces-sample-fn`                  | A function (taking a custom sample context and a transaction context) enables you to control trace transactions               |
 | `:serialization-max-depth`           | Set to a lower number, i.e., 2, if you experience circular reference errors when sending events                               | 5
-| `:trace-options-requests`            | Set to enable or disable tracing of options requests.                                                                         | true
+| `:trace-options-requests`            | Set to enable or disable tracing of options requests.                                                                         |true
 | `:instrumenter`                      | Sets instrumenter for tracing. (values - :sentry - for default Sentry instrumentation, :otel - OpenTelemetry instrumentation) | :sentry
-| `:event-processors`                  | A seqable collection (vector for example) containing instances of event processors (implementing io.sentry.EventProcessor)    | 
+| `:event-processors`                  | A seqable collection (vector for example) containing instances of event processors (implementing io.sentry.EventProcessor)    |
 
 Some examples:
 

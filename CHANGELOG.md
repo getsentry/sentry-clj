@@ -10,6 +10,12 @@ endeavour to be non-breaking (by moving to new names rather than by
 breaking existing names). COMMITS is an ever-increasing counter of
 commits since the beginning of this repository.
 
+## [7.2.211]
+
+- Update Sentry Java SDK to 7.2.0
+- Bump dependencies
+- Clarify that enable-uncaught-exception-handler is not deprecated. Thanks @sjamaan!
+
 ## [6.33.209]
 
 - Update Sentry Java SDK to 6.33.1
