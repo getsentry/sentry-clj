@@ -170,7 +170,8 @@
   ^SentryOptions
   ([dsn] (sentry-options dsn {}))
   ([dsn config]
-   (let [{:keys [environment
+   (let [{:keys [enable-external-configuration
+                 environment
                  debug
                  logger
                  diagnostic-level
@@ -195,6 +196,8 @@
 
      (.setDsn sentry-options dsn)
 
+     (when enable-external-configuration
+       (.setEnableExternalConfiguration sentry-options enable-external-configuration))
      (when environment
        (.setEnvironment sentry-options environment))
      ;;
@@ -272,6 +275,7 @@
 
    | key                                  | description                                                                                                        | default
    | ------------------------------------ | ------------------------------------------------------------------------------------------------------------------ | -------
+   | `:enable-external-configuration`     | Enable loading configuration from the properties file, system properties or environment variables                  |
    | `:environment`                       | Set the environment on which Sentry events will be logged, e.g., \"production\"                                    | production
    | `:enabled`                           | Enable or disable sentry.                                                                                          | true
    | `:debug`                             | Enable SDK logging at the debug level                                                                              | false

@@ -58,7 +58,8 @@ If you want an interpolated message, you need to provide the full map, i.e.,
 ## Additional Initialisation Options
 
 | key                                  | description                                                                                                                   | default
-| ------------------------------------ |-------------------------------------------------------------------------------------------------------------------------------| -------
+|--------------------------------------|-------------------------------------------------------------------------------------------------------------------------------| -------
+| `:enable-external-configuration`     | Enable loading configuration from the properties file, system properties or environment variables                             | 
 | `:environment`                       | Set the environment on which Sentry events will be logged, e.g., \"production\"                                               | production
 | `:debug`                             | Enable SDK logging at the debug level                                                                                         | false
 | `:release`                           | All events are assigned to a particular release                                                                               |
