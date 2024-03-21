@@ -10,6 +10,12 @@ endeavour to be non-breaking (by moving to new names rather than by
 breaking existing names). COMMITS is an ever-increasing counter of
 commits since the beginning of this repository.
 
+## [7.6.215]
+
+- Update Sentry Java SDK to 7.6.0
+- Bump dependencies
+- Add 'enable-external-configuration' as a configuration option. Thanks @mping-exo!
+
 ## [7.4.213]
 
 - Update Sentry Java SDK to 7.4.0
@@ -397,7 +403,8 @@ commits since the beginning of this repository.
   compatible with Sentry 10.0.1 and below. If you wish to use those
   versions, please continue to use sentry-clj 1.7.30.
 
-[Unreleased]: https://github.com/getsentry/sentry-clj/compare/7.4.213...HEAD
+[Unreleased]: https://github.com/getsentry/sentry-clj/compare/7.6.215...HEAD
+[7.6.215]: https://github.com/getsentry/sentry-clj/compare/7.4.213...7.6.215
 [7.4.213]: https://github.com/getsentry/sentry-clj/compare/7.2.211...7.4.213
 [7.2.211]: https://github.com/getsentry/sentry-clj/compare/6.33.209...7.2.211
 [6.33.209]: https://github.com/getsentry/sentry-clj/compare/6.33.205...6.33.209

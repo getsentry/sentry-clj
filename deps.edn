@@ -1,13 +1,13 @@
 {:paths ["src"]
 
- :deps {org.clojure/clojure {:mvn/version "1.11.1"}
+ :deps {org.clojure/clojure {:mvn/version "1.11.2"}
         ;;
         ;;
         ;;
-        io.sentry/sentry {:mvn/version "7.4.0"}
-        ring/ring-core {:mvn/version "1.11.0"}}
+        io.sentry/sentry {:mvn/version "7.6.0"}
+        ring/ring-core {:mvn/version "1.12.0"}}
 
- :aliases {:build {:extra-deps {io.github.clojure/tools.build {:mvn/version "0.9.6"}
+ :aliases {:build {:extra-deps {io.github.clojure/tools.build {:mvn/version "0.10.0"}
                                 slipset/deps-deploy {:mvn/version "0.2.2"}}
                    :ns-default scripts.build}
 
