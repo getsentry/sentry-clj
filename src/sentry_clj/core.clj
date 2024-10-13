@@ -343,7 +343,7 @@
   []
   (Sentry/close))
 
-(defn flush
+(defn flush-events
   "Flushes events to Sentry, blocking until the flush is complete.
 
    You can pass a timeout in milliseconds to wait for the flush to complete."

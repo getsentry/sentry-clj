@@ -10,6 +10,12 @@ endeavour to be non-breaking (by moving to new names rather than by
 breaking existing names). COMMITS is an ever-increasing counter of
 commits since the beginning of this repository.
 
+## [7.15.218]
+
+- Update Sentry Java SDK to 7.15.0
+- Added "flush-events". Thanks @Gwonwoo-Nam!
+- Bump dependencies
+
 ## [7.11.216]
 
 - Update Sentry Java SDK to 7.11.0
@@ -408,7 +414,8 @@ commits since the beginning of this repository.
   compatible with Sentry 10.0.1 and below. If you wish to use those
   versions, please continue to use sentry-clj 1.7.30.
 
-[Unreleased]: https://github.com/getsentry/sentry-clj/compare/7.11.216...HEAD
+[Unreleased]: https://github.com/getsentry/sentry-clj/compare/7.15.218...HEAD
+[7.15.218]: https://github.com/getsentry/sentry-clj/compare/7.11.216...7.15.218
 [7.11.216]: https://github.com/getsentry/sentry-clj/compare/7.6.215...7.11.216
 [7.6.215]: https://github.com/getsentry/sentry-clj/compare/7.4.213...7.6.215
 [7.4.213]: https://github.com/getsentry/sentry-clj/compare/7.2.211...7.4.213
