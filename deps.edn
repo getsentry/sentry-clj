@@ -4,8 +4,8 @@
         ;;
         ;;
         ;;
-        io.sentry/sentry {:mvn/version "7.15.0"}
-        ring/ring-core {:mvn/version "1.12.2"}}
+        io.sentry/sentry {:mvn/version "7.16.0"}
+        ring/ring-core {:mvn/version "1.13.0"}}
 
  :aliases {:build {:extra-deps {io.github.clojure/tools.build {:mvn/version "0.10.5"}
                                 slipset/deps-deploy {:mvn/version "0.2.2"}}
