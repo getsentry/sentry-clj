@@ -10,6 +10,11 @@ endeavour to be non-breaking (by moving to new names rather than by
 breaking existing names). COMMITS is an ever-increasing counter of
 commits since the beginning of this repository.
 
+## [7.18.221]
+
+- Update Sentry Java SDK to 7.18.0
+- Ensure all keywords are stringified. Thanks @sjamaan!
+
 ## [7.16.219]
 
 - Update Sentry Java SDK to 7.16.0
@@ -418,7 +423,8 @@ commits since the beginning of this repository.
   compatible with Sentry 10.0.1 and below. If you wish to use those
   versions, please continue to use sentry-clj 1.7.30.
 
-[Unreleased]: https://github.com/getsentry/sentry-clj/compare/7.16.219...HEAD
+[Unreleased]: https://github.com/getsentry/sentry-clj/compare/7.18.221...HEAD
+[7.18.221]: https://github.com/getsentry/sentry-clj/compare/7.16.219...7.18.221
 [7.16.219]: https://github.com/getsentry/sentry-clj/compare/7.15.218...7.16.219
 [7.15.218]: https://github.com/getsentry/sentry-clj/compare/7.11.216...7.15.218
 [7.11.216]: https://github.com/getsentry/sentry-clj/compare/7.6.215...7.11.216
