@@ -26,11 +26,16 @@
    values recursively translated into java.util.HashMap objects. Based
    on walk/stringify-keys."
   [m]
-  (let [f (fn [[k v]]
-            (let [k (if (keyword? k) (str (symbol k)) k)
-                  v (if (keyword? v) (str (symbol v)) v)]
-              (if (map? v) [k (HashMap. ^Map v)] [k v])))]
-    (walk/postwalk (fn [x] (if (map? x) (into {} (map f x)) x)) m)))
+  ;; Only inner maps are converted; use plain "walk" on outer map
+  (walk/walk
+   (fn [m]
+     (walk/postwalk (fn [x] (cond
+                              (map? x) (HashMap. ^Map x)
+                              (keyword? x) (str (symbol x))
+                              :else x))
+                    m))
+   identity
+   m))
 
 (defn ^:private map->breadcrumb
   "Converts a map into a Breadcrumb."

@@ -7,7 +7,7 @@
     [io.sentry Breadcrumb EventProcessor Instrumenter JsonSerializer SentryLevel SentryOptions]
    [io.sentry.protocol Request User]
    [java.io StringWriter]
-   [java.util Date UUID]))
+   [java.util Date HashMap UUID]))
 
 (defexpect keyword->level-test
   (expecting
@@ -22,11 +22,19 @@
   (expecting
    "everything is a string"
    (expect {"a" "b"} (#'sut/java-util-hashmappify-vals {:a :b}))
-   (expect {"a" "b" {"c" "d"} (#'sut/java-util-hashmappify-vals {:a {:b {:c :d}}})})
-   (expect {"var1" "val1" "var2" {"a" {"b" {"c" {"d" {"e" "f"} "g" "h"}}}}} (#'sut/java-util-hashmappify-vals {:var1 "val1" :var2 {:a {:b {:c {:d {:e :f} :g :h}}}}})))
+   (expecting "nested maps are visited and turned into hashmaps"
+     (let [result (#'sut/java-util-hashmappify-vals {:a {:b {:c :d}}})]
+       (expect {"a" {"b" {"c" "d"}}} result)
+       (expect clojure.lang.PersistentArrayMap (.getClass result)) ; Outer map is _not_ converted
+       (expect HashMap (.getClass (get result "a")))
+       (expect HashMap (.getClass (get-in result ["a" "b"])))))
+   (expect {"var1" "val1" "var2" {"a" {"b" {"c" {["d" 1] {"e" ["f"]} "g" "h"}}}}} (#'sut/java-util-hashmappify-vals {:var1 "val1" :var2 {:a {:b {:c {[:d 1] {:e [:f]} :g :h}}}}})))
   (expecting
    "keyword namespaces are preserved"
-   (expect {"foo/qux" "some/value" "bar/qux" "another/value"} (#'sut/java-util-hashmappify-vals {:foo/qux :some/value :bar/qux :another/value}))))
+   (expect {"foo/qux" "some/value" "bar/qux" "another/value"} (#'sut/java-util-hashmappify-vals {:foo/qux :some/value :bar/qux :another/value})))
+  (expecting
+   "nested arrays containing keywords are stringified"
+    (expect ["foo/qux" ["some/value" "bar/qux"] [["another/value"]]] (#'sut/java-util-hashmappify-vals [:foo/qux [:some/value :bar/qux] [[:another/value]]]))))
 
 (def event
   {:event-id     (UUID/fromString "4c4fbea9-57a7-4c99-808d-2284306e6c98")
