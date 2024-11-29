@@ -22,20 +22,16 @@
     SentryLevel/INFO))
 
 (defn java-util-hashmappify-vals
-  "Converts an ordinary Clojure map into a Clojure map with nested map
-   values recursively translated into java.util.HashMap objects. Based
-   on walk/stringify-keys."
+  "Converts an ordinary Clojure map into a java.util.HashMap object.
+   This is done recursively for all nested maps as well.
+   Keywords in any nested values are converted to strings.
+   Based on walk/stringify-keys."
   [m]
-  ;; Only inner maps are converted; use plain "walk" on outer map
-  (walk/walk
-   (fn [m]
-     (walk/postwalk (fn [x] (cond
-                              (map? x) (HashMap. ^Map x)
-                              (keyword? x) (str (symbol x))
-                              :else x))
-                    m))
-   identity
-   m))
+  (walk/postwalk (fn [x] (cond
+                           (map? x) (HashMap. ^Map x)
+                           (keyword? x) (str (symbol x))
+                           :else x))
+                 m))
 
 (defn ^:private map->breadcrumb
   "Converts a map into a Breadcrumb."

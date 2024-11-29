@@ -25,7 +25,7 @@
    (expecting "nested maps are visited and turned into hashmaps"
      (let [result (#'sut/java-util-hashmappify-vals {:a {:b {:c :d}}})]
        (expect {"a" {"b" {"c" "d"}}} result)
-       (expect clojure.lang.PersistentArrayMap (.getClass result)) ; Outer map is _not_ converted
+       (expect HashMap (.getClass result))
        (expect HashMap (.getClass (get result "a")))
        (expect HashMap (.getClass (get-in result ["a" "b"])))))
    (expect {"var1" "val1" "var2" {"a" {"b" {"c" {["d" 1] {"e" ["f"]} "g" "h"}}}}} (#'sut/java-util-hashmappify-vals {:var1 "val1" :var2 {:a {:b {:c {[:d 1] {:e [:f]} :g :h}}}}})))
