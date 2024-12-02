@@ -7,7 +7,7 @@
         ch.qos.logback/logback-classic {:mvn/version "1.5.12"}
         integrant/integrant {:mvn/version "0.13.1"}
         integrant/repl {:mvn/version "0.4.0"}
-        io.sentry/sentry {:mvn/version "7.18.0"}
+        io.sentry/sentry {:mvn/version "7.18.1"}
         io.sentry/sentry-clj {:local/root "../../../sentry-clj"}
         org.clojure/tools.cli {:mvn/version "1.1.230"}
         org.clojure/tools.logging {:mvn/version "1.3.0"}
