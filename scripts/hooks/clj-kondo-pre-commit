@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+if ! command -v clj-kondo &> /dev/null
+then
+    echo "clj-kondo could not be found. Please follow the installation instructions here https://github.com/clj-kondo/clj-kondo/blob/master/doc/install.md."
+    exit 2
+fi
+
+ARRAY=($@)
+LEN=${#ARRAY[@]}
+LEVEL=${1}
+FILES=${ARRAY[@]:1:$LEN}
+
+if !(clj-kondo --fail-level $LEVEL --lint $FILES)
+then
+    echo
+    echo "Error: new clj-kondo errors found (with fail-level set to '$LEVEL'). Please fix them and retry the commit."
+    exit 1
+fi

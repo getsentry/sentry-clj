@@ -1,0 +1,14 @@
+{:remove-multiple-non-indenting-spaces? true
+ :parallel? true
+ :extra-indents {#re "^context" [[:inner 0]]
+                 #re "^def" [[:inner 0]]
+                 #re "^expect" [[:inner 0]]
+                 #re "^expecting" [[:inner 0]]
+                 #re "^finally" [[:inner 0]]
+                 #re "^fn\\*" [[:inner 0]]
+                 #re "^let" [[:inner 0]]
+                 #re "^more-of" [[:inner 0]]
+                 #re "^side-effects" [[:inner 0]]
+                 #re "^try" [[:inner 0]]
+                 #re "^when-" [[:inner 0]]
+                 #re "^with" [[:inner 0]]}}

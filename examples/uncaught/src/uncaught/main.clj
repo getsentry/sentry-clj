@@ -21,10 +21,10 @@
     (sentry/init! dsn config)
     (fn [event]
       (try
-       (sentry/send-event event)
-       (catch Exception e
-         (log/errorf "Error submitting event '%s' to Sentry!" event)
-         (log/error e))))))
+        (sentry/send-event event)
+        (catch Exception e
+          (log/errorf "Error submitting event '%s' to Sentry!" event)
+          (log/error e))))))
 
 (def ^:private cli-options
   [["-d" "--dsn DSN" "DSN to use."]])
@@ -33,8 +33,8 @@
   [args]
   (let [{{:keys [dsn]} :options} (parse-opts args cli-options)]
     (cond
-     dsn {:dsn dsn}
-     :else {:failure "You must provide a DSN!"})))
+      dsn {:dsn dsn}
+      :else {:failure "You must provide a DSN!"})))
 
 (defn ^:private exit
   [message]
@@ -51,9 +51,9 @@
     (if failure
       (exit failure)
       (do
-       (set-default-exception-handler (create-sentry-logger {:dsn dsn :environment "production" :debug true :enable-uncaught-exception-handler false}))
-       (log/info "Press `ctrl+c` to quit once the event has been sent by Sentry!")
-       (doto
+        (set-default-exception-handler (create-sentry-logger {:dsn dsn :environment "production" :debug true :enable-uncaught-exception-handler false}))
+        (log/info "Press `ctrl+c` to quit once the event has been sent by Sentry!")
+        (doto
          (Thread. (fn [] (/ 42 0))) ;; Kaboom!
-         .start)
-       @(promise))))) ;; Spin waiting for the `ctrl+c` or quit to arrive...
+          .start)
+        @(promise))))) ;; Spin waiting for the `ctrl+c` or quit to arrive...

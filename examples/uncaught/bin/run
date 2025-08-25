@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# See https://clojure.org/guides/deps_and_cli#aot_compilation
+[ -z $1 ] && echo "You need to supply the DSN as the first parameter, e.g., ./bin/run http://da98da654fbc48f901ef3ff7cb173e4e@localhost:9000/1" && exit 1
 
 rm -rf classes && mkdir classes
 clj -M -e "(compile 'uncaught.main)"

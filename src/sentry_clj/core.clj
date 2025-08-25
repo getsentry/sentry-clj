@@ -120,11 +120,7 @@
     (when event-id
       (.setEventId sentry-event (SentryId. ^UUID event-id)))
     (when-let [{:keys [formatted message params]} updated-message]
-      (.setMessage sentry-event (doto
-                                  (Message.)
-                                  (.setFormatted formatted)
-                                  (.setMessage message)
-                                  (.setParams params))))
+      (.setMessage sentry-event (doto (Message.) (.setFormatted formatted) (.setMessage message) (.setParams params))))
     (when level
       (.setLevel sentry-event (keyword->level level)))
     (when dist
@@ -226,10 +222,10 @@
        (.addInAppExclude sentry-options in-app-exclude))
      (doseq [ignored-exception-for-type ignored-exceptions-for-type]
        (try
-        (let [clazz (Class/forName ignored-exception-for-type)]
-          (when (isa? clazz Throwable)
-            (.addIgnoredExceptionForType sentry-options ^Throwable clazz)))
-        (catch Exception _))) ; just ignore it.
+         (let [clazz (Class/forName ignored-exception-for-type)]
+           (when (isa? clazz Throwable)
+             (.addIgnoredExceptionForType sentry-options ^Throwable clazz)))
+         (catch Exception _))) ; just ignore it.
      (when before-send-fn
        (.setBeforeSend sentry-options ^SentryEvent
                        (reify io.sentry.SentryOptions$BeforeSendCallback
@@ -268,7 +264,6 @@
 
      sentry-options)))
 
-#_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
 (defn init!
   "Initialize Sentry with the mandatory `dsn`
 
@@ -338,7 +333,6 @@
                                   (doseq [[k v] (java-util-hashmappify-vals contexts)]
                                     (.setContexts scope ^String k ^Object {"value" v})))))))))
 
-#_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
 (defn close!
   "Closes the SDK"
   []

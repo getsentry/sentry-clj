@@ -1,20 +1,32 @@
 {:paths ["src" "resources"]
 
- :deps {org.clojure/clojure {:mvn/version "1.12.0"}
+ :deps {org.clojure/clojure {:mvn/version "1.12.2"}
         ;;
-        ;;
-        ;;
-        ch.qos.logback/logback-classic {:mvn/version "1.5.16"}
+        ch.qos.logback/logback-classic {:mvn/version "1.5.18"}
         integrant/integrant {:mvn/version "0.13.1"}
-        integrant/repl {:mvn/version "0.4.0"}
-        io.sentry/sentry {:mvn/version "7.22.0"}
+        io.sentry/sentry {:mvn/version "8.20.0"}
         io.sentry/sentry-clj {:local/root "../../../sentry-clj"}
         org.clojure/tools.cli {:mvn/version "1.1.230"}
         org.clojure/tools.logging {:mvn/version "1.3.0"}
-        org.slf4j/jcl-over-slf4j {:mvn/version "2.0.16"}
-        org.slf4j/jul-to-slf4j {:mvn/version "2.0.16"}
-        org.slf4j/log4j-over-slf4j {:mvn/version "2.0.16"}
-        org.slf4j/slf4j-api {:mvn/version "2.0.16"}
-        ring/ring-core {:mvn/version "1.13.0"}
-        ring/ring-jetty-adapter {:mvn/version "1.13.0"}
-        ring/ring-json {:mvn/version "0.5.1"}}}
+        org.slf4j/jcl-over-slf4j {:mvn/version "2.0.17"}
+        org.slf4j/jul-to-slf4j {:mvn/version "2.0.17"}
+        org.slf4j/log4j-over-slf4j {:mvn/version "2.0.17"}
+        org.slf4j/slf4j-api {:mvn/version "2.0.17"}
+        ring/ring-core {:mvn/version "1.14.2"}
+        ring/ring-jetty-adapter {:mvn/version "1.14.2"}
+        ring/ring-json {:mvn/version "0.5.1"}}
+
+ :aliases {:dev {:extra-paths ["dev/src" "dev/resources"]
+                 :extra-deps {io.github.tonsky/clj-reload {:mvn/version "0.9.8"}
+                              integrant/repl {:mvn/version "0.4.0"}}}
+
+           :antq {:replace-deps {com.github.liquidz/antq {:mvn/version "2.11.1276"}
+                                 org.slf4j/slf4j-nop {:mvn/version "2.0.17"}}
+                  :replace-paths ["."]
+                  :exec-fn antq.tool/outdated
+                  :exec-args {:download true
+                              :force true
+                              :no-changes true
+                              :skip ["pom"]
+                              :upgrade true
+                              :verbose true}}}}

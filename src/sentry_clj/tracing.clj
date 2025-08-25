@@ -1,6 +1,6 @@
 (ns sentry-clj.tracing
   (:import
-   [io.sentry CustomSamplingContext EventProcessor ITransaction Scope Sentry SpanStatus TransactionContext TransactionOptions]))
+   [io.sentry CustomSamplingContext EventProcessor ITransaction Scope Sentry SpanStatus TransactionOptions]))
 
 (def span-status
   {:ok SpanStatus/OK
@@ -33,13 +33,13 @@
 (defn start-transaction
   "Start tracing transactions.
    If a sentry-trace-header is given, connect the existing transaction."
-  [name operation custom-sampling-context sentry-trace-header]
+  [name custom-sampling-context sentry-trace-header]
   (let [transaction-options (doto (TransactionOptions.) (.setBindToScope true) (.setCustomSamplingContext ^CustomSamplingContext custom-sampling-context))]
     (if sentry-trace-header
-      (let [contexts (TransactionContext/fromSentryTrace name operation (io.sentry.SentryTraceHeader. sentry-trace-header))]
-        (-> (Sentry/getCurrentHub)
-            (.startTransaction contexts ^TransactionOptions transaction-options)))
-      (-> (Sentry/getCurrentHub)
+      (let [transactionContext (Sentry/continueTrace (.getValue (io.sentry.SentryTraceHeader. sentry-trace-header)) nil)]
+        (-> (Sentry/getCurrentScopes)
+            (.startTransaction transactionContext ^TransactionOptions transaction-options)))
+      (-> (Sentry/getCurrentScopes)
           (.startTransaction ^String name "http.server" ^TransactionOptions transaction-options)))))
 
 (defn swap-scope-request!
@@ -73,10 +73,10 @@
          (let [result# (do ~@forms)]
            (.setStatus inner-sp# SpanStatus/OK)
            result#)
-        (catch Throwable e#
-          (.setThrowable inner-sp# e#)
-          (.setStatus inner-sp# SpanStatus/INTERNAL_ERROR)
-          (throw e#))
-        (finally
-          (.finish inner-sp#))))
+         (catch Throwable e#
+           (.setThrowable inner-sp# e#)
+           (.setStatus inner-sp# SpanStatus/INTERNAL_ERROR)
+           (throw e#))
+         (finally
+           (.finish inner-sp#))))
      (do ~@forms)))

@@ -1,0 +1,17 @@
+{:paths ["src" "resources"]
+
+ :deps {org.clojure/clojure {:mvn/version "1.12.2"}
+        ;;
+        examples/basic {:local/root "basic"}
+        examples/ring-with-tracing {:local/root "ring_with_tracing"}
+        examples/uncaught {:local/root "uncaught"}}
+
+ :aliases {:antq {:replace-deps {com.github.liquidz/antq {:mvn/version "2.11.1276"}
+                                 org.slf4j/slf4j-nop {:mvn/version "2.0.17"}}
+                  :replace-paths ["."]
+                  :exec-fn antq.tool/outdated
+                  :exec-args {:download true
+                              :force true
+                              :no-changes true
+                              :upgrade true
+                              :verbose true}}}}

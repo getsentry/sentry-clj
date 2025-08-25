@@ -3,7 +3,7 @@
 
   <statusListener class="ch.qos.logback.core.status.NopStatusListener" />
 
-  <contextName>examples.basic</contextName>
+  <contextName>examples.ring-with-tracing</contextName>
 
   <variable name="ROOT_LOG_LEVEL" value="${ROOT_LOG_LEVEL:-info}" />
 

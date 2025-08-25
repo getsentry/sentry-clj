@@ -7,13 +7,12 @@
    [sentry-clj.core :as sentry]
    [sentry-clj.tracing :as st])
   (:import
-   [io.sentry EventProcessor Hint IHub Sentry SentryEvent SentryTraceHeader]
+   [io.sentry EventProcessor Hint IScopes Sentry SentryEvent SentryTraceHeader]
    [io.sentry.protocol Request SentryTransaction]))
 
 (set! *warn-on-reflection* true)
 
-(def ^:private sentry-trace-header
-  SentryTraceHeader/SENTRY_TRACE_HEADER)
+(def ^:private sentry-trace-header SentryTraceHeader/SENTRY_TRACE_HEADER)
 
 (defn ^:private request->http
   "Converts a Ring request into an HTTP interface for an event."
@@ -23,22 +22,16 @@
    :data (:params req)
    :query-string (:query-string req "")
    :headers (:headers req)
-   :env {:session (-> req :session pr-str)
-         "REMOTE_ADDR" (:remote-addr req)}})
-
-(defn ^:private get-current-hub
-  "Get current Hub."
-  []
-  (Sentry/getCurrentHub))
+   :env {:session (-> req :session pr-str) "REMOTE_ADDR" (:remote-addr req)}})
 
 (defn ^:private configure-scope!
-  "Set scope a callback function which is called
+  "Set a scopes callback function which is called
    before a transaction finish or an event is send to Sentry."
-  [^IHub hub scope-cb]
-  (.configureScope hub (reify io.sentry.ScopeCallback
-                         (run
-                           [_ scope]
-                           (scope-cb scope)))))
+  [^IScopes scopes scope-cb]
+  (.configureScope scopes (reify io.sentry.ScopeCallback
+                            (run
+                              [_ scope]
+                              (scope-cb scope)))))
 
 (defn ^:private request->user
   "Converts a Ring request into a User interface for an event."
@@ -48,23 +41,18 @@
 (defn ^:private request->event
   "Given a request and an exception, returns a Sentry event."
   [req e]
-  {:throwable e
-   :request (request->http req)
-   :user (request->user req)})
+  {:throwable e :request (request->http req) :user (request->user req)})
 
 (defn ^:private default-error
   "A very bare-bones error message. Ignores the request and exception."
   [_ _]
-  (-> (str "<html><head><title>Error</title></head>"
-           "<body><p>Internal Server Error</p></body></html>")
-      (response/response)
+  (-> (response/response "<html><head><title>Error</title></head><body><p>Internal Server Error</p></body></html>")
       (response/content-type "text/html")
       (response/status 500)))
 
 (defn ^:private extract-transaction-name
-  "Extract transactin name from request.
-   ex) GET /api/status"
-  [{:keys [request-method uri]}]
+  "Extract transaction name from request, e.g., GET /api/status"
+  [{:keys [request-method uri] :as _request}]
   (str (-> request-method name upper-case) " " uri))
 
 (defn ^:private request->context-request
@@ -124,41 +112,37 @@
    * `:error-fn`, which is passed the request and the thrown exception and returns an appropriate Ring response
    "
   [handler {:keys [preprocess-fn postprocess-fn error-fn]
-            :or   {preprocess-fn identity
-                   postprocess-fn (comp second list)
-                   error-fn default-error}}]
+            :or {preprocess-fn identity
+                 postprocess-fn (comp second list)
+                 error-fn default-error}}]
   (fn [req]
     (try
-     (handler req)
-     (catch Throwable e
-       (-> req
-           preprocess-fn
-           (request->event e)
-           (->> (postprocess-fn req)
-                sentry/send-event))
-       (error-fn req e)))))
+      (handler req)
+      (catch Throwable e
+        (-> req
+            preprocess-fn
+            (request->event e)
+            (->> (postprocess-fn req)
+                 sentry/send-event))
+        (error-fn req e)))))
 
 (defn wrap-sentry-tracing
   "Wraps the given handler in tracing.
 
   Optionally takes one function:
 
-  * `:preprocess-fn`, which is passed the request"
+   * `:preprocess-fn`, which is passed the request"
   ([handler]
    (wrap-sentry-tracing handler {}))
-  ([handler {:keys [preprocess-fn]
-             :or   {preprocess-fn identity}}]
+  ([handler {:keys [preprocess-fn] :or {preprocess-fn identity}}]
    (fn [req]
      (let [trace-id (get (:headers req) sentry-trace-header)
            name (extract-transaction-name req)
            custom-sampling-context (->> req
                                         request->context-request
                                         (st/compute-custom-sampling-context "request"))
-           transaction (st/start-transaction name
-                                             "http.server"
-                                             custom-sampling-context
-                                             trace-id)]
-       (-> (get-current-hub)
+           transaction (st/start-transaction name custom-sampling-context trace-id)]
+       (-> (Sentry/getCurrentScopes)
            (configure-scope! (fn [scope]
                                (st/swap-scope-request! scope (map->request (preprocess-fn req)))
                                (st/add-event-processor scope (event-processor)))))

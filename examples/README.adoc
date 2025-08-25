@@ -20,6 +20,10 @@ A simple example that shows how to create a sentry-logger and use it to fire
 an event to Sentry. All this is done via a little commentary in a Rich Comment
 Block, thus runnable in the REPL.
 
+== Ring With Tracing
+
+This example shows how to perform tracing with Ring.
+
 == Uncaught
 
 Another simple example that shows how we can switch off the built-in uncaught
@@ -33,7 +37,3 @@ as:
 `bin/run -d DSN`
 
 Where `DSN` is your DSN URL.
-
-== Tracing
-
-This example shows how to perform tracing with Ring.

@@ -1,0 +1,36 @@
+---
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: check-case-conflict
+      - id: check-json
+      - id: check-merge-conflict
+      - id: check-shebang-scripts-are-executable
+      - id: check-symlinks
+      - id: check-xml
+      - id: check-yaml
+      - id: end-of-file-fixer
+      - id: fix-byte-order-marker
+      - id: mixed-line-ending
+      - id: trailing-whitespace
+
+  - repo: local
+    hooks:
+      - id: clj-kondo
+        name: clj-kondo linter
+        description: Run lint rules with clj-kondo
+        types: [clojure]
+        entry: scripts/hooks/clj-kondo-pre-commit
+        language: script
+        require_serial: true
+        args: ["warning"]
+
+      - id: cljfmt
+        name: cljfmt formatter
+        description: Run formatting rules with cljfmt
+        types: [clojure]
+        entry: scripts/hooks/cljfmt-pre-commit
+        language: script
+        require_serial: true

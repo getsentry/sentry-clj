@@ -9,18 +9,18 @@
   [{:keys [dsn] :as config}]
   (if dsn
     (do
-     (log/infof "Initialising Sentry with '%s'." dsn)
-     (sentry/init! dsn config)
-     (fn [event]
-       (try
-        (sentry/send-event event)
-        (catch Exception e
-          (log/errorf "Error submitting event '%s' to Sentry!" event)
-          (log/error e)))))
+      (log/infof "Initialising Sentry with '%s'." dsn)
+      (sentry/init! dsn config)
+      (fn [event]
+        (try
+          (sentry/send-event event)
+          (catch Exception e
+            (log/errorf "Error submitting event '%s' to Sentry!" event)
+            (log/error e)))))
     (do
-     (log/warn "No Sentry DSN provided. Sentry events will be logged locally!")
-     (fn [event]
-       (log/infof "Sentry Event '%s'." event)))))
+      (log/warn "No Sentry DSN provided. Sentry events will be logged locally!")
+      (fn [event]
+        (log/infof "Sentry Event '%s'." event)))))
 
 (defn init-sentry
   "Initialise Sentry with the provided `config` and return a function that can be
@@ -46,29 +46,3 @@
    behaviour is not ideal nor supported**."
   [config]
   (create-sentry-logger config))
-
-(comment
-
- (require '[basic.main :as main])
-
- ;;
- ;; Replace "dsn" below with a your DSN.
- ;;
- (def dsn "https://abcdefg@localhost:9000/2")
-
- ;;
- ;; Initialise Sentry, returning a function that will later receive an event.
- ;;
- (def sentry-logger (main/init-sentry {:dsn dsn :environment "local"}))
-
- ;;
- ;; "Fire" an event.
- ;;
- ;; This logger may be used as part of your normal application flow, perhaps if something
- ;; interesting happens, you may want Sentry to log it out.
- ;;
- ;; Perhaps in a handler that handles (throw (ex-info ..... ))
- ;;
- (sentry-logger {:message "Oh No!" :throwable (RuntimeException. "Something bad has happened!")})
-
- ,)
