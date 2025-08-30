@@ -48,7 +48,8 @@
              :method "GET"
              :query-string "?foo=bar"
              :cookies "cookie1=foo;cookie2=bar"
-             :headers {"X-Clacks-Overhead" "Terry Pratchett"
+             :headers {"Cookie" "cookie1=foo;cookie2=bar"
+                       "X-Clacks-Overhead" "Terry Pratchett"
                        "X-w00t" "ftw!"}
              :env {"a" "b"}
              :data {"c" "d"}
@@ -102,8 +103,8 @@
     (let [request ^Request (#'sut/map->request {:url "http://example.com"
                                                 :method "GET"
                                                 :query-string "?foo=bar"
-                                                :cookies "cookie1=foo;cookie2=bar"
-                                                :headers {"X-Clacks-Overhead" "Terry Pratchett"
+                                                :headers {"Cookie" "cookie1=foo;cookie2=bar"
+                                                          "X-Clacks-Overhead" "Terry Pratchett"
                                                           "X-w00t" "ftw!"}
                                                 :env {"a" "b"}
                                                 :data {"c" "d"}
@@ -112,7 +113,7 @@
       (expect "GET" (.getMethod request))
       (expect "?foo=bar" (.getQueryString request))
       (expect "cookie1=foo;cookie2=bar" (.getCookies request))
-      (expect {"X-Clacks-Overhead" "Terry Pratchett" "X-w00t" "ftw!"} (.getHeaders request))
+      (expect {"Cookie" "cookie1=foo;cookie2=bar" "X-Clacks-Overhead" "Terry Pratchett" "X-w00t" "ftw!"} (.getHeaders request))
       (expect {"a" "b"} (.getEnvs request))
       (expect {"c" "d"} (.getData request))
       (expect {"x" "y"} (.getOthers request)))))
@@ -144,7 +145,7 @@
                        "username" "username"}
                "request" {"cookies" "cookie1=foo;cookie2=bar"
                           "env" {"a" "b"}
-                          "headers" {"X-Clacks-Overhead" "Terry Pratchett", "X-w00t" "ftw!"}
+                          "headers" {"Cookie" "cookie1=foo;cookie2=bar" "X-Clacks-Overhead" "Terry Pratchett", "X-w00t" "ftw!"}
                           "method" "GET"
                           "data" {"c" "d"}
                           "other" {"x" "y"}
@@ -183,7 +184,7 @@
                        "username" "username"}
                "request" {"cookies" "cookie1=foo;cookie2=bar"
                           "env" {"a" "b"}
-                          "headers" {"X-Clacks-Overhead" "Terry Pratchett", "X-w00t" "ftw!"}
+                          "headers" {"Cookie" "cookie1=foo;cookie2=bar" "X-Clacks-Overhead" "Terry Pratchett", "X-w00t" "ftw!"}
                           "method" "GET"
                           "data" {"c" "d"}
                           "other" {"x" "y"}
@@ -229,7 +230,7 @@
                        "username" "username"}
                "request" {"cookies" "cookie1=foo;cookie2=bar"
                           "env" {"a" "b"}
-                          "headers" {"X-Clacks-Overhead" "Terry Pratchett", "X-w00t" "ftw!"}
+                          "headers" {"Cookie" "cookie1=foo;cookie2=bar" "X-Clacks-Overhead" "Terry Pratchett", "X-w00t" "ftw!"}
                           "method" "GET"
                           "data" {"c" "d"}
                           "other" {"x" "y"}
@@ -278,7 +279,7 @@
                        "username" "username"}
                "request" {"cookies" "cookie1=foo;cookie2=bar"
                           "env" {"a" "b"}
-                          "headers" {"X-Clacks-Overhead" "Terry Pratchett", "X-w00t" "ftw!"}
+                          "headers" {"Cookie" "cookie1=foo;cookie2=bar" "X-Clacks-Overhead" "Terry Pratchett", "X-w00t" "ftw!"}
                           "method" "GET"
                           "data" {"c" "d"}
                           "other" {"x" "y"}

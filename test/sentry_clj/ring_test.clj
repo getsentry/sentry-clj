@@ -2,6 +2,8 @@
   (:require
    [cheshire.core :as json]
    [expectations.clojure.test :refer [defexpect expect expecting side-effects]]
+   [ring.middleware.cookies :as cookies-middleware]
+   [ring.mock.request :as mock]
    [sentry-clj.core :as sentry]
    [sentry-clj.ring :as ring]
    [sentry-clj.tracing :as st])
@@ -28,9 +30,9 @@
 
 (defn ^:private wrapped
   [req]
-  (if (:ok req) "woo" (throw e)))
+  (if (:ok req) "w00t" (throw e)))
 
-(def ^:private req
+(def ^:private hello-world-request
   {:scheme :https
    :uri "/hello-world"
    :request-method :get
@@ -55,7 +57,7 @@
 (defexpect wrap-report-exceptions-test
   (expecting "passing through"
     (let [handler (ring/wrap-report-exceptions wrapped {})]
-      (expect "woo" (handler (assoc req :ok true))))))
+      (expect "w00t" (handler (assoc hello-world-request :ok true))))))
 
 (defexpect with-defaults-test
   (expecting "with defaults"
@@ -72,7 +74,7 @@
       (expect {:status 500
                :headers {"Content-Type" "text/html"}
                :body "<html><head><title>Error</title></head><body><p>Internal Server Error</p></body></html>"}
-        (handler req))
+        (handler hello-world-request))
       (expect {"breadcrumbs" (),
                "contexts" {},
                "request" {"data" {"one" 1},
@@ -98,7 +100,7 @@
           handler (ring/wrap-report-exceptions wrapped {:preprocess-fn preprocess
                                                         :postprocess-fn postprocess
                                                         :error-fn error})]
-      (expect (assoc req :exception e) (handler req))
+      (expect (assoc hello-world-request :exception e) (handler hello-world-request))
       (expect {"breadcrumbs" (),
                "contexts" {},
                "environment" "qa",
@@ -123,11 +125,11 @@
 
 (defexpect wrap-sentry-tracing-test
   (let [sentry-options (get-test-options {:traces-sample-rate 1.0 :debug true})
-        ok-req (assoc req :ok true)]
+        ok-req (assoc hello-world-request :ok true)]
     (Sentry/init ^SentryOptions sentry-options)
     (expecting "passing through"
       (let [handler (ring/wrap-sentry-tracing wrapped)]
-        (expect "woo" (handler ok-req))))
+        (expect "w00t" (handler ok-req))))
     (expecting "preprocess fn called"
       (let [handler (ring/wrap-sentry-tracing wrapped {:preprocess-fn preprocess})]
         (expect (fn [_transaction]
@@ -138,4 +140,32 @@
                                                   (deliver p (.getData (.getRequest scope))))))
                        @p)))
           (side-effects [st/finish-transaction!]
-            (expect "woo" (handler ok-req))))))))
+            (expect "w00t" (handler ok-req))))))))
+
+(defexpect cookie-decoding-test
+  (expecting "cookies are decoded properly"
+    (let [event {:throwable e
+                 :request {:url "https://example.com/hello-world"
+                           :method nil
+                           :data {:one 1}
+                           :query-string ""
+                           :headers {"cookie" "sessionId=1234" "ok" 2 "host" "example.com"}
+                           :env {:session "{}" "REMOTE_ADDR" "127.0.0.1"}}
+                 :user {:ip_address "127.0.0.1"}}
+          sentry-event (strip-timestamp (serialize event))
+          handler (-> (ring/wrap-report-exceptions wrapped {})
+                      (cookies-middleware/wrap-cookies))
+          request (-> (assoc hello-world-request :ok false)
+                      (mock/cookie :sessionId "1234"))
+          {:keys [status] :as response} (handler request)]
+      (expect 500 status)
+      (expect {"breadcrumbs" (),
+               "contexts" {},
+               "request" {"cookies" "sessionId=1234",
+                          "data" {"one" 1},
+                          "env" {"REMOTE_ADDR" "127.0.0.1", "session" "{}"},
+                          "headers" {"cookie" "sessionId=1234", "host" "example.com", "ok" 2},
+                          "query_string" "",
+                          "url" "https://example.com/hello-world"},
+               "sdk" {"version" "blah"},
+               "user" {}} sentry-event))))

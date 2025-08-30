@@ -17,12 +17,12 @@
 (defn ^:private request->http
   "Converts a Ring request into an HTTP interface for an event."
   [req]
-  {:url (request-url req)
-   :method (-> req :request-method name)
-   :data (:params req)
-   :query-string (:query-string req "")
+  {:data (:params req)
+   :env {:session (-> req :session pr-str) "REMOTE_ADDR" (:remote-addr req)}
    :headers (:headers req)
-   :env {:session (-> req :session pr-str) "REMOTE_ADDR" (:remote-addr req)}})
+   :method (-> req :request-method name)
+   :query-string (:query-string req "")
+   :url (request-url req)})
 
 (defn ^:private configure-scope!
   "Set a scopes callback function which is called
@@ -58,11 +58,11 @@
 (defn ^:private request->context-request
   "Converts a request into custom-sampling-context's request."
   [req]
-  {:uri (request-url req)
-   :query-string (:query-string req "")
-   :method (-> req :request-method name upper-case)
+  {:data (-> req :params)
    :headers (:headers req)
-   :data (-> req :params)})
+   :query-string (:query-string req "")
+   :request-method (-> req :request-method name upper-case)
+   :uri (request-url req)})
 
 (defn ^:private compute-sentry-runtime
   "Compute Clojure runtime information."

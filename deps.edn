@@ -20,8 +20,8 @@
                                com.github.seancorfield/expectations {:mvn/version "2.2.214"}
                                lambdaisland/kaocha {:mvn/version "1.91.1392"}
                                lambdaisland/kaocha-junit-xml {:mvn/version "1.17.101"}
-                               orchestra/orchestra {:mvn/version "2021.01.01-1"}
-                               org.clojure/test.check {:mvn/version "1.1.1"}}}
+                               org.clojure/test.check {:mvn/version "1.1.1"}
+                               ring/ring-mock {:mvn/version "0.6.2"}}}
 
            :antq {:replace-deps {com.github.liquidz/antq {:mvn/version "2.11.1276"}
                                  org.slf4j/slf4j-nop {:mvn/version "2.0.17"}}
@@ -30,7 +30,6 @@
                   :exec-args {:download true
                               :force true
                               :no-changes true
-                              :skip ["pom"]
                               :upgrade true
                               :verbose true}}
 

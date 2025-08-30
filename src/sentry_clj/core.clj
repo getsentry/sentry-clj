@@ -54,46 +54,46 @@
 (defn ^:private map->user
   "Converts a map into a User."
   ^User
-  [{:keys [email id username ip-address data]}]
+  [{:keys [data email id ip-address username]}]
   (let [user (User.)]
+    (when data
+      (.setData user data))
     (when email
       (.setEmail user email))
     (when id
       (.setId user id))
-    (when username
-      (.setUsername user username))
     (when ip-address
       (.setIpAddress user ip-address))
-    (when data
-      (.setData user data))
+    (when username
+      (.setUsername user username))
     user))
 
 (defn ^:private map->request
   "Converts a map into a Request."
   ^Request
-  [{:keys [url method query-string data cookies headers env other]}]
+  [{:keys [data env headers method other query-string url] :as _request}]
   (let [request (Request.)]
-    (when url
-      (.setUrl request url))
-    (when method
-      (.setMethod request method))
-    (when query-string
-      (.setQueryString request query-string))
     (when data
       (.setData request (java-util-hashmappify-vals data)))
-    (when cookies
-      (.setCookies request (java-util-hashmappify-vals cookies)))
-    (when headers
-      (.setHeaders request (java-util-hashmappify-vals headers)))
     (when env
       (.setEnvs request (java-util-hashmappify-vals env)))
+    (when headers
+      (.setHeaders request (java-util-hashmappify-vals headers))
+      (when-let [cookie (get headers "cookie" (get headers "Cookie"))]
+        (.setCookies request cookie)))
+    (when method
+      (.setMethod request method))
     (when other
       (.setOthers request (java-util-hashmappify-vals other)))
+    (when query-string
+      (.setQueryString request query-string))
+    (when url
+      (.setUrl request url))
     request))
 
 (defn ^:private merge-all-ex-data
   "Merges ex-data of all ex-info exceptions in the cause chain of exn into extra.
-  Each ex-data is added under a separate key so that they don't clobber each other."
+   Each ex-data is added under a separate key so that they don't clobber each other."
   [extra exn]
   (loop [exn exn
          num 0
@@ -103,18 +103,13 @@
         (recur (ex-cause exn)
                (inc num)
                (cond-> extra
-                 data
-                 (assoc (if (zero? num)
-                          "ex-data"
-                          (str "ex-data, cause " num ": " (ex-message exn)))
-                        data))))
+                 data (assoc (if (zero? num) "ex-data" (str "ex-data, cause " num ": " (ex-message exn))) data))))
       extra)))
 
 (defn ^:private map->event
   "Converts a map into an event."
   ^SentryEvent
-  [{:keys [event-id message level release environment user request logger platform dist
-           tags breadcrumbs server-name extra fingerprints throwable transaction]}]
+  [{:keys [event-id message level release environment user request logger platform dist tags breadcrumbs server-name extra fingerprints throwable transaction] :as _event}]
   (let [sentry-event (SentryEvent. (DateUtils/getCurrentDateTime))
         updated-message (if (string? message) {:message message} message)]
     (when event-id
