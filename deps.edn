@@ -16,7 +16,7 @@
                               reloaded.repl/reloaded.repl {:mvn/version "0.2.4"}}}
 
            :test {:extra-paths ["test"]
-                  :extra-deps {cheshire/cheshire {:mvn/version "6.0.0"}
+                  :extra-deps {cheshire/cheshire {:mvn/version "6.1.0"}
                                com.github.seancorfield/expectations {:mvn/version "2.2.214"}
                                lambdaisland/kaocha {:mvn/version "1.91.1392"}
                                lambdaisland/kaocha-junit-xml {:mvn/version "1.17.101"}
