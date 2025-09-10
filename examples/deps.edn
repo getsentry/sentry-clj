@@ -14,4 +14,7 @@
                               :force true
                               :no-changes true
                               :upgrade true
-                              :verbose true}}}}
+                              :verbose true}}}
+
+ :mvn/repos {"central" {:url "https://repo1.maven.org/maven2/" :releases {:update :always}}
+             "clojars" {:url "https://repo.clojars.org/" :releases {:update :always}}}}

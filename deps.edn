@@ -4,7 +4,7 @@
         ;;
         ;;
         ;;
-        io.sentry/sentry {:mvn/version "8.20.0"}
+        io.sentry/sentry {:mvn/version "8.21.1"}
         ring/ring-core {:mvn/version "1.14.2"}}
 
  :aliases {:build {:extra-deps {io.github.clojure/tools.build {:mvn/version "0.10.10"}
@@ -37,4 +37,7 @@
                    :main-opts ["-m" "cljfmt.main" "check"]}
 
            :fix {:replace-deps {dev.weavejester/cljfmt {:mvn/version "0.13.1"}}
-                 :main-opts ["-m" "cljfmt.main" "fix"]}}}
+                 :main-opts ["-m" "cljfmt.main" "fix"]}}
+
+ :mvn/repos {"central" {:url "https://repo1.maven.org/maven2/" :releases {:update :always}}
+             "clojars" {:url "https://repo.clojars.org/" :releases {:update :always}}}}

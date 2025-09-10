@@ -10,6 +10,10 @@ endeavour to be non-breaking (by moving to new names rather than by
 breaking existing names). COMMITS is an ever-increasing counter of
 commits since the beginning of this repository.
 
+## [8.21.232]
+
+- Update Sentry Java SDK to 8.21.1
+
 ## [8.20.229]
 
 - Grab cookie header from the map of request headers. Fixes #70
@@ -452,7 +456,8 @@ commits since the beginning of this repository.
   compatible with Sentry 10.0.1 and below. If you wish to use those
   versions, please continue to use sentry-clj 1.7.30.
 
-[Unreleased]: https://github.com/getsentry/sentry-clj/compare/8.20.229...HEAD
+[Unreleased]: https://github.com/getsentry/sentry-clj/compare/8.21.232...HEAD
+[8.21.232]: https://github.com/getsentry/sentry-clj/compare/8.20.229...8.21.232
 [8.20.229]: https://github.com/getsentry/sentry-clj/compare/8.20.228...8.20.229
 [8.20.228]: https://github.com/getsentry/sentry-clj/compare/7.22.227...8.20.228
 [7.22.227]: https://github.com/getsentry/sentry-clj/compare/7.20.226...7.22.227

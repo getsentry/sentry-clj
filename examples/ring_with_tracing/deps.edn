@@ -4,7 +4,7 @@
         ;;
         ch.qos.logback/logback-classic {:mvn/version "1.5.18"}
         integrant/integrant {:mvn/version "0.13.1"}
-        io.sentry/sentry {:mvn/version "8.20.0"}
+        io.sentry/sentry {:mvn/version "8.21.1"}
         io.sentry/sentry-clj {:local/root "../../../sentry-clj"}
         org.clojure/tools.cli {:mvn/version "1.1.230"}
         org.clojure/tools.logging {:mvn/version "1.3.0"}
@@ -27,6 +27,8 @@
                   :exec-args {:download true
                               :force true
                               :no-changes true
-                              :skip ["pom"]
                               :upgrade true
-                              :verbose true}}}}
+                              :verbose true}}}
+
+ :mvn/repos {"central" {:url "https://repo1.maven.org/maven2/" :releases {:update :always}}
+             "clojars" {:url "https://repo.clojars.org/" :releases {:update :always}}}}
