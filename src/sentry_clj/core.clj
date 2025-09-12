@@ -156,6 +156,7 @@
    :enable-uncaught-exception-handler true ;; Java SDK default
    :trace-options-requests true ;; Java SDK default
    :serialization-max-depth 5 ;; default to 5, adjust lower if a circular reference loop occurs.
+   :logs-enabled false
    :enabled true})
 
 (defn ^:private sentry-options
@@ -183,6 +184,7 @@
                  trace-options-requests
                  instrumenter
                  event-processors
+                 logs-enabled
                  enabled]} (merge sentry-defaults config)
          sentry-options (SentryOptions.)]
 
@@ -241,6 +243,8 @@
                                                                             .getCustomSamplingContext
                                                                             .getData)
                                                  :transaction-context (.getTransactionContext ctx)})))))
+     (when logs-enabled
+       (-> sentry-options .getLogs (.setEnabled true)))
      (when-let [instrumenter (case instrumenter
                                :sentry Instrumenter/SENTRY
                                :otel Instrumenter/OTEL
@@ -292,6 +296,7 @@
    |                                      | [More Information)(https://docs.sentry.io/platforms/java/enriching-events/context/)                                |
    | `:traces-sample-rate`                | Set a uniform sample rate(a number of between 0.0 and 1.0) for all transactions for tracing                        |
    | `:traces-sample-fn`                  | A function (taking a custom sample context and a transaction context) enables you to control trace transactions    |
+   | `:logs-enabled`                      | Enable Sentry structured logging integration                                                                       | false
    | `:serialization-max-depth`           | Set to a lower number, i.e., 2, if you experience circular reference errors when sending events                    | 5
    | `:trace-options-request`             | Set to enable or disable tracing of options requests                                                               | true
 

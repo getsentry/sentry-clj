@@ -317,6 +317,7 @@
                                                                                   :debug true
                                                                                   :enable-uncaught-exception-handler false
                                                                                   :trace-options-requests false
+                                                                                  :logs-enabled true
                                                                                   :instrumenter :otel
                                                                                   :event-processors [(SomeEventProcessor.)]
                                                                                   :enabled false})]
@@ -335,6 +336,7 @@
       (expect (.isDebug sentry-options))
       (expect false (.isEnableUncaughtExceptionHandler sentry-options))
       (expect false (.isTraceOptionsRequests sentry-options))
+      (expect true (.isEnabled (.getLogs sentry-options)))
       (expect Instrumenter/OTEL (.getInstrumenter sentry-options))
       (expect (instance? SomeEventProcessor (last (.getEventProcessors sentry-options))))
       (expect false (.isEnabled sentry-options)))))
