@@ -185,6 +185,7 @@
                  instrumenter
                  event-processors
                  logs-enabled
+                 before-send-log-fn
                  enabled]} (merge sentry-defaults config)
          sentry-options (SentryOptions.)]
 
@@ -245,6 +246,11 @@
                                                  :transaction-context (.getTransactionContext ctx)})))))
      (when logs-enabled
        (-> sentry-options .getLogs (.setEnabled true)))
+     (when before-send-log-fn
+       (-> sentry-options .getLogs (.setBeforeSend
+                                     (reify io.sentry.SentryOptions$Logs$BeforeSendLogCallback
+                                       (execute [_ event]
+                                         (before-send-log-fn event))))))
      (when-let [instrumenter (case instrumenter
                                :sentry Instrumenter/SENTRY
                                :otel Instrumenter/OTEL
@@ -297,6 +303,7 @@
    | `:traces-sample-rate`                | Set a uniform sample rate(a number of between 0.0 and 1.0) for all transactions for tracing                        |
    | `:traces-sample-fn`                  | A function (taking a custom sample context and a transaction context) enables you to control trace transactions    |
    | `:logs-enabled`                      | Enable Sentry structured logging integration                                                                       | false
+   | `:before-send-log-fn`                | A function (taking a log event) to filter logs, or update them before they are sent to Sentry                      |
    | `:serialization-max-depth`           | Set to a lower number, i.e., 2, if you experience circular reference errors when sending events                    | 5
    | `:trace-options-request`             | Set to enable or disable tracing of options requests                                                               | true
 
@@ -320,6 +327,10 @@
 
    ```clojure
    (init! \"http://abcdefg@localhost:19000/2\" {:contexts {:foo \"bar\" :baz \"wibble\"}})
+   ```
+
+   ```clojure
+   (init! \"http://abcdefg@localhost:19000/2\" {:logs-enabled true :before-send-log-fn (fn [logEvent] (.setBody logEvent \"new message body\") logEvent)})
    ```
    "
   ([dsn] (init! dsn {}))
