@@ -26,26 +26,31 @@
   (:import [io.sentry Sentry SentryAttributes SentryLogLevel SentryDate SentryAttribute]
            [io.sentry.logger SentryLogParameters]))
 
+(defn get-sentry-logger []
+  (Sentry/logger))
+
 (defn log-with-level
   "Log a message at the specified level with optional format arguments."
-  [level message & args]
+  [level message args]
   (let [array-params (when (seq args)
                        (into-array Object args))
-        logger (Sentry/logger)]
+        logger (get-sentry-logger)]
     (case level
       :trace (.trace logger message array-params)
       :debug (.debug logger message array-params)
       :info (.info logger message array-params)
       :warn (.warn logger message array-params)
       :error (.error logger message array-params)
+      :fatal (.fatal logger message array-params)
       (throw (IllegalArgumentException. (str "Unknown log level: " level))))))
 
 ; Convenience functions that delegate to log!
-(defn trace [message & args] (apply log-with-level :trace message args))
-(defn debug [message & args] (apply log-with-level :debug message args))
-(defn info [message & args] (apply log-with-level :info message args))
-(defn warn [message & args] (apply log-with-level :warn message args))
-(defn error [message & args] (apply log-with-level :error message args))
+(defn trace [message & args] (log-with-level :trace message args))
+(defn debug [message & args] (log-with-level :debug message args))
+(defn info [message & args] (log-with-level :info message args))
+(defn warn [message & args] (log-with-level :warn message args))
+(defn error [message & args] (log-with-level :error message args))
+(defn fatal [message & args] (log-with-level :fatal message args))
 
 (defn- keyword->sentry-level
   "Converts keyword to SentryLogLevel enum."
