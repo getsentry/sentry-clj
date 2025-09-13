@@ -26,15 +26,26 @@
   (:import [io.sentry Sentry SentryAttributes SentryLogLevel SentryDate SentryAttribute]
            [io.sentry.logger SentryLogParameters]))
 
-(defmacro deflogger
-  "Defines a logging function for the given level."
-  [level]
-  `(defn ~level
-     ~(str "Log a message at " level " level with optional format arguments.")
-     [message# & args#]
-     (let [array-params# (when (seq args#)
-                          (into-array Object args#))]
-       (~(symbol (str "." level)) (Sentry/logger) message# array-params#))))
+(defn log-with-level
+  "Log a message at the specified level with optional format arguments."
+  [level message & args]
+  (let [array-params (when (seq args)
+                       (into-array Object args))
+        logger (Sentry/logger)]
+    (case level
+      :trace (.trace logger message array-params)
+      :debug (.debug logger message array-params)
+      :info (.info logger message array-params)
+      :warn (.warn logger message array-params)
+      :error (.error logger message array-params)
+      (throw (IllegalArgumentException. (str "Unknown log level: " level))))))
+
+; Convenience functions that delegate to log!
+(defn trace [message & args] (apply log-with-level :trace message args))
+(defn debug [message & args] (apply log-with-level :debug message args))
+(defn info [message & args] (apply log-with-level :info message args))
+(defn warn [message & args] (apply log-with-level :warn message args))
+(defn error [message & args] (apply log-with-level :error message args))
 
 (defn- keyword->sentry-level
   "Converts keyword to SentryLogLevel enum."
@@ -49,14 +60,6 @@
     (if (instance? SentryLogLevel level)
       level
       (throw (IllegalArgumentException. (str "Unknown log level: " level))))))
-
-; Generate all logging functions
-(deflogger trace)
-(deflogger debug) 
-(deflogger info)
-(deflogger warn)
-(deflogger error)
-(deflogger fatal)
 
 (defn- log-parameters
   "Creates SentryLogParameters from a map of attributes.
