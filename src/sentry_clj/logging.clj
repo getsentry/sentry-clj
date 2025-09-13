@@ -26,10 +26,10 @@
   (:import [io.sentry Sentry SentryAttributes SentryLogLevel SentryDate SentryAttribute]
            [io.sentry.logger SentryLogParameters]))
 
-(defn get-sentry-logger []
+(defn- get-sentry-logger []
   (Sentry/logger))
 
-(defn log-with-level
+(defn- log-with-level
   "Log a message at the specified level with optional format arguments."
   [level message args]
   (let [array-params (when (seq args)

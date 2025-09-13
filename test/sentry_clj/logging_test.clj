@@ -3,7 +3,7 @@
     [expectations.clojure.test :refer [defexpect expect expecting]]
     [sentry-clj.logging :as sut])
   (:import
-    [io.sentry Sentry SentryOptions]
+    [io.sentry Sentry SentryOptions SentryLogLevel]
     [io.sentry.logger ILoggerApi SentryLogParameters]))
 
 (defn ^:private get-test-logger-options ^SentryOptions
@@ -75,3 +75,24 @@
 
     (expecting "log specific function works with simple message"
       (expect nil? (log-fn "test message")))))
+
+(defexpect log-with-level-unknown-log-level-test
+  (expecting "throws IllegalArgumentException for unknown log level keyword"
+    (expect IllegalArgumentException (sut/log :unknown "message"))))
+
+
+(defexpect keyword->sentry-level-test
+  (expecting "converts valid keywords to SentryLogLevel enums"
+    (expect SentryLogLevel/TRACE (#'sut/keyword->sentry-level :trace))
+    (expect SentryLogLevel/DEBUG (#'sut/keyword->sentry-level :debug))
+    (expect SentryLogLevel/INFO (#'sut/keyword->sentry-level :info))
+    (expect SentryLogLevel/WARN (#'sut/keyword->sentry-level :warn))
+    (expect SentryLogLevel/ERROR (#'sut/keyword->sentry-level :error))
+    (expect SentryLogLevel/FATAL (#'sut/keyword->sentry-level :fatal)))
+
+  (expecting "passes through existing SentryLogLevel instances"
+    (expect SentryLogLevel/INFO (#'sut/keyword->sentry-level SentryLogLevel/INFO))
+    (expect SentryLogLevel/ERROR (#'sut/keyword->sentry-level SentryLogLevel/ERROR)))
+
+  (expecting "throws IllegalArgumentException for invalid keywords"
+    (expect IllegalArgumentException (#'sut/keyword->sentry-level :invalid))))
