@@ -248,9 +248,9 @@
        (-> sentry-options .getLogs (.setEnabled true)))
      (when before-send-log-fn
        (-> sentry-options .getLogs (.setBeforeSend
-                                     (reify io.sentry.SentryOptions$Logs$BeforeSendLogCallback
-                                       (execute [_ event]
-                                         (before-send-log-fn event))))))
+                                    (reify io.sentry.SentryOptions$Logs$BeforeSendLogCallback
+                                      (execute [_ event]
+                                        (before-send-log-fn event))))))
      (when-let [instrumenter (case instrumenter
                                :sentry Instrumenter/SENTRY
                                :otel Instrumenter/OTEL

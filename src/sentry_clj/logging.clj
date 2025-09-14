@@ -86,19 +86,19 @@
    ```"
   [attrs-map]
   (let [attributes (reduce-kv
-                     (fn [acc k v]
-                       (let [attr-name (name k)
-                             attr (cond
-                                    (string? v) (SentryAttribute/stringAttribute attr-name v)
-                                    (boolean? v) (SentryAttribute/booleanAttribute attr-name v)
-                                    (integer? v) (SentryAttribute/integerAttribute attr-name (long v))
-                                    (or (double? v) (float? v)) (SentryAttribute/doubleAttribute attr-name (double v))
-                                    :else (SentryAttribute/named attr-name v))]
-                         (conj acc attr)))
-                     []
-                     attrs-map)]
+                    (fn [acc k v]
+                      (let [attr-name (name k)
+                            attr (cond
+                                   (string? v) (SentryAttribute/stringAttribute attr-name v)
+                                   (boolean? v) (SentryAttribute/booleanAttribute attr-name v)
+                                   (integer? v) (SentryAttribute/integerAttribute attr-name (long v))
+                                   (or (double? v) (float? v)) (SentryAttribute/doubleAttribute attr-name (double v))
+                                   :else (SentryAttribute/named attr-name v))]
+                        (conj acc attr)))
+                    []
+                    attrs-map)]
     (SentryLogParameters/create
-      (SentryAttributes/of (into-array SentryAttribute attributes)))))
+     (SentryAttributes/of (into-array SentryAttribute attributes)))))
 
 (defn log
   "Generic logging function that accepts log level and optional parameters.
@@ -142,10 +142,10 @@
       (let [message-params (drop 1 args)
             array-params (when (seq message-params) (into-array Object message-params))]
         (.log (get-sentry-logger) sentry-level first-arg array-params))
-      
+
       ; Structured case: (log :info {:attr "val"} "message" arg1 arg2)
       (and first-arg second-arg
-           (or (map? first-arg) 
+           (or (map? first-arg)
                (instance? SentryDate first-arg)
                (instance? SentryLogParameters first-arg)))
       (let [array-params (when (seq rest-args) (into-array Object rest-args))
@@ -153,13 +153,13 @@
         (cond
           (instance? SentryDate first-arg)
           (.log logger sentry-level ^SentryDate first-arg second-arg array-params)
-          
+
           (instance? SentryLogParameters first-arg)
           (.log logger sentry-level ^SentryLogParameters first-arg second-arg array-params)
-          
+
           (map? first-arg)
           (.log logger sentry-level ^SentryLogParameters (log-parameters first-arg) second-arg array-params)))
-      
+
       :else
-      (throw (IllegalArgumentException. 
+      (throw (IllegalArgumentException.
               "Invalid arguments: expected [message & args] or [date-or-params message & args]")))))

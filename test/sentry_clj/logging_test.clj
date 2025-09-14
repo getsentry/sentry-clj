@@ -1,10 +1,10 @@
 (ns sentry-clj.logging-test
   (:require
-    [expectations.clojure.test :refer [defexpect expect expecting]]
-    [sentry-clj.logging :as sut])
+   [expectations.clojure.test :refer [defexpect expect expecting]]
+   [sentry-clj.logging :as sut])
   (:import
-    [io.sentry Sentry SentryInstantDate SentryOptions SentryLogLevel SentryDate SentryAttributes SentryAttribute]
-    [io.sentry.logger ILoggerApi SentryLogParameters]))
+   [io.sentry Sentry SentryInstantDate SentryOptions SentryLogLevel SentryDate SentryAttributes SentryAttribute]
+   [io.sentry.logger ILoggerApi SentryLogParameters]))
 
 (defn- get-test-logger-options ^SentryOptions
   ([] (get-test-logger-options {}))
@@ -73,7 +73,6 @@
           (log-fn "test message")
           (expect 1 (count @calls))
           (expect [log-fn-name "test message" []] (first @calls)))))))
-
 
 (defexpect level-specific-function-test
   (setup-test-sentry!)
