@@ -141,23 +141,24 @@
       (and first-arg (string? first-arg))
       (let [message-params (drop 1 args)
             array-params (when (seq message-params) (into-array Object message-params))]
-        (.log (Sentry/logger) sentry-level first-arg array-params))
+        (.log (get-sentry-logger) sentry-level first-arg array-params))
       
       ; Structured case: (log :info {:attr "val"} "message" arg1 arg2)
       (and first-arg second-arg
            (or (map? first-arg) 
                (instance? SentryDate first-arg)
                (instance? SentryLogParameters first-arg)))
-      (let [array-params (when (seq rest-args) (into-array Object rest-args))]
+      (let [array-params (when (seq rest-args) (into-array Object rest-args))
+            logger (get-sentry-logger)]
         (cond
           (instance? SentryDate first-arg)
-          (.log (Sentry/logger) sentry-level ^SentryDate first-arg second-arg array-params)
+          (.log logger sentry-level ^SentryDate first-arg second-arg array-params)
           
           (instance? SentryLogParameters first-arg)
-          (.log (Sentry/logger) sentry-level ^SentryLogParameters first-arg second-arg array-params)
+          (.log logger sentry-level ^SentryLogParameters first-arg second-arg array-params)
           
           (map? first-arg)
-          (.log (Sentry/logger) sentry-level ^SentryLogParameters (log-parameters first-arg) second-arg array-params)))
+          (.log logger sentry-level ^SentryLogParameters (log-parameters first-arg) second-arg array-params)))
       
       :else
       (throw (IllegalArgumentException. 
