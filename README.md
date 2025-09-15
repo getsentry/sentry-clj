@@ -246,7 +246,7 @@ The `log` function provides flexible logging with support for structured attribu
 
 **Parameters:**
 - `level` - A `keyword` specifying the log level (`:trace`, `:debug`, `:info`, `:warn`, `:error`, `:fatal`)
-- `data` - A `map` of attributes or `SentryDate`, to add structured data to the log entry 
+- `data` - Optional `map` of attributes or `SentryDate`, to add structured data to the log entry 
 - `message` - A `String` containing the log message, optionally with format placeholders
 - `& args` - Optional format arguments for message interpolation
 
