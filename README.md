@@ -82,6 +82,8 @@ If you want an interpolated message, you need to provide the full map, i.e.,
 |                                      | [More Information](https://docs.sentry.io/platforms/java/enriching-events/context/)                                           |
 | `:traces-sample-rate`                | Set a uniform sample rate(a number of between 0.0 and 1.0) for all transactions for tracing                                   |
 | `:traces-sample-fn`                  | A function (taking a custom sample context and a transaction context) enables you to control trace transactions               |
+| `:logs-enabled`                      | Enable Sentry structured logging integration                                                                                  | false
+| `:before-send-log-fn`                | A function (taking a log event) to filter logs, or update them before they are sent to Sentry                                 |
 | `:serialization-max-depth`           | Set to a lower number, i.e., 2, if you experience circular reference errors when sending events                               | 5
 | `:trace-options-requests`            | Set to enable or disable tracing of options requests.                                                                         |true
 | `:instrumenter`                      | Sets instrumenter for tracing. (values - :sentry - for default Sentry instrumentation, :otel - OpenTelemetry instrumentation) | :sentry
@@ -111,6 +113,14 @@ Initialisation with additional options:
 
 ```clojure
 (sentry/init! "https://public:private@sentry.io/1" {:contexts {:foo "bar" :baz "wibble"}})
+```
+
+```clojure
+   (init! "http://abcdefg@localhost:19000/2" {:logs-enabled true})
+```
+
+```clojure
+   (init! "http://abcdefg@localhost:19000/2" {:logs-enabled true :before-send-log-fn (fn [logEvent] (.setBody logEvent "new message body") logEvent)})
 ```
 
 ## Supported event keys
@@ -190,6 +200,30 @@ Each key is optional.
 - `:headers` - A map containing key/value pairs of `Strings`, i.e., `{"a" "b" "c" "d"}`
 - `:env` - A map containing key/value pairs of `Strings`, i.e., `{"a" "b" "c" "d"}`
 - `:other` - A map containing key/value pairs of `Strings`, i.e., `{"a" "b" "c" "d"}`
+
+## Logs
+
+## Usage example
+
+```clojure
+(require '[sentry-clj.core :as sentry])
+(require '[sentry-clj.logging :as sentry-log])
+(import '[io.sentry SentryInstantDate])
+
+(sentry/init! "https://public:private@sentry.io/1" {:logs-enabled true})
+
+; Sending some logs using log level specific functions 
+
+(sentry-log/info "Test message")
+(sentry-log/warn "Test message: %s" "TEST")
+
+; Sending generic logs with additional parameters
+
+(sentry-log/log :info {:request-id "24dbaef3-1d75-4304-8dde-e8cd47212591"} "Generic log")
+(sentry-log/log :error {:operation "checkout"} "Generic %s log" "ERROR")
+(sentry-log/log :warn (SentryInstantDate.) "Delayed processing detected at %s" (System/currentTimeMillis))
+```
+
 
 ## License
 
