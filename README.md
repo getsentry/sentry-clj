@@ -116,11 +116,11 @@ Initialisation with additional options:
 ```
 
 ```clojure
-   (init! "http://abcdefg@localhost:19000/2" {:logs-enabled true})
+(init! "http://abcdefg@localhost:19000/2" {:logs-enabled true})
 ```
 
 ```clojure
-   (init! "http://abcdefg@localhost:19000/2" {:logs-enabled true :before-send-log-fn (fn [logEvent] (.setBody logEvent "new message body") logEvent)})
+(init! "http://abcdefg@localhost:19000/2" {:logs-enabled true :before-send-log-fn (fn [logEvent] (.setBody logEvent "new message body") logEvent)})
 ```
 
 ## Supported event keys
@@ -204,7 +204,7 @@ Each key is optional.
 ## Logs
 [API Documentation](https://docs.sentry.io/platforms/java/logs/)
 
-## Usage example
+### Usage example
 
 ```clojure
 (require '[sentry-clj.core :as sentry])
