@@ -116,11 +116,11 @@ Initialisation with additional options:
 ```
 
 ```clojure
-(init! "http://abcdefg@localhost:19000/2" {:logs-enabled true})
+(sentry/init! "http://abcdefg@localhost:19000/2" {:logs-enabled true})
 ```
 
 ```clojure
-(init! "http://abcdefg@localhost:19000/2" {:logs-enabled true :before-send-log-fn (fn [logEvent] (.setBody logEvent "new message body") logEvent)})
+(sentry/init! "http://abcdefg@localhost:19000/2" {:logs-enabled true :before-send-log-fn (fn [logEvent] (.setBody logEvent "new message body") logEvent)})
 ```
 
 ## Supported event keys
