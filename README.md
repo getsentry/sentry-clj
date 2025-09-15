@@ -202,6 +202,7 @@ Each key is optional.
 - `:other` - A map containing key/value pairs of `Strings`, i.e., `{"a" "b" "c" "d"}`
 
 ## Logs
+[API Documentation](https://docs.sentry.io/platforms/java/logs/)
 
 ## Usage example
 
@@ -224,6 +225,76 @@ Each key is optional.
 (sentry-log/log :warn (SentryInstantDate.) "Delayed processing detected at %s" (System/currentTimeMillis))
 ```
 
+### Log levels
+
+Level-specific logging functions that provide a convenient way to log messages at specific levels. Each function accepts a message string and optional format arguments.
+
+- `trace` - Log at trace level
+- `debug` - Log at debug level
+- `info` - Log at info level
+- `warn` - Log at warning level
+- `error` - Log at error level
+- `fatal` - Log at fatal level
+
+All level-specific functions accept the same parameters as `(info message arg1 arg2)`:
+- `message` - A `String` containing the log message, optionally with format placeholders
+- `& args` - Optional format arguments for message interpolation
+
+### Generic log
+
+The `log` function provides flexible logging with support for structured attributes and custom timestamps. It accepts a log level keyword followed by various argument combinations.
+
+**Parameters:**
+- `level` - A `keyword` specifying the log level (`:trace`, `:debug`, `:info`, `:warn`, `:error`, `:fatal`)
+- `data` - A `map` of attributes or `SentryDate`, to add structured data to the log entry 
+- `message` - A `String` containing the log message, optionally with format placeholders
+- `& args` - Optional format arguments for message interpolation
+
+### Using with Logback
+
+[API Documentation](https://docs.sentry.io/platforms/java/guides/logback/logs/)
+
+If you are using Logback, you can add the Sentry appender to your logback configuration and include the `io.sentry/sentry-logback {:mvn/version "RELEASE"}` library in your `deps.edn`.
+
+**Two configuration approaches:**
+
+1. **With `sentry/init!` in your application**: If you initialize Sentry in your app using `sentry/init!`, you don't need to specify a DSN in the logback configuration.
+
+```xml
+<configuration scan="true" scanPeriod="5 seconds">
+...
+    <appender name="Sentry" class="io.sentry.logback.SentryAppender">
+        <options>
+            <sendDefaultPii>true</sendDefaultPii>
+        </options>
+        <!-- Optionally change minimum Event level. Default for Events is ERROR -->
+        <minimumEventLevel>WARN</minimumEventLevel>
+        <!-- Optionally change minimum Breadcrumbs level. Default for Breadcrumbs is INFO -->
+        <minimumBreadcrumbLevel>DEBUG</minimumBreadcrumbLevel>
+        <!-- Optionally change minimum Log level. Default for Log Events is INFO -->
+        <minimumLevel>INFO</minimumLevel>
+    </appender>
+...
+</configuration>
+```
+
+2. **Standalone logback configuration**: If you don't start Sentry in your app at all, you can add `<dsn>${SENTRY_DSN}</dsn>` and logs configuration to the Sentry appender options. Logs will be sent to Sentry automatically, and error logs will become error events.
+
+```xml
+<configuration scan="true" scanPeriod="5 seconds">
+...
+    <appender name="Sentry" class="io.sentry.logback.SentryAppender">
+        <options>
+            <dsn>${SENTRY_DSN}</dsn>
+            <logs>
+                <enabled>true</enabled>
+            </logs>
+            <sendDefaultPii>true</sendDefaultPii>
+        </options>
+    </appender>
+...
+</configuration>
+```
 
 ## License
 
