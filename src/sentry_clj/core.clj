@@ -27,10 +27,11 @@
    Keywords in any nested values are converted to strings.
    Based on walk/stringify-keys."
   [m]
-  (walk/postwalk (fn [x] (cond
-                           (map? x) (HashMap. ^Map x)
-                           (keyword? x) (str (symbol x))
-                           :else x))
+  (walk/postwalk (fn [x]
+                   (cond
+                     (map? x) (HashMap. ^Map x)
+                     (keyword? x) (str (symbol x))
+                     :else x))
                  m))
 
 (defn ^:private map->breadcrumb
@@ -143,7 +144,7 @@
       (.setServerName sentry-event server-name))
     (when-let [data (merge-all-ex-data extra throwable)]
       (doseq [[k v] (java-util-hashmappify-vals data)]
-        (.setExtra sentry-event k v)))
+        (.setExtra sentry-event (str k) v)))
     (when throwable
       (.setThrowable sentry-event throwable))
     (when (seq fingerprints)

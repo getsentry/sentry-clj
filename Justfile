@@ -31,7 +31,7 @@ build:
 
 # Install the JAR to your local .m2 repository
 install: build
-	bin/publish
+	bin/install
 
 # Publish the JAR to Clojars
 publish: build

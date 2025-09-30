@@ -1,18 +1,18 @@
 {:paths ["src"]
 
- :deps {org.clojure/clojure {:mvn/version "1.12.2"}
+ :deps {org.clojure/clojure {:mvn/version "1.12.3"}
         ;;
         ;;
         ;;
-        io.sentry/sentry {:mvn/version "8.21.1"}
-        ring/ring-core {:mvn/version "1.15.1"}}
+        io.sentry/sentry {:mvn/version "8.22.0"}
+        ring/ring-core {:mvn/version "1.15.3"}}
 
  :aliases {:build {:extra-deps {io.github.clojure/tools.build {:mvn/version "0.10.10"}
                                 slipset/deps-deploy {:mvn/version "0.2.2"}}
                    :ns-default scripts.build}
 
            :dev {:extra-paths ["dev/src" "dev/resources"]
-                 :extra-deps {io.github.tonsky/clj-reload {:mvn/version "0.9.8"}
+                 :extra-deps {io.github.tonsky/clj-reload {:mvn/version "1.0.0"}
                               reloaded.repl/reloaded.repl {:mvn/version "0.2.4"}}}
 
            :test {:extra-paths ["test"]
@@ -33,10 +33,10 @@
                               :upgrade true
                               :verbose true}}
 
-           :check {:replace-deps {dev.weavejester/cljfmt {:mvn/version "0.13.1"}}
+           :check {:replace-deps {dev.weavejester/cljfmt {:mvn/version "0.13.4"}}
                    :main-opts ["-m" "cljfmt.main" "check"]}
 
-           :fix {:replace-deps {dev.weavejester/cljfmt {:mvn/version "0.13.1"}}
+           :fix {:replace-deps {dev.weavejester/cljfmt {:mvn/version "0.13.4"}}
                  :main-opts ["-m" "cljfmt.main" "fix"]}}
 
  :mvn/repos {"central" {:url "https://repo1.maven.org/maven2/" :releases {:update :always}}

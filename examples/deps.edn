@@ -1,6 +1,6 @@
 {:paths ["src" "resources"]
 
- :deps {org.clojure/clojure {:mvn/version "1.12.2"}
+ :deps {org.clojure/clojure {:mvn/version "1.12.3"}
         ;;
         examples/basic {:local/root "basic"}
         examples/ring-with-tracing {:local/root "ring_with_tracing"}
