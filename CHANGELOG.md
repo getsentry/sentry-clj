@@ -10,6 +10,10 @@ endeavour to be non-breaking (by moving to new names rather than by
 breaking existing names). COMMITS is an ever-increasing counter of
 commits since the beginning of this repository.
 
+## [8.25.237]
+
+- Update Sentry Java SDK to 8.25.0
+
 ## [8.22.236]
 
 - Update Sentry Java SDK to 8.22.0
@@ -467,7 +471,8 @@ commits since the beginning of this repository.
   compatible with Sentry 10.0.1 and below. If you wish to use those
   versions, please continue to use sentry-clj 1.7.30.
 
-[Unreleased]: https://github.com/getsentry/sentry-clj/compare/8.22.236...HEAD
+[Unreleased]: https://github.com/getsentry/sentry-clj/compare/8.25.237...HEAD
+[8.25.237]: https://github.com/getsentry/sentry-clj/compare/8.22.236...8.25.237
 [8.22.236]: https://github.com/getsentry/sentry-clj/compare/8.21.234...8.22.236
 [8.21.234]: https://github.com/getsentry/sentry-clj/compare/8.21.232...8.21.234
 [8.21.232]: https://github.com/getsentry/sentry-clj/compare/8.20.229...8.21.232
