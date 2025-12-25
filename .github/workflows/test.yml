@@ -18,10 +18,10 @@ jobs:
       matrix:
         java: ['8', '17', '21', '25']
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - name: Setup Cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: |
             ~/.m2
