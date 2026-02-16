@@ -29,34 +29,34 @@
   (Sentry/metrics))
 
 (def ^:private unit-map
-  {:none         nil
+  {:none nil
    ;; Duration
-   :nanosecond   MetricsUnit$Duration/NANOSECOND
-   :microsecond  MetricsUnit$Duration/MICROSECOND
-   :millisecond  MetricsUnit$Duration/MILLISECOND
-   :second       MetricsUnit$Duration/SECOND
-   :minute       MetricsUnit$Duration/MINUTE
-   :hour         MetricsUnit$Duration/HOUR
-   :day          MetricsUnit$Duration/DAY
-   :week         MetricsUnit$Duration/WEEK
+   :nanosecond MetricsUnit$Duration/NANOSECOND
+   :microsecond MetricsUnit$Duration/MICROSECOND
+   :millisecond MetricsUnit$Duration/MILLISECOND
+   :second MetricsUnit$Duration/SECOND
+   :minute MetricsUnit$Duration/MINUTE
+   :hour MetricsUnit$Duration/HOUR
+   :day MetricsUnit$Duration/DAY
+   :week MetricsUnit$Duration/WEEK
    ;; Information
-   :bit          MetricsUnit$Information/BIT
-   :byte         MetricsUnit$Information/BYTE
-   :kilobyte     MetricsUnit$Information/KILOBYTE
-   :kibibyte     MetricsUnit$Information/KIBIBYTE
-   :megabyte     MetricsUnit$Information/MEGABYTE
-   :mebibyte     MetricsUnit$Information/MEBIBYTE
-   :gigabyte     MetricsUnit$Information/GIGABYTE
-   :gibibyte     MetricsUnit$Information/GIBIBYTE
-   :terabyte     MetricsUnit$Information/TERABYTE
-   :tebibyte     MetricsUnit$Information/TEBIBYTE
-   :petabyte     MetricsUnit$Information/PETABYTE
-   :pebibyte     MetricsUnit$Information/PEBIBYTE
-   :exabyte      MetricsUnit$Information/EXABYTE
-   :exbibyte     MetricsUnit$Information/EXBIBYTE
+   :bit MetricsUnit$Information/BIT
+   :byte MetricsUnit$Information/BYTE
+   :kilobyte MetricsUnit$Information/KILOBYTE
+   :kibibyte MetricsUnit$Information/KIBIBYTE
+   :megabyte MetricsUnit$Information/MEGABYTE
+   :mebibyte MetricsUnit$Information/MEBIBYTE
+   :gigabyte MetricsUnit$Information/GIGABYTE
+   :gibibyte MetricsUnit$Information/GIBIBYTE
+   :terabyte MetricsUnit$Information/TERABYTE
+   :tebibyte MetricsUnit$Information/TEBIBYTE
+   :petabyte MetricsUnit$Information/PETABYTE
+   :pebibyte MetricsUnit$Information/PEBIBYTE
+   :exabyte MetricsUnit$Information/EXABYTE
+   :exbibyte MetricsUnit$Information/EXBIBYTE
    ;; Fraction
-   :ratio        MetricsUnit$Fraction/RATIO
-   :percent      MetricsUnit$Fraction/PERCENT})
+   :ratio MetricsUnit$Fraction/RATIO
+   :percent MetricsUnit$Fraction/PERCENT})
 
 (defn- keyword->unit
   "Converts a keyword to a MetricsUnit string constant.
