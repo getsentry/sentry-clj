@@ -186,6 +186,7 @@
                  event-processors
                  logs-enabled
                  before-send-log-fn
+                 before-send-metric-fn
                  enabled]} (merge sentry-defaults config)
          sentry-options (SentryOptions.)]
 
@@ -251,6 +252,11 @@
                                     (reify io.sentry.SentryOptions$Logs$BeforeSendLogCallback
                                       (execute [_ event]
                                         (before-send-log-fn event))))))
+     (when before-send-metric-fn
+       (-> sentry-options .getMetrics (.setBeforeSend
+                                       (reify io.sentry.SentryOptions$Metrics$BeforeSendMetricCallback
+                                         (execute [_ metric hint]
+                                           (before-send-metric-fn metric hint))))))
      (when-let [instrumenter (case instrumenter
                                :sentry Instrumenter/SENTRY
                                :otel Instrumenter/OTEL
@@ -304,6 +310,7 @@
    | `:traces-sample-fn`                  | A function (taking a custom sample context and a transaction context) enables you to control trace transactions    |
    | `:logs-enabled`                      | Enable Sentry structured logging integration                                                                       | false
    | `:before-send-log-fn`                | A function (taking a log event) to filter logs, or update them before they are sent to Sentry                      |
+   | `:before-send-metric-fn`             | A function (taking a metric event and a hint) to filter or modify metrics before they are sent to Sentry           |
    | `:serialization-max-depth`           | Set to a lower number, i.e., 2, if you experience circular reference errors when sending events                    | 5
    | `:trace-options-request`             | Set to enable or disable tracing of options requests                                                               | true
 

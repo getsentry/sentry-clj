@@ -10,6 +10,12 @@ endeavour to be non-breaking (by moving to new names rather than by
 breaking existing names). COMMITS is an ever-increasing counter of
 commits since the beginning of this repository.
 
+## [8.32.235]
+
+- Add Sentry Metrics support (`sentry-clj.metrics` namespace)
+- Add `:before-send-metric-fn` configuration option
+- Update Sentry Java SDK to 8.32.0
+
 ## [8.21.234]
 
 - Support Sentry Structured Logging (Thanks @abogoyavlensky)

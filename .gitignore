@@ -9,3 +9,6 @@ foo.clj
 .env
 .clj-kondo/.cache
 tags.lock
+.idea/
+*.iml
+.cpcache/

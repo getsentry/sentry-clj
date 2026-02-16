@@ -85,6 +85,7 @@ If you want an interpolated message, you need to provide the full map, i.e.,
 | `:serialization-max-depth`           | Set to a lower number, i.e., 2, if you experience circular reference errors when sending events                               | 5
 | `:trace-options-requests`            | Set to enable or disable tracing of options requests.                                                                         |true
 | `:instrumenter`                      | Sets instrumenter for tracing. (values - :sentry - for default Sentry instrumentation, :otel - OpenTelemetry instrumentation) | :sentry
+| `:before-send-metric-fn`             | A function (taking a metric event and a hint). Return nil to drop the metric.                                                 |
 | `:event-processors`                  | A seqable collection (vector for example) containing instances of event processors (implementing io.sentry.EventProcessor)    |
 
 Some examples:
@@ -190,6 +191,40 @@ Each key is optional.
 - `:headers` - A map containing key/value pairs of `Strings`, i.e., `{"a" "b" "c" "d"}`
 - `:env` - A map containing key/value pairs of `Strings`, i.e., `{"a" "b" "c" "d"}`
 - `:other` - A map containing key/value pairs of `Strings`, i.e., `{"a" "b" "c" "d"}`
+
+## Metrics
+
+The `sentry-clj.metrics` namespace provides functions for sending custom metrics
+to Sentry. Metrics are enabled by default in the Sentry Java SDK.
+
+```clojure
+(require '[sentry-clj.metrics :as metrics])
+
+;; Counters - track incrementing values
+(metrics/increment "page_view")
+(metrics/increment "button_click" 2.0)
+(metrics/increment "api_call" 1.0 :none {:endpoint "/users"})
+
+;; Gauges - track values that go up and down
+(metrics/gauge "queue_depth" 42.0)
+(metrics/gauge "memory_usage" 1024.0 :byte)
+(metrics/gauge "cpu_usage" 0.85 :ratio {:region "us-east-1"})
+
+;; Distributions - track value distributions
+(metrics/distribution "response_time" 187.5 :millisecond)
+(metrics/distribution "page_load" 1.0 :millisecond {:browser "Firefox"})
+```
+
+### Supported Unit Keywords
+
+| category    | keywords                                                                                                         |
+|-------------|------------------------------------------------------------------------------------------------------------------|
+| Duration    | `:nanosecond` `:microsecond` `:millisecond` `:second` `:minute` `:hour` `:day` `:week`                           |
+| Information | `:bit` `:byte` `:kilobyte` `:kibibyte` `:megabyte` `:mebibyte` `:gigabyte` `:gibibyte` `:terabyte` `:tebibyte` `:petabyte` `:pebibyte` `:exabyte` `:exbibyte` |
+| Fraction    | `:ratio` `:percent`                                                                                              |
+| None        | `:none` or `nil`                                                                                                 |
+
+Raw strings are also accepted as units.
 
 ## License
 

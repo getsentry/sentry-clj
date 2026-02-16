@@ -319,6 +319,7 @@
                                                                                   :trace-options-requests false
                                                                                   :logs-enabled true
                                                                                   :before-send-log-fn (fn [event] (.setBody event "new message body") event)
+                                                                                  :before-send-metric-fn (fn [metric _hint] metric)
                                                                                   :instrumenter :otel
                                                                                   :event-processors [(SomeEventProcessor.)]
                                                                                   :enabled false})]
@@ -339,6 +340,7 @@
       (expect false (.isTraceOptionsRequests sentry-options))
       (expect true (.isEnabled (.getLogs sentry-options)))
       (expect false (nil? (.getBeforeSend (.getLogs sentry-options))))
+      (expect false (nil? (.getBeforeSend (.getMetrics sentry-options))))
       (expect Instrumenter/OTEL (.getInstrumenter sentry-options))
       (expect (instance? SomeEventProcessor (last (.getEventProcessors sentry-options))))
       (expect false (.isEnabled sentry-options)))))
