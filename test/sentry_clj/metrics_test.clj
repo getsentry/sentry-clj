@@ -76,6 +76,10 @@
                                        :active true
                                        :count 42
                                        :score 98.5})]
+      (expect true (instance? SentryMetricsParameters params))))
+
+  (expecting "handles large integer values without overflow"
+    (let [params (#'sut/attrs->params {:timestamp 1700000000000})]
       (expect true (instance? SentryMetricsParameters params)))))
 
 ;; Smoke tests - verify the public API functions execute without errors.

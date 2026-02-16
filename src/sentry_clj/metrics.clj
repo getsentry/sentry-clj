@@ -81,7 +81,9 @@
                             attr (cond
                                    (string? v) (SentryAttribute/stringAttribute attr-name v)
                                    (boolean? v) (SentryAttribute/booleanAttribute attr-name v)
-                                   (integer? v) (SentryAttribute/integerAttribute attr-name (int v))
+                                   (integer? v) (if (<= Integer/MIN_VALUE v Integer/MAX_VALUE)
+                                                  (SentryAttribute/integerAttribute attr-name (int v))
+                                                  (SentryAttribute/doubleAttribute attr-name (double v)))
                                    (or (double? v) (float? v)) (SentryAttribute/doubleAttribute attr-name (double v))
                                    :else (SentryAttribute/named attr-name v))]
                         (conj acc attr)))
