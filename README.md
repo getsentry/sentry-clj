@@ -82,6 +82,8 @@ If you want an interpolated message, you need to provide the full map, i.e.,
 |                                      | [More Information](https://docs.sentry.io/platforms/java/enriching-events/context/)                                           |
 | `:traces-sample-rate`                | Set a uniform sample rate(a number of between 0.0 and 1.0) for all transactions for tracing                                   |
 | `:traces-sample-fn`                  | A function (taking a custom sample context and a transaction context) enables you to control trace transactions               |
+| `:logs-enabled`                      | Enable Sentry structured logging integration                                                                                  | false
+| `:before-send-log-fn`                | A function (taking a log event) to filter logs, or update them before they are sent to Sentry                                 |
 | `:serialization-max-depth`           | Set to a lower number, i.e., 2, if you experience circular reference errors when sending events                               | 5
 | `:trace-options-requests`            | Set to enable or disable tracing of options requests.                                                                         |true
 | `:instrumenter`                      | Sets instrumenter for tracing. (values - :sentry - for default Sentry instrumentation, :otel - OpenTelemetry instrumentation) | :sentry
@@ -112,6 +114,14 @@ Initialisation with additional options:
 
 ```clojure
 (sentry/init! "https://public:private@sentry.io/1" {:contexts {:foo "bar" :baz "wibble"}})
+```
+
+```clojure
+(sentry/init! "http://abcdefg@localhost:19000/2" {:logs-enabled true})
+```
+
+```clojure
+(sentry/init! "http://abcdefg@localhost:19000/2" {:logs-enabled true :before-send-log-fn (fn [logEvent] (.setBody logEvent "new message body") logEvent)})
 ```
 
 ## Supported event keys
@@ -225,6 +235,101 @@ to Sentry. Metrics are enabled by default in the Sentry Java SDK.
 | None        | `:none` or `nil`                                                                                                 |
 
 Raw strings are also accepted as units.
+
+## Logs
+[API Documentation](https://docs.sentry.io/platforms/java/logs/)
+
+### Usage example
+
+```clojure
+(require '[sentry-clj.core :as sentry])
+(require '[sentry-clj.logging :as sentry-log])
+(import '[io.sentry SentryInstantDate])
+
+(sentry/init! "https://public:private@sentry.io/1" {:logs-enabled true})
+
+; Sending some logs using log level specific functions 
+
+(sentry-log/info "Test message")
+(sentry-log/warn "Test message: %s" "TEST")
+
+; Sending generic logs with additional parameters
+
+(sentry-log/log :info {:request-id "24dbaef3-1d75-4304-8dde-e8cd47212591"} "Generic log")
+(sentry-log/log :error {:operation "checkout"} "Generic %s log" "ERROR")
+(sentry-log/log :warn (SentryInstantDate.) "Delayed processing detected at %s" (System/currentTimeMillis))
+```
+
+### Log levels
+
+Level-specific logging functions that provide a convenient way to log messages at specific levels. Each function accepts a message string and optional format arguments.
+
+- `trace` - Log at trace level
+- `debug` - Log at debug level
+- `info` - Log at info level
+- `warn` - Log at warning level
+- `error` - Log at error level
+- `fatal` - Log at fatal level
+
+All level-specific functions accept the same parameters as `(info message arg1 arg2)`:
+- `message` - A `String` containing the log message, optionally with format placeholders
+- `& args` - Optional format arguments for message interpolation
+
+### Generic log
+
+The `log` function provides flexible logging with support for structured attributes and custom timestamps. It accepts a log level keyword followed by various argument combinations.
+
+**Parameters:**
+- `level` - A `keyword` specifying the log level (`:trace`, `:debug`, `:info`, `:warn`, `:error`, `:fatal`)
+- `data` - Optional `map` of attributes or `SentryDate`, to add structured data to the log entry 
+- `message` - A `String` containing the log message, optionally with format placeholders
+- `& args` - Optional format arguments for message interpolation
+
+### Using with Logback
+
+[API Documentation](https://docs.sentry.io/platforms/java/guides/logback/logs/)
+
+If you are using Logback, you can add the Sentry appender to your logback configuration and include the `io.sentry/sentry-logback {:mvn/version "RELEASE"}` library in your `deps.edn`.
+
+**Two configuration approaches:**
+
+1. **With `sentry/init!` in your application**: If you initialize Sentry in your app using `sentry/init!`, you don't need to specify a DSN in the logback configuration.
+
+```xml
+<configuration scan="true" scanPeriod="5 seconds">
+...
+    <appender name="Sentry" class="io.sentry.logback.SentryAppender">
+        <options>
+            <sendDefaultPii>true</sendDefaultPii>
+        </options>
+        <!-- Optionally change minimum Event level. Default for Events is ERROR -->
+        <minimumEventLevel>WARN</minimumEventLevel>
+        <!-- Optionally change minimum Breadcrumbs level. Default for Breadcrumbs is INFO -->
+        <minimumBreadcrumbLevel>DEBUG</minimumBreadcrumbLevel>
+        <!-- Optionally change minimum Log level. Default for Log Events is INFO -->
+        <minimumLevel>INFO</minimumLevel>
+    </appender>
+...
+</configuration>
+```
+
+2. **Standalone logback configuration**: If you don't start Sentry in your app at all, you can add `<dsn>${SENTRY_DSN}</dsn>` and logs configuration to the Sentry appender options. Logs will be sent to Sentry automatically, and error logs will become error events.
+
+```xml
+<configuration scan="true" scanPeriod="5 seconds">
+...
+    <appender name="Sentry" class="io.sentry.logback.SentryAppender">
+        <options>
+            <dsn>${SENTRY_DSN}</dsn>
+            <logs>
+                <enabled>true</enabled>
+            </logs>
+            <sendDefaultPii>true</sendDefaultPii>
+        </options>
+    </appender>
+...
+</configuration>
+```
 
 ## License
 

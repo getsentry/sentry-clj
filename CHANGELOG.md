@@ -16,6 +16,20 @@ commits since the beginning of this repository.
 - Add `:before-send-metric-fn` configuration option
 - Update Sentry Java SDK to 8.32.0
 
+## [8.29.238]
+
+- Update Sentry Java SDK to 8.29.0
+
+## [8.25.237]
+
+- Update Sentry Java SDK to 8.25.0
+
+## [8.22.236]
+
+- Update Sentry Java SDK to 8.22.0
+- setExtra on Sentry requires a string as the key
+- Bump Dependencies
+
 ## [8.21.234]
 
 - Support Sentry Structured Logging (Thanks @abogoyavlensky)
@@ -467,7 +481,10 @@ commits since the beginning of this repository.
   compatible with Sentry 10.0.1 and below. If you wish to use those
   versions, please continue to use sentry-clj 1.7.30.
 
-[Unreleased]: https://github.com/getsentry/sentry-clj/compare/8.21.234...HEAD
+[Unreleased]: https://github.com/getsentry/sentry-clj/compare/8.29.238...HEAD
+[8.29.238]: https://github.com/getsentry/sentry-clj/compare/8.25.237...8.29.238
+[8.25.237]: https://github.com/getsentry/sentry-clj/compare/8.22.236...8.25.237
+[8.22.236]: https://github.com/getsentry/sentry-clj/compare/8.21.234...8.22.236
 [8.21.234]: https://github.com/getsentry/sentry-clj/compare/8.21.232...8.21.234
 [8.21.232]: https://github.com/getsentry/sentry-clj/compare/8.20.229...8.21.232
 [8.20.229]: https://github.com/getsentry/sentry-clj/compare/8.20.228...8.20.229
