@@ -88,6 +88,8 @@ If you want an interpolated message, you need to provide the full map, i.e.,
 | `:trace-options-requests`            | Set to enable or disable tracing of options requests.                                                                         |true
 | `:instrumenter`                      | Sets instrumenter for tracing. (values - :sentry - for default Sentry instrumentation, :otel - OpenTelemetry instrumentation) | :sentry
 | `:before-send-metric-fn`             | A function (taking a metric event and a hint). Return nil to drop the metric.                                                 |
+| `:profile-session-sample-rate`       | Set a sample rate (0.0–1.0) for profiling sessions. Requires `io.sentry/sentry-async-profiler` on the classpath.             |
+| `:profile-lifecycle`                 | `:trace` to profile automatically while a span is active, or `:manual` to call `start-profiler!` / `stop-profiler!` directly. |
 | `:event-processors`                  | A seqable collection (vector for example) containing instances of event processors (implementing io.sentry.EventProcessor)    |
 
 Some examples:
@@ -329,6 +331,47 @@ If you are using Logback, you can add the Sentry appender to your logback config
     </appender>
 ...
 </configuration>
+```
+
+## JVM Profiling
+
+[API Documentation](https://docs.sentry.io/platforms/java/profiling/)
+
+The `sentry-clj.profiling` namespace provides functions for JVM CPU profiling.
+Profiling requires adding `io.sentry/sentry-async-profiler` to your `deps.edn`
+(it is not included transitively by this library). Supported on macOS and Linux only.
+
+Two lifecycle modes are supported:
+
+**Trace lifecycle** — profiles are collected automatically while an active span exists:
+
+```clojure
+(require '[sentry-clj.core :as sentry])
+
+(sentry/init! "https://public@sentry.io/1"
+  {:traces-sample-rate 1.0
+   :profile-session-sample-rate 1.0
+   :profile-lifecycle :trace})
+```
+
+**Manual lifecycle** — you control start and stop explicitly:
+
+```clojure
+(require '[sentry-clj.core :as sentry])
+(require '[sentry-clj.profiling :as profiling])
+
+(sentry/init! "https://public@sentry.io/1"
+  {:profile-session-sample-rate 1.0
+   :profile-lifecycle :manual})
+
+;; Wrap a block of code — stop is guaranteed even if an exception is thrown
+(profiling/with-profiling
+  (run-expensive-computation))
+
+;; Or control start/stop manually
+(profiling/start-profiler!)
+(run-expensive-computation)
+(profiling/stop-profiler!)
 ```
 
 ## License

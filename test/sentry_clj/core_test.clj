@@ -4,7 +4,7 @@
    [expectations.clojure.test :refer [defexpect expect expecting]]
    [sentry-clj.core :as sut])
   (:import
-   [io.sentry Breadcrumb EventProcessor Instrumenter JsonSerializer SentryLevel SentryOptions]
+   [io.sentry Breadcrumb EventProcessor Instrumenter JsonSerializer ProfileLifecycle SentryLevel SentryOptions]
    [io.sentry.protocol Request User]
    [java.io StringWriter]
    [java.util Date HashMap UUID]))
@@ -358,3 +358,21 @@
     "sentry is disabled"
     (let [sentry-options ^SentryOptions (sentry-options "http://www.example.com" {:enabled false})]
       (expect false (.isEnabled sentry-options)))))
+
+(defexpect keyword->profile-lifecycle-test
+  (expecting "converts profiling lifecycle keywords correctly"
+    (expect ProfileLifecycle/TRACE (#'sut/keyword->profile-lifecycle :trace))
+    (expect ProfileLifecycle/MANUAL (#'sut/keyword->profile-lifecycle :manual)))
+  (expecting "returns nil for nil input"
+    (expect nil (#'sut/keyword->profile-lifecycle nil))))
+
+(defexpect sentry-profiling-options-tests
+  (expecting "profile-session-sample-rate is set on options"
+    (let [opts ^SentryOptions (sentry-options "http://www.example.com" {:profile-session-sample-rate 0.5})]
+      (expect 0.5 (.getProfileSessionSampleRate opts))))
+  (expecting "profile-lifecycle :trace is set on options"
+    (let [opts ^SentryOptions (sentry-options "http://www.example.com" {:profile-lifecycle :trace})]
+      (expect ProfileLifecycle/TRACE (.getProfileLifecycle opts))))
+  (expecting "profile-lifecycle :manual is set on options"
+    (let [opts ^SentryOptions (sentry-options "http://www.example.com" {:profile-lifecycle :manual})]
+      (expect ProfileLifecycle/MANUAL (.getProfileLifecycle opts)))))

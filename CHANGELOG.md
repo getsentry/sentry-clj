@@ -10,6 +10,11 @@ endeavour to be non-breaking (by moving to new names rather than by
 breaking existing names). COMMITS is an ever-increasing counter of
 commits since the beginning of this repository.
 
+## [8.33.244]
+
+- Add JVM Profiling support (`sentry-clj.profiling` namespace) with `start-profiler!`, `stop-profiler!`, and `with-profiling` macro
+- Add `:profile-session-sample-rate` and `:profile-lifecycle` configuration options
+
 ## [8.33.243]
 
 - Add Sentry Metrics support (`sentry-clj.metrics` namespace) (Thanks @abogoyavlensky)

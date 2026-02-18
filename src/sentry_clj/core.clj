@@ -4,7 +4,7 @@
    [clojure.string :refer [blank?]]
    [clojure.walk :as walk])
   (:import
-   [io.sentry Breadcrumb DateUtils EventProcessor Sentry SentryEvent SentryLevel SentryOptions Instrumenter]
+   [io.sentry Breadcrumb DateUtils EventProcessor Instrumenter ProfileLifecycle Sentry SentryEvent SentryLevel SentryOptions]
    [io.sentry.protocol Message Request SentryId User]
    [java.util Date HashMap Map UUID]))
 
@@ -20,6 +20,14 @@
     :error SentryLevel/ERROR
     :fatal SentryLevel/FATAL
     SentryLevel/INFO))
+
+(defn ^:private keyword->profile-lifecycle
+  "Converts a keyword into a `ProfileLifecycle` enum value."
+  [lifecycle]
+  (case lifecycle
+    :trace ProfileLifecycle/TRACE
+    :manual ProfileLifecycle/MANUAL
+    nil))
 
 (defn java-util-hashmappify-vals
   "Converts an ordinary Clojure map into a java.util.HashMap object.
@@ -188,6 +196,8 @@
                  logs-enabled
                  before-send-log-fn
                  before-send-metric-fn
+                 profile-session-sample-rate
+                 profile-lifecycle
                  enabled]} (merge sentry-defaults config)
          sentry-options (SentryOptions.)]
 
@@ -258,6 +268,10 @@
                                        (reify io.sentry.SentryOptions$Metrics$BeforeSendMetricCallback
                                          (execute [_ metric hint]
                                            (before-send-metric-fn metric hint))))))
+     (when profile-session-sample-rate
+       (.setProfileSessionSampleRate sentry-options (double profile-session-sample-rate)))
+     (when profile-lifecycle
+       (.setProfileLifecycle sentry-options ^ProfileLifecycle (keyword->profile-lifecycle profile-lifecycle)))
      (when-let [instrumenter (case instrumenter
                                :sentry Instrumenter/SENTRY
                                :otel Instrumenter/OTEL
@@ -312,6 +326,8 @@
    | `:logs-enabled`                      | Enable Sentry structured logging integration                                                                       | false
    | `:before-send-log-fn`                | A function (taking a log event) to filter logs, or update them before they are sent to Sentry                      |
    | `:before-send-metric-fn`             | A function (taking a metric event and a hint) to filter or modify metrics before they are sent to Sentry           |
+   | `:profile-session-sample-rate`       | Set a sample rate (0.0–1.0) for profiling sessions. Requires `io.sentry/sentry-async-profiler` on the classpath   |
+   | `:profile-lifecycle`                 | `:trace` to profile automatically with active spans, or `:manual` to control via `sentry-clj.profiling/start-profiler!` and `stop-profiler!` |
    | `:serialization-max-depth`           | Set to a lower number, i.e., 2, if you experience circular reference errors when sending events                    | 5
    | `:trace-options-request`             | Set to enable or disable tracing of options requests                                                               | true
 
