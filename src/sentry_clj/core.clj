@@ -27,7 +27,8 @@
   (case lifecycle
     :trace ProfileLifecycle/TRACE
     :manual ProfileLifecycle/MANUAL
-    nil))
+    nil nil
+    (throw (IllegalArgumentException. (str "Invalid profile-lifecycle: " lifecycle)))))
 
 (defn java-util-hashmappify-vals
   "Converts an ordinary Clojure map into a java.util.HashMap object.
@@ -270,8 +271,8 @@
                                            (before-send-metric-fn metric hint))))))
      (when profile-session-sample-rate
        (.setProfileSessionSampleRate sentry-options (double profile-session-sample-rate)))
-     (when profile-lifecycle
-       (.setProfileLifecycle sentry-options ^ProfileLifecycle (keyword->profile-lifecycle profile-lifecycle)))
+     (when-let [lifecycle (keyword->profile-lifecycle profile-lifecycle)]
+       (.setProfileLifecycle sentry-options ^ProfileLifecycle lifecycle))
      (when-let [instrumenter (case instrumenter
                                :sentry Instrumenter/SENTRY
                                :otel Instrumenter/OTEL

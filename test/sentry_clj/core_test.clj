@@ -364,7 +364,9 @@
     (expect ProfileLifecycle/TRACE (#'sut/keyword->profile-lifecycle :trace))
     (expect ProfileLifecycle/MANUAL (#'sut/keyword->profile-lifecycle :manual)))
   (expecting "returns nil for nil input"
-    (expect nil (#'sut/keyword->profile-lifecycle nil))))
+    (expect nil (#'sut/keyword->profile-lifecycle nil)))
+  (expecting "throws for invalid lifecycle keyword"
+    (expect IllegalArgumentException (#'sut/keyword->profile-lifecycle :bogus))))
 
 (defexpect sentry-profiling-options-tests
   (expecting "profile-session-sample-rate is set on options"
@@ -375,4 +377,8 @@
       (expect ProfileLifecycle/TRACE (.getProfileLifecycle opts))))
   (expecting "profile-lifecycle :manual is set on options"
     (let [opts ^SentryOptions (sentry-options "http://www.example.com" {:profile-lifecycle :manual})]
-      (expect ProfileLifecycle/MANUAL (.getProfileLifecycle opts)))))
+      (expect ProfileLifecycle/MANUAL (.getProfileLifecycle opts))))
+  (expecting "nil profile-lifecycle does not override SDK default"
+    (let [sdk-default (.getProfileLifecycle (SentryOptions.))
+          opts ^SentryOptions (sentry-options "http://www.example.com")]
+      (expect sdk-default (.getProfileLifecycle opts)))))

@@ -33,5 +33,5 @@
       (with-redefs [sut/start-profiler! (fn [] nil)
                     sut/stop-profiler! (fn [] (reset! stopped? true))]
         (expect Exception
-                (sut/with-profiling (throw (Exception. "boom"))))
+          (sut/with-profiling (throw (Exception. "boom"))))
         (expect true @stopped?)))))
