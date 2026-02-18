@@ -4,10 +4,10 @@
         ;;
         ;;
         ;;
-        io.sentry/sentry {:mvn/version "8.32.0"}
+        io.sentry/sentry {:mvn/version "8.33.0"}
         ring/ring-core {:mvn/version "1.15.3"}}
 
- :aliases {:build {:extra-deps {io.github.clojure/tools.build {:mvn/version "0.10.11"}
+ :aliases {:build {:extra-deps {io.github.clojure/tools.build {:mvn/version "0.10.12"}
                                 slipset/deps-deploy {:mvn/version "0.2.2"}}
                    :ns-default scripts.build}
 
@@ -20,7 +20,7 @@
                                com.github.seancorfield/expectations {:mvn/version "2.2.214"}
                                lambdaisland/kaocha {:mvn/version "1.91.1392"}
                                lambdaisland/kaocha-junit-xml {:mvn/version "1.17.101"}
-                               org.clojure/test.check {:mvn/version "1.1.2"}
+                               org.clojure/test.check {:mvn/version "1.1.3"}
                                ring/ring-mock {:mvn/version "0.6.2"}}}
 
            :antq {:replace-deps {com.github.liquidz/antq {:mvn/version "2.11.1276"}
@@ -33,10 +33,10 @@
                               :upgrade true
                               :verbose true}}
 
-           :check {:replace-deps {dev.weavejester/cljfmt {:mvn/version "0.15.6"}}
+           :check {:replace-deps {dev.weavejester/cljfmt {:mvn/version "0.16.0"}}
                    :main-opts ["-m" "cljfmt.main" "check"]}
 
-           :fix {:replace-deps {dev.weavejester/cljfmt {:mvn/version "0.15.6"}}
+           :fix {:replace-deps {dev.weavejester/cljfmt {:mvn/version "0.16.0"}}
                  :main-opts ["-m" "cljfmt.main" "fix"]}}
 
  :mvn/repos {"central" {:url "https://repo1.maven.org/maven2/" :releases {:update :always}}
