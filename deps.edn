@@ -33,11 +33,11 @@
                               :upgrade true
                               :verbose true}}
 
-           :check {:replace-deps {dev.weavejester/cljfmt {:mvn/version "0.16.0"}}
-                   :main-opts ["-m" "cljfmt.main" "check"]}
+           :format-check {:replace-deps {dev.weavejester/cljfmt {:mvn/version "0.16.0"}}
+                          :main-opts ["-m" "cljfmt.main" "check"]}
 
-           :fix {:replace-deps {dev.weavejester/cljfmt {:mvn/version "0.16.0"}}
-                 :main-opts ["-m" "cljfmt.main" "fix"]}}
+           :format-fix {:replace-deps {dev.weavejester/cljfmt {:mvn/version "0.16.0"}}
+                        :main-opts ["-m" "cljfmt.main" "fix"]}}
 
  :mvn/repos {"central" {:url "https://repo1.maven.org/maven2/" :releases {:update :always}}
              "clojars" {:url "https://repo.clojars.org/" :releases {:update :always}}}}

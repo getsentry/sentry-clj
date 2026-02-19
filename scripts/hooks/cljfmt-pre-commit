@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-if !(clj -M:check $@)
+if !(clj -M:format-check $@)
 then
     echo
     echo "Error: new cljfmt formatting errors found. Please fix them and retry the commit."
