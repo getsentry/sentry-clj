@@ -10,6 +10,10 @@ endeavour to be non-breaking (by moving to new names rather than by
 breaking existing names). COMMITS is an ever-increasing counter of
 commits since the beginning of this repository.
 
+## [8.34.247]
+
+- Update Sentry Java SDK to 8.34.1
+
 ## [8.33.246]
 
 - Add JVM Profiling support (`sentry-clj.profiling` namespace) with `start-profiler!`, `stop-profiler!`, and `with-profiling` macro (Thanks @abogoyavlensky)
@@ -486,7 +490,8 @@ commits since the beginning of this repository.
   compatible with Sentry 10.0.1 and below. If you wish to use those
   versions, please continue to use sentry-clj 1.7.30.
 
-[Unreleased]: https://github.com/getsentry/sentry-clj/compare/8.33.246...HEAD
+[Unreleased]: https://github.com/getsentry/sentry-clj/compare/8.33.247...HEAD
+[8.34.247]: https://github.com/getsentry/sentry-clj/compare/8.33.246...8.34.247
 [8.33.246]: https://github.com/getsentry/sentry-clj/compare/8.33.243...8.33.246
 [8.33.243]: https://github.com/getsentry/sentry-clj/compare/8.29.238...8.33.243
 [8.29.238]: https://github.com/getsentry/sentry-clj/compare/8.25.237...8.29.238

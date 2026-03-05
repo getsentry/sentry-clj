@@ -7,7 +7,7 @@
 
 (defn ^:private the-version
   [patch]
-  (format "8.33.%s" patch))
+  (format "8.34.%s" patch))
 
 (defn ^:private pom-template
   [tag]
