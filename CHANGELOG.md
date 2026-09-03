@@ -490,7 +490,7 @@ commits since the beginning of this repository.
   compatible with Sentry 10.0.1 and below. If you wish to use those
   versions, please continue to use sentry-clj 1.7.30.
 
-[Unreleased]: https://github.com/getsentry/sentry-clj/compare/8.33.247...HEAD
+[Unreleased]: https://github.com/getsentry/sentry-clj/compare/8.34.247...HEAD
 [8.34.247]: https://github.com/getsentry/sentry-clj/compare/8.33.246...8.34.247
 [8.33.246]: https://github.com/getsentry/sentry-clj/compare/8.33.243...8.33.246
 [8.33.243]: https://github.com/getsentry/sentry-clj/compare/8.29.238...8.33.243
@@ -514,7 +514,7 @@ commits since the beginning of this repository.
 [7.4.213]: https://github.com/getsentry/sentry-clj/compare/7.2.211...7.4.213
 [7.2.211]: https://github.com/getsentry/sentry-clj/compare/6.33.209...7.2.211
 [6.33.209]: https://github.com/getsentry/sentry-clj/compare/6.33.205...6.33.209
-[6.33.205]: https://github.com/getsentry/sentry-clj/compare/6.29.204...6.33.205
+[6.33.205]: https://github.com/getsentry/sentry-clj/compare/6.33.204...6.33.205
 [6.33.204]: https://github.com/getsentry/sentry-clj/compare/6.29.202...6.33.204
 [6.29.202]: https://github.com/getsentry/sentry-clj/compare/6.28.200...6.29.202
 [6.28.200]: https://github.com/getsentry/sentry-clj/compare/6.26.199...6.28.200
